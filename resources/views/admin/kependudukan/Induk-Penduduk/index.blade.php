@@ -65,19 +65,19 @@
                         <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500">
                             No
                         </th>
-                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer text-center">
                             Nama
                         </th>
-                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer text-center">
                             NIK
                         </th>
-                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer text-center">
                             Alamat
                         </th>
-                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer text-center">
                             Status Perkawinan
                         </th>
-                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer text-center">
                             Agama
                         </th>
                         <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 text-center">
@@ -86,54 +86,44 @@
                     </tr>
                 </thead>
                 <tbody id="tableBody">
-                    {{-- @foreach ($pekerjaanData as $index => $item) --}}
-                    
-                    <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300">  {{-- @if($loop->index >= 10) hidden @endif" data-index="{{ $index }}" --}}
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            1
-                            {{-- {{ $loop->iteration }} --}}
+                    @foreach ($pendudukData as $index => $item)
+                    <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 @if($loop->index >= 10) hidden @endif" data-index="{{ $index }}" >  
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold ">
+                            {{ $loop->iteration }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            {{-- {{ $item->pekerjaan }} --}}
-                            Nama
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold text-center">
+                            {{ $item->nama_lengkap }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            {{-- {{ $item->pekerjaan }} --}}
-                            NIK
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold text-center">
+                            {{ $item->nik }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            {{-- {{ $item->pekerjaan }} --}}
-                            Alamat
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold text-center">
+                            {{ $item->alamat }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            {{-- {{ $item->pekerjaan }} --}}
-                            Status Perkawinan
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold text-center">
+                            {{ $item->status_perkawinan }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
-                            {{-- {{ $item->pekerjaan }} --}}
-                            Agama
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold text-center">
+                            {{ $item->agama }}
                         </td>
                         <td class="px-6 py-4 font-semibold flex space-x-4 justify-center">
-
                             <!-- Edit Button -->
-                            <a class="text-blue-600 hover:text-blue-800 hover:font-bold font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                            <a href="{{ route('indukPenduduk.edit', $item->id_penduduk) }}" class="text-blue-600 hover:text-blue-800 hover:font-bold font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
                                 </svg>
                                 <span>Edit</span>
                             </a>
-
                             <!-- Delete Button -->
-                            <a type="button" class="text-red-600 hover:text-red-800 hover:font-bold font-medium transition duration-200 flex items-center space-x-1.5 cursor-pointer">
+                            <a wire:click="confirmDelete({{ $item->id_penduduk }})" type="button" class="text-red-600 hover:text-red-800 hover:font-bold font-medium transition duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
-
                                 <span>Hapus</span>
                             </a>
                         </td>
                     </tr>
-                    {{-- @endforeach --}}
+                    @endforeach
                 </tbody>
             </table>
 
@@ -142,4 +132,40 @@
             </div>
         </div>
     </div>
+    
+        <!-- Delete Modal -->
+        <div id="delete-modal" wire:key="delete-modal" class="fixed inset-0 z-50 items-center justify-center {{ $deletePendudukId ? 'flex' : 'hidden' }}">
+            <!-- Backdrop -->
+            <div class="fixed inset-0 bg-black opacity-50" wire:click="hideDeleteModal"></div>
+    
+            <!-- Modal Content -->
+            <div class="relative p-4 w-full max-w-md z-50">
+                <div class="relative bg-white rounded-lg shadow-md border border-gray-300">
+                    <!-- Modal header -->
+                    <div class="flex items-center justify-between p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
+                        <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" wire:click="hideDeleteModal">
+                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                            </svg>
+                        </button>
+                    </div>
+    
+                    <!-- Modal body -->
+                    <div class="p-4">
+                        <p class="text-sm text-gray-700">Apakah Anda yakin ingin menghapus data Induk Penduduk ini?</p>
+                    </div>
+    
+                    <!-- Modal footer -->
+                    <div class="flex justify-end p-4 space-x-2 border-t border-gray-200">
+                        <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 cursor-pointer" wire:click="hideDeleteModal">
+                            Tidak
+                        </button>
+                        <button type="button" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-900 cursor-pointer" wire:click="delete">
+                            Ya, Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>

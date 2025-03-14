@@ -1,6 +1,6 @@
 <div>
     <x-slot:judul>
-        Create Induk Penduduk
+        Edit Induk Penduduk
     </x-slot:judul>
 
     <div class="bg-teal-700 my-4 border-2 border-gray-400 rounded-sm p-2 ">
@@ -8,7 +8,7 @@
     </div>
 
     <div class="mx-6 mt-8">
-        <form wire:submit.prevent="store">
+        <form wire:submit.prevent="update">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
                     <label for="nik" class="block mb-2 text-sm font-medium text-gray-950">NIK</label>
@@ -177,6 +177,4 @@
         </div>
         </form>
     </div>
-
 </div>
-

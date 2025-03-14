@@ -10,7 +10,6 @@ use Livewire\Attributes\Rule;
 
 class IndukPendudukCreate extends Component
 {
-
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
     #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
     public $nama_lengkap;
@@ -96,7 +95,7 @@ class IndukPendudukCreate extends Component
                 'asal_penduduk'
             ]);
             // Redirect to index page
-            return redirect()->route('indukPenduduk.index')->with('success', 'Data penduduk berhasil disimpan!');
+            return redirect()->route('indukPenduduk ')->with('success', 'Data penduduk berhasil disimpan!');
     }
 
     #[Layout('Components.layouts.layouts')]

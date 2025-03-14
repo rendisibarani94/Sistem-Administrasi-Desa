@@ -50,10 +50,10 @@
                 <tbody id="tableBody">
                     @foreach ($pekerjaanData as $index => $item)
                     <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 @if($loop->index >= 10) hidden @endif" data-index="{{ $index }}">
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold">
                             {{ $loop->iteration }}
                         </td>
-                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold no-cell ">
+                        <td class="px-6 py-4 text-gray-950 whitespace-nowrap font-semibold ">
                             {{ $item->pekerjaan }}
                         </td>
                         <td class="px-6 py-4 font-semibold flex space-x-4 justify-center">
