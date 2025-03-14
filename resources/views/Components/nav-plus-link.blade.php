@@ -19,7 +19,7 @@
     }
     
     // Classes for the button
-    $buttonBaseClasses = 'flex items-center transition duration-150 w-full p-2 text-base rounded-lg group';
+    $buttonBaseClasses = 'flex items-center transition duration-150 w-full p-2 text-base rounded-lg group cursor-pointer';
     $buttonInactiveClasses = 'text-gray-900 dark:text-zinc-950 hover:text-white hover:bg-gray-100 dark:hover:bg-teal-700';
     $buttonActiveClasses = '';
     $buttonClasses = $buttonBaseClasses . ' ' . $buttonInactiveClasses;
@@ -47,13 +47,10 @@
         data-collapse-toggle="{{ $dropdownId }}"
         {{ $attributes }}
     >
-        <svg class="{{ $svgClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 18 21">
+        <svg class="{{ $svgClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
             {!! $icon !!}
         </svg>
         <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{ $title }}</span>
-        {{-- <svg class="{{ $arrowClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
-        </svg> --}}
 
         <svg class="{{ $arrowClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 16 4-4-4-4"/>
