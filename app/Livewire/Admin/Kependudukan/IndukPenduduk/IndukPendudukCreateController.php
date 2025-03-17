@@ -8,7 +8,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 use Livewire\Attributes\Rule;
 
-class IndukPendudukCreate extends Component
+class IndukPendudukCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
     #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]

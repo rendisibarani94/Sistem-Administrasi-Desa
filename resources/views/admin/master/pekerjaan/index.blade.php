@@ -5,7 +5,7 @@
 
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between">
-            <h1 class="text-3xl font-semibold mt-6 mb-6">Halaman Data Pekerjaan</h1>
+            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Pekerjaan</h1>
             {{-- Alert --}}
             <x-alert />
         </div>
@@ -39,7 +39,7 @@
                         <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500">
                             No
                         </th>
-                        <th scope="col" wire:click="sortBy('pekerjaan')" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 cursor-pointer">
+                        <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500">
                             Pekerjaan
                         </th>
                         <th scope="col" class="w-auto px-6 py-4 font-semibold border-b-3 border-gray-500 text-center">
