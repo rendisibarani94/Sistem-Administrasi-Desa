@@ -19,7 +19,7 @@ class PekerjaanController extends Component
     public $pekerjaanId;
 
     // Delete
-    public $deletePekerjaanId;
+    public $deleteId;
 
     // Search variable
     public $search;
@@ -81,41 +81,32 @@ class PekerjaanController extends Component
         $this->hideEditModal();
 
         return redirect()->route('pekerjaan')->with('success', 'Data pekerjaan berhasil diperbarui.');
-
     }
 
     public function confirmDelete($id)
     {
-        $this->deletePekerjaanId = $id;
-    }
+        $this->deleteId = $id;
 
-    public function hideDeleteModal()
-    {
-        $this->deletePekerjaanId = null;
+        $this->dispatch('swal:confirm', [
+            'title' => 'Apakah Anda yakin?',
+            'text' => 'Data Pekerjaan ini akan dihapus.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya, hapus!',
+            'cancelButtonText' => 'Batal',
+        ]);
     }
 
     public function delete()
     {
-        if ($this->deletePekerjaanId) {
-            DB::table('pekerjaan')->where('id_pekerjaan', $this->deletePekerjaanId)->update([
-                'is_deleted' => 1,
-            ]);
-        return redirect()->route('pekerjaan')->with('success', 'Data pekerjaan berhasil dihapus.');
-            
-        }
-        $this->hideDeleteModal();
-        redirect()->route('pekerjaan');
-    }
+        DB::table('pekerjaan')
+            ->where('id_pekerjaan', $this->deleteId)
+            ->update(['is_deleted' => 1]);
 
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortDirection = 'asc';
-        }
-
-        $this->sortField = $field;
+        // Show success message
+        $this->dispatch('swal:success', [
+            'title' => 'Berhasil!',
+            'text' => 'Data Pekerjaan berhasil dihapus.',
+        ]);
     }
 
     #[Layout('Components.layouts.layouts')]

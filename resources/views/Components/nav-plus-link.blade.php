@@ -105,12 +105,12 @@
                     // Open dropdown
                     target.classList.remove('hidden');
                     target.classList.add('max-h-96');
-                    arrow.classList.add('transform', 'rotate-180');
+                    arrow.classList.add('transform', 'rotate-90');
                 } else {
                     // Close dropdown
                     target.classList.add('hidden');
                     target.classList.remove('max-h-96');
-                    arrow.classList.remove('transform', 'rotate-180');
+                    arrow.classList.remove('transform', 'rotate-90');
                 }
                 
                 // Prevent default behavior that might be causing conflicts

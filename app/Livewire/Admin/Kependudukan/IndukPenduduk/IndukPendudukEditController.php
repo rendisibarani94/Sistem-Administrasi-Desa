@@ -9,28 +9,25 @@ use Livewire\Attributes\Rule;
 
 class IndukPendudukEditController extends Component
 {
-    #[Rule('required', message: 'Jangan Kosong Dek')]
     public $id_penduduk;
+
+    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
+    #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
+    public $nik;
+
+    #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
+    public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
     #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
     public $nama_lengkap;
 
-    #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
-    public $jenis_kelamin;
-
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
     public $alamat;
 
-    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
-    #[Rule('min:16', message: 'Input NIK Harus 16 Karakter!')]
-    #[Rule('max:16', message: 'Input NIK Harus 16 Karakter!')]
-    public $nik;
-
-    #[Rule('required', message: 'Input Nomor Kartu Keluarga Harus Diisi!')]
-    #[Rule('min:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
-    #[Rule('max:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
-    public $nomor_kk;
+    
+    #[Rule('required', message: 'Input Kartu Keluarga Harus Diisi!')]
+    public $id_kartu_keluarga;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
     #[Rule('max:255', message: 'Input Tempat Lahir terlalu Panjang!')]
@@ -57,6 +54,14 @@ class IndukPendudukEditController extends Component
     #[Rule('required', message: 'Kolom Baca Huruf Harus Diisi!')]
     public $baca_huruf;
 
+    #[Rule('required', message: 'Kolom Nama Ayah Harus Diisi!')]
+    #[Rule('max:150', message: 'Input Nama Ayah Terlalu Panjang!')]
+    public $nama_ayah;
+
+    #[Rule('required', message: 'Kolom Nama Ibu Harus Diisi!')]
+    #[Rule('max:150', message: 'Input Nama Ibu Terlalu Panjang!')]
+    public $nama_ibu;
+
     #[Rule('required', message: 'Kolom Kedudukan Keluarga Harus Diisi!')]
     public $kedudukan_keluarga;
 
@@ -70,9 +75,9 @@ class IndukPendudukEditController extends Component
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
 
-    public function mount($nik)
+    public function mount($id)
     {
-        $this->id_penduduk = $nik;
+        $this->id_penduduk = $id;
         $this->loadPenduduk();
     }
 
@@ -88,9 +93,11 @@ class IndukPendudukEditController extends Component
         $this->jenis_kelamin = $penduduk->jenis_kelamin;
         $this->alamat = $penduduk->alamat;
         $this->nik = $penduduk->nik;
-        $this->nomor_kk = $penduduk->nomor_kk;
+        $this->id_kartu_keluarga = $penduduk->id_kartu_keluarga;
         $this->tempat_lahir = $penduduk->tempat_lahir;
         $this->tanggal_lahir = $penduduk->tanggal_lahir;
+        $this->nama_ayah = $penduduk->nama_ayah;
+        $this->nama_ibu = $penduduk->nama_ibu;
         $this->golongan_darah = $penduduk->golongan_darah;
         $this->agama = $penduduk->agama;
         $this->status_perkawinan = $penduduk->status_perkawinan;
@@ -113,7 +120,7 @@ class IndukPendudukEditController extends Component
             'jenis_kelamin' => $this->jenis_kelamin,
             'alamat' => $this->alamat,
             'nik' => $this->nik,
-            'nomor_kk' => $this->nomor_kk,
+            'id_kartu_keluarga' => $this->id_kartu_keluarga,
             'tempat_lahir' => $this->tempat_lahir,
             'tanggal_lahir' => $this->tanggal_lahir,
             'golongan_darah' => $this->golongan_darah,
@@ -126,7 +133,7 @@ class IndukPendudukEditController extends Component
             'dusun' => $this->dusun,
             'asal_penduduk' => $this->asal_penduduk,
             'tanggal_penambahan' => $this->tanggal_penambahan,
-            'update_at' => now()
+            'updated_at' => now()
         ];
         // Update the data in the database
         DB::table('penduduk')->where('id_penduduk', $this->id_penduduk)->update($data);
@@ -137,9 +144,10 @@ class IndukPendudukEditController extends Component
     #[Layout('Components.layouts.layouts')]
     public function render()
     {
-        return view('admin.kependudukan.Induk-Penduduk.edit', [
+        return view('admin.kependudukan.induk-penduduk.edit', [
             'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
             'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
+            'kkData' => DB::table('kartu_keluarga')->where('is_deleted', 0)->get()
         ]);
     }
 }

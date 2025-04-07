@@ -24,11 +24,10 @@
         <div class="longbar h-14 bg-teal-700 flex justify-center items-center text-center">
             <span class="p-4 text-xl text-white font-medium">
                 Administrasi Desa
-            </span>  
+            </span>
         </div>
-        
+
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 shadow-sm shadow-black">
-            <h5 class="text-gray-800 font-semibold text-sm">Data Master</h5>
             <ul class="space-y-2 font-medium">
                 @php
                 $masterIcon = '
@@ -42,21 +41,84 @@
                 'route' => 'dusun',
                 'text' => 'Dusun',
                 ],
-               ];
+                [
+                'route' => 'jabatan',
+                'text' => 'Jabatan Aparatur',
+                ],
+                [
+                'route' => 'kelasTanah',
+                'text' => 'Kelas Tanah',
+                ],
+                [
+                'route' => 'jenisInventaris',
+                'text' => 'Jenis Inventaris Desa',
+                ]
+                ];
                 @endphp
                 <x-nav-plus-link title="Data Master" :icon="$masterIcon" :childLinks="$masterChildLinks" id="data-master-dropdown" />
-                <h5 class="text-gray-800 font-semibold text-sm">Kependudukan</h5>
-                
                 @php
-                $kependudukanIcon = '<path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>';
+                $umumIcon = '
+                <path fill-rule="evenodd" d="M5 3a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11.5c.07 0 .14-.007.207-.021.095.014.193.021.293.021h2a2 2 0 0 0 2-2V7a1 1 0 0 0-1-1h-1a1 1 0 1 0 0 2v11h-2V5a2 2 0 0 0-2-2H5Zm7 4a1 1 0 0 1 1-1h.5a1 1 0 1 1 0 2H13a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h.5a1 1 0 1 1 0 2H13a1 1 0 0 1-1-1Zm-6 4a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h6a1 1 0 1 1 0 2H7a1 1 0 0 1-1-1ZM7 6a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H7Zm1 3V8h1v1H8Z" clip-rule="evenodd" />';
+                $childLinks = [
+                [
+                'route' => 'PeraturanDesa',
+                'text' => 'Peraturan Desa',
+                ],
+                [
+                'route' => 'keputusanKepalaDesa',
+                'text' => 'Keputusan Kepala Desa',
+                ],
+                [
+                'route' => 'AparaturDesa',
+                'text' => 'Aparatur Desa',
+                ],
+                [
+                'route' => 'TanahKasDesa',
+                'text' => 'Tanah Kas Desa',
+                ],
+                [
+                'route' => 'InventarisDesa',
+                'text' => 'Inventaris Desa',
+                ],
+                [
+                'route' => 'TanahDesa',
+                'text' => 'Tanah Desa',
+                ],
+                [
+                'route' => 'AgendaDesa',
+                'text' => 'Agenda Desa',
+                ],
+                ];
+                @endphp
+                <x-nav-plus-link title="Administrasi Umum" :icon="$umumIcon" :childLinks="$childLinks" id="beda-aja" />
+                @php
+                $kependudukanIcon = '
+                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd" />';
                 $childLinks = [
                 [
                 'route' => 'indukPenduduk',
                 'text' => 'Induk Penduduk',
                 ],
+                [
+                'route' => 'kartuKeluarga',
+                'text' => 'Kartu Keluarga',
+                ],
+                [
+                'route' => 'pendudukSementara',
+                'text' => 'Penduduk Sementara',
+                ],
                 ];
                 @endphp
                 <x-nav-plus-link title="Kependudukan" :icon="$kependudukanIcon" :childLinks="$childLinks" id="ecommerce-dropdown" />
+
+                @php
+                $pembangunanIcon = '
+                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd" />';
+                $childLinks = [
+                
+                ];
+                @endphp
+                <x-nav-plus-link title="Pembangunan" :icon="$pembangunanIcon" :childLinks="$childLinks" id="pembangunan-dropdown" />
 
             </ul>
         </div>
@@ -85,8 +147,12 @@
             Swal.fire({
                 title: 'Sukses!'
                 , text: "{{ session('success') }}"
-                , icon: 'success'
+                , imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}"
+                , imageWidth: 250
+                , imageHeight: 250
+                , imageAlt: 'Custom GIF'
                 , confirmButtonText: 'OK'
+                , confirmButtonColor: '#0f766e'
             });
             @elseif(session('error'))
             Swal.fire({
@@ -97,6 +163,7 @@
             });
             @endif
         });
+
     </script>
     <script>
         // Listen for clicks on the document
@@ -115,6 +182,7 @@
                 }
             }
         });
+
     </script>
     <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     @livewireScripts

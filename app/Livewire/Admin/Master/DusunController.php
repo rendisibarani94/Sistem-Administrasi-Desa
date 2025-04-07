@@ -14,7 +14,7 @@ class DusunController extends Component
     public $dusun;
     public $dusunId;
     public $search;
-    public $deleteDusunId;
+    public $deleteId;
 
 
     protected $rules = [
@@ -77,23 +77,28 @@ class DusunController extends Component
 
     public function confirmDelete($id)
     {
-        $this->deleteDusunId = $id;
+        $this->deleteId = $id;
+        
+        $this->dispatch('swal:confirm', [
+            'title' => 'Apakah Anda yakin?',
+            'text' => 'Data Dusun ini akan dihapus.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya, hapus!',
+            'cancelButtonText' => 'Batal',
+        ]);
     }
-
-    public function hideDeleteModal()
-    {
-        $this->deleteDusunId = null;
-    }
-
+    
     public function delete()
     {
-        if ($this->deleteDusunId) {
-            DB::table('dusun')->where('id_dusun', $this->deleteDusunId)->update([
-                'is_deleted' => 1,
-            ]);
-        }
-        $this->hideDeleteModal();
-        redirect()->route('dusun')->with('success', 'Data dusun berhasil dihapus.');
+        DB::table('dusun')
+            ->where('id_dusun', $this->deleteId)
+            ->update(['is_deleted' => 1]);
+        
+        // Show success message
+        $this->dispatch('swal:success', [
+            'title' => 'Berhasil!',
+            'text' => 'Data Dusun berhasil dihapus.',
+        ]);
     }
 
     #[Layout('Components.layouts.layouts')]

@@ -6,8 +6,6 @@
     <div class="bg-white rounded-lg shadow-md p-6">
         <div class="flex justify-between">
             <h1 class="text-3xl font-semibold mt-6 mb-6">Data Pekerjaan</h1>
-            {{-- Alert --}}
-            <x-alert />
         </div>
 
         {{-- Create Modals Button & Table Search --}}
@@ -60,7 +58,7 @@
 
                             <!-- Edit Button -->
                             <button wire:click="loadPekerjaan({{ $item->id_pekerjaan }})" class="text-blue-600 hover:text-blue-800 hover:font-bold font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-6 pt-1">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
                                 </svg>
                                 <span>Edit</span>
@@ -71,7 +69,6 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
-
                                 <span>Hapus</span>
                             </button>
                         </td>
@@ -87,7 +84,7 @@
     </div>
 
     <!-- Store modal -->
-    <div id="store-modal" tabindex="-1" aria-hidden="true" class="hidden inset-0 backdrop-blur-xs transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div id="store-modal" tabindex="-1" aria-hidden="true" class="hidden inset-0 bg-black/50 transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-xl max-h-full transform transition-all duration-300 ease-out scale-95">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow-md border-2 border-gray-500">
@@ -120,7 +117,7 @@
     </div>
 
     <!-- Edit modal -->
-    <div id="edit-modal" tabindex="-1" aria-hidden="true" class="{{ $this->pekerjaanId ? '' : 'hidden' }} flex inset-0 z-40 backdrop-blur-xs transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div id="edit-modal" tabindex="-1" aria-hidden="true" class="{{ $this->pekerjaanId ? '' : 'hidden' }} flex inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-xl max-h-full transform transition-all duration-300 ease-out scale-95">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow-md border-2 border-gray-500">
@@ -155,42 +152,44 @@
         </div>
     </div>
 
-    <!-- Delete Modal -->
-    <div id="delete-modal" wire:key="delete-modal" class="fixed inset-0 z-50 items-center justify-center {{ $deletePekerjaanId ? 'flex' : 'hidden' }}">
-        <!-- Backdrop -->
-        <div class="fixed inset-0 bg-black opacity-50" wire:click="hideDeleteModal"></div>
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            // Handle the confirmation dialog
+            @this.on('swal:confirm', (parameters) => {
+                Swal.fire({
+                    title: parameters[0].title
+                    , text: parameters[0].text
+                    , icon: parameters[0].icon
+                    , showCancelButton: true
+                    , confirmButtonColor: '#d33'
+                    , cancelButtonColor: '#3085d6'
+                    , confirmButtonText: parameters[0].confirmButtonText
+                    , cancelButtonText: parameters[0].cancelButtonText
+                    , reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        @this.delete();
+                    }
+                });
+            });
 
-        <!-- Modal Content -->
-        <div class="relative p-4 w-full max-w-md z-50">
-            <div class="relative bg-white rounded-lg shadow-md border border-gray-300">
-                <!-- Modal header -->
-                <div class="flex items-center justify-between p-4 border-b border-gray-200">
-                    <h3 class="text-lg font-semibold text-gray-900">Konfirmasi Hapus</h3>
-                    <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-100 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex justify-center items-center" wire:click="hideDeleteModal">
-                        <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                        </svg>
-                    </button>
-                </div>
+            // Handle the success message with custom GIF
+            @this.on('swal:success', (parameters) => {
+                Swal.fire({
+                    title: parameters[0].title
+                    , text: parameters[0].text
+                    , imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}"
+                    , imageWidth: 250
+                    , imageHeight: 250
+                    , imageAlt: 'Custom GIF'
+                    , confirmButtonText: 'OK'
+                    , confirmButtonColor: '#0f766e'
+                });
+            });
+        });
 
-                <!-- Modal body -->
-                <div class="p-4">
-                    <p class="text-sm text-gray-700">Apakah Anda yakin ingin menghapus data pekerjaan ini?</p>
-                </div>
+    </script>
+    @endpush
 
-                <!-- Modal footer -->
-                <div class="flex justify-end p-4 space-x-2 border-t border-gray-200">
-                    <button type="button" class="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400 cursor-pointer" wire:click="hideDeleteModal">
-                        Tidak
-                    </button>
-                    <button type="button" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-900 cursor-pointer" wire:click="delete">
-                        Ya, Hapus
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Script Dispatch Modal -->
-    <x-script-master-modals />
 </div>

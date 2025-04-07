@@ -5,30 +5,26 @@ namespace App\Livewire\Admin\Kependudukan\IndukPenduduk;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithPagination;
 use Livewire\Attributes\Rule;
 
 class IndukPendudukCreateController extends Component
 {
-    #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
-    public $nama_lengkap;
+    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
+    #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
+    public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
     public $jenis_kelamin;
 
+    #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
+    #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
+    public $nama_lengkap;
+
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
     public $alamat;
-
-    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
-    #[Rule('min:16', message: 'Input NIK Harus 16 Karakter!')]
-    #[Rule('max:16', message: 'Input NIK Harus 16 Karakter!')]
-    public $nik;
-
-    #[Rule('required', message: 'Input Nomor Kartu Keluarga Harus Diisi!')]
-    #[Rule('min:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
-    #[Rule('max:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
-    public $nomor_kk;
+    
+    #[Rule('required', message: 'Input Kartu Keluarga Harus Diisi!')]
+    public $id_kartu_keluarga;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
     #[Rule('max:255', message: 'Input Tempat Lahir terlalu Panjang!')]
@@ -54,6 +50,14 @@ class IndukPendudukCreateController extends Component
 
     #[Rule('required', message: 'Kolom Baca Huruf Harus Diisi!')]
     public $baca_huruf;
+
+    #[Rule('required', message: 'Kolom Nama Ayah Harus Diisi!')]
+    #[Rule('max:150', message: 'Input Nama Ayah Terlalu Panjang!')]
+    public $nama_ayah;
+
+    #[Rule('required', message: 'Kolom Nama Ibu Harus Diisi!')]
+    #[Rule('max:150', message: 'Input Nama Ibu Terlalu Panjang!')]
+    public $nama_ibu;
 
     #[Rule('required', message: 'Kolom Kedudukan Keluarga Harus Diisi!')]
     public $kedudukan_keluarga;
@@ -81,12 +85,14 @@ class IndukPendudukCreateController extends Component
                 'jenis_kelamin',
                 'alamat',
                 'nik',
-                'nomor_kk',
                 'tempat_lahir',
                 'tanggal_lahir',
+                'id_kartu_keluarga',
                 'golongan_darah',
                 'agama',
                 'status_perkawinan',
+                'nama_ayah',
+                'nama_ibu',
                 'pendidikan_terakhir',
                 'pekerjaan',
                 'baca_huruf',
@@ -95,17 +101,19 @@ class IndukPendudukCreateController extends Component
                 'asal_penduduk'
             ]);
             // Redirect to index page
-            return redirect()->route('indukPenduduk ')->with('success', 'Data penduduk berhasil disimpan!');
+            return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk berhasil disimpan!');
     }
+
 
     #[Layout('Components.layouts.layouts')]
     public function render()
     {
         return view(
-            'admin.kependudukan.Induk-Penduduk.create',
+            'admin.kependudukan.induk-penduduk.create',
             [
                 'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
                 'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
+                'kkData' => DB::table('kartu_keluarga')->where('is_deleted', 0)->get(),
             ]
         );
     }

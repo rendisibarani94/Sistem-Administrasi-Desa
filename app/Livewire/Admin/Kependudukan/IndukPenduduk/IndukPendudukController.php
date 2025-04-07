@@ -11,28 +11,33 @@ class IndukPendudukController extends Component
 {
     use WithPagination;
 
-    public $deletePendudukId;
+    public $deleteId;
+    public $search;
 
     public function confirmDelete($id)
     {
-        $this->deletePendudukId = $id;
-    }
+        $this->deleteId = $id;
 
-    public function hideDeleteModal()
-    {
-        $this->deletePendudukId = null;
+        $this->dispatch('swal:confirm', [
+            'title' => 'Apakah Anda yakin?',
+            'text' => 'Data penduduk ini akan dihapus.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya, hapus!',
+            'cancelButtonText' => 'Batal',
+        ]);
     }
 
     public function delete()
     {
-        if ($this->deletePendudukId) {
-            DB::table('penduduk')->where('id_penduduk', $this->deletePendudukId)->update([
-                'is_deleted' => 1,
-            ]);
-        return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Dihapus');  
-        }
-        $this->hideDeleteModal();
-        redirect()->route('indukPenduduk')->with('error', 'Data Induk Penduduk Tidak Ditemukan');
+        DB::table('penduduk')
+            ->where('id_penduduk', $this->deleteId)
+            ->update(['is_deleted' => 1, 'updated_at' => now()]);
+
+        // Show success message
+        $this->dispatch('swal:success', [
+            'title' => 'Berhasil!',
+            'text' => 'Data penduduk berhasil dihapus.',
+        ]);
     }
 
     #[Layout('Components.layouts.layouts')]
@@ -41,7 +46,18 @@ class IndukPendudukController extends Component
         return view(
             'admin.kependudukan.Induk-Penduduk.index',
             [
-                'pendudukData' => DB::table('penduduk')->where('is_deleted', 0)->get(),
+                'pendudukData' => DB::table('penduduk')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                                ->orWhere('nik', 'like', '%' . $this->search . '%')
+                                ->orWhere('alamat', 'like', '%' . $this->search . '%')
+                                ->orWhere('status_perkawinan', 'like', '%' . $this->search . '%');
+                        });
+                    })
+                    ->where('is_deleted', 0)
+                    ->whereNull('tanggal_pengurangan')
+                    ->paginate(10)
             ]
         );
     }
