@@ -74,6 +74,6 @@ class TanahDesaController extends Component
         ->orderBy('id_tanah_desa', 'desc')
         ->paginate(10);
 
-        return view('admin.umum.tanah-desa.index',compact('tanahDesaData'));
+        return view('admin.umum.tanah-desa.index', compact('tanahDesaData'));
     }
 }

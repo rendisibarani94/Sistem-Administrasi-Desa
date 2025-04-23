@@ -35,7 +35,7 @@
                 </div>
                 <div class="md:col-span-1">
                     <div class="input-component">
-                        <label for="tanggal_pengiriman_penerimaan" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Pengiriman</label>
+                        <label for="tanggal_pengiriman_penerimaan" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Dikirim / Diterima</label>
                         <input type="date" id="tanggal_pengiriman_penerimaan" wire:model.live="tanggal_pengiriman_penerimaan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_pengiriman_penerimaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:border-blue-500 @enderror" placeholder="Masukan Perihal Tanggal Ditetapkan Peraturan Desa" autocomplete="off" />
                         <div class="h-0.25">
                             @error('tanggal_pengiriman_penerimaan')
@@ -65,10 +65,10 @@
                     </div>
                 </div>
                 <div class="input-component">
-                    <label for="tujuan_penerima" class="block mb-2 text-sm font-semibold text-gray-950">Tujuan Penerima Surat</label>
-                    <input type="text" id="tujuan_penerima" wire:model.live="tujuan_penerima" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tujuan_penerima') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Tujuan Penerima Surat" autocomplete="off" />
+                    <label for="pengirim_penerima" class="block mb-2 text-sm font-semibold text-gray-950">Pengirim / Tujuan Penerima Surat</label>
+                    <input type="text" id="pengirim_penerima" wire:model.live="pengirim_penerima" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('pengirim_penerima') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Pengirim / Tujuan Penerima Surat" autocomplete="off" />
                     <div class="h-0.25">
-                        @error('tujuan_penerima') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        @error('pengirim_penerima') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
                 <div class="input-component">
@@ -85,10 +85,11 @@
                         @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
+                
             </div>
-            
+
             <div class="flex justify-between mt-6">
-                <a href="{{ route('AgendaDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
+                <a href="{{ route('AgendaSuratDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
 
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Ubah Surat Keluar</button>
             </div>

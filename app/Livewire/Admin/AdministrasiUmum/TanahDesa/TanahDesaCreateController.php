@@ -9,23 +9,9 @@ use Livewire\Attributes\Rule;
 
 class TanahDesaCreateController extends Component
 {
-    #[Rule(
-        ['required_without:nama_badan_hukum', 'nullable', 'max:150'],
-        message: [
-            'required_without' => 'Mohon isi salah satu field: Perorangan atau Badan Hukum.',
-            'size' => 'Input Perorangan maksimal 150 karakter!'
-        ]
-    )]
+    #[Rule('required', message: 'Kolom Nama Pemegang Hak Tanah Harus Diisi')]
+    #[Rule('max:150', message: 'Batas Pengisian Kolom 150 karakter')]
     public $nama_pemegang_hak_tanah;
-
-    #[Rule(
-        ['required_without:nama_pemegang_hak_tanah', 'nullable', 'max:150'],
-        message: [
-            'required_without' => 'Mohon isi salah satu field: Perorangan atau Badan Hukum.',
-            'max' => 'Input Badan Hukum maksimal 150 karakter!'
-        ]
-    )]
-    public $nama_badan_hukum;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $luas_hm = 0;

@@ -28,10 +28,10 @@ class BidangKeahlianController extends Component
             'bidang_keahlian' => $this->bidang_keahlian,
         ]);
         $this->reset();
-        return redirect()->route('bidang_keahlian')->with('success', 'Data Bidang Keahlian Berhasil Ditambahkan.');
+        return redirect()->route('bidangKeahlian')->with('success', 'Data Bidang Keahlian Berhasil Ditambahkan.');
     }
 
-    public function loadDusun($id)
+    public function loadBidangKeahlian($id)
     {
         $bk = DB::table('bidang_keahlian')->where('id_bidang_keahlian', $id)->first();
 
@@ -65,14 +65,14 @@ class BidangKeahlianController extends Component
         DB::table('bidang_keahlian')
             ->where('id_bidang_keahlian', $this->bidangKeahlianId)
             ->update([
-                'bidang_keahlian' => $this->bidangKeahlianId,
+                'bidang_keahlian' => $this->bidang_keahlian,
             ]);
 
         $this->dispatch('hide-edit-modal');
         $this->hideEditModal();
         // session()->flash('success', 'Data Dusun Berhasil Diubah.');
 
-        return redirect()->route('bidang_keahlian')->with('success', 'Data Bidang Keahlian Berhasil Diubah.');
+        return redirect()->route('bidangKeahlian')->with('success', 'Data Bidang Keahlian Berhasil Diubah.');
     }
 
     public function confirmDelete($id)

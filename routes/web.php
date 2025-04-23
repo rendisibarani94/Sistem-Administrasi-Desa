@@ -1,5 +1,19 @@
 <?php
 
+use App\Http\Controllers\Laporan\Kependudukan\LaporanIndukPendudukController;
+use App\Http\Controllers\Laporan\Kependudukan\LaporanKtpKkController;
+use App\Http\Controllers\Laporan\Kependudukan\LaporanMutasiPendudukController;
+use App\Http\Controllers\Laporan\Kependudukan\LaporanPendudukSementaraController;
+use App\Http\Controllers\Laporan\Kependudukan\LaporanRekapitulasiPenduduk;
+use App\Http\Controllers\Laporan\Pembangunan\LaporanPembangunanController;
+use App\Http\Controllers\Laporan\Umum\LaporanAgendaSuratController;
+use App\Http\Controllers\Laporan\Umum\LaporanAparatDesaController;
+use App\Http\Controllers\Laporan\Umum\LaporanEkspedisiController;
+use App\Http\Controllers\Laporan\Umum\LaporanKeputusanKepalaDesaController;
+use App\Http\Controllers\Laporan\Umum\LaporanLembaranBeritaDesaController;
+use App\Http\Controllers\Laporan\Umum\LaporanPeraturanDesaController;
+use App\Http\Controllers\Laporan\Umum\LaporanTanahDesaController;
+use App\Http\Controllers\Laporan\Umum\LaporanTanahKasDesaController;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Master\DusunController;
 use App\Livewire\Admin\Master\JabatanController;
@@ -30,26 +44,40 @@ use App\Livewire\Admin\AdministrasiUmum\InventarisDesa\InventarisDesaEditControl
 use App\Livewire\Admin\AdministrasiUmum\InventarisDesa\InventarisDesaHapusController;
 use App\Livewire\Admin\AdministrasiUmum\InventarisDesa\InventarisDesaPenghapusanController;
 use App\Livewire\Admin\AdministrasiUmum\InventarisDesa\InventarisDesaPenghapusanEditController;
-use App\Livewire\Admin\AdministrasiUmum\AgendaDesa\AgendaDesaController;
-use App\Livewire\Admin\AdministrasiUmum\AgendaDesa\AgendaDesaCreateController;
-use App\Livewire\Admin\AdministrasiUmum\AgendaDesa\AgendaDesaEditController;
+use App\Livewire\Admin\AdministrasiUmum\AgendaSuratDesa\AgendaSuratDesaController;
+use App\Livewire\Admin\AdministrasiUmum\AgendaSuratDesa\AgendaSuratDesaCreateController;
+use App\Livewire\Admin\AdministrasiUmum\AgendaSuratDesa\AgendaSuratDesaEditController;
+use App\Livewire\Admin\AdministrasiPembangunan\KaderPemberdayaan\KaderPemberdayaanController;
+use App\Livewire\Admin\AdministrasiPembangunan\KaderPemberdayaan\KaderPemberdayaanCreateController;
+use App\Livewire\Admin\AdministrasiPembangunan\KaderPemberdayaan\KaderPemberdayaanEditController;
+use App\Livewire\Admin\AdministrasiPembangunan\KegiatanPembangunan\KegiatanPembangunanController;
+use App\Livewire\Admin\AdministrasiPembangunan\KegiatanPembangunan\KegiatanCreatePembangunanController;
+use App\Livewire\Admin\AdministrasiPembangunan\KegiatanPembangunan\KegiatanEditPembangunanController;
 use App\Livewire\Admin\AdministrasiUmum\TanahDesa\TanahDesaController;
 use App\Livewire\Admin\AdministrasiUmum\TanahDesa\TanahDesaCreateController;
 use App\Livewire\Admin\AdministrasiUmum\TanahDesa\TanahDesaEditController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaCreateController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaEditController;
+use App\Livewire\Admin\Master\BidangKeahlianController;
 use App\Livewire\Admin\Master\JenisInventarisController;
+use App\Livewire\Masyarakat\BerandaController;
+use App\Livewire\Masyarakat\Berita\BeritaController;
+use App\Livewire\Masyarakat\Berita\DetailBeritaController;
+use App\Livewire\Masyarakat\Pengumuman\PengumumanController;
+use App\Livewire\Masyarakat\ProfilController;
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::get('/pekerjaan', PekerjaanController::class)->name('pekerjaan');
 Route::get('/dusun', DusunController::class)->name('dusun');
 Route::get('/jabatan', JabatanController::class)->name('jabatan');
 Route::get('/kelas-tanah', KelasTanahController::class)->name('kelasTanah');
 Route::get('/jenis-inventaris', JenisInventarisController::class)->name('jenisInventaris');
+Route::get('/bidang-keahlian', BidangKeahlianController::class)->name('bidangKeahlian');
 
 // Administrasi Kependudukan
 Route::get('/induk-penduduk', IndukPendudukController::class)->name('indukPenduduk');
@@ -93,7 +121,50 @@ Route::get('/tanah-desa', TanahDesaController::class)->name('TanahDesa');
 Route::get('/tanah-desa/create', TanahDesaCreateController::class)->name('TanahDesa.create');
 Route::get('/tanah-desa/{id_tanah_desa}/edit', TanahDesaEditController::class)->name('TanahDesa.edit');
 
-Route::get('/surat-keluar', AgendaDesaController::class)->name('AgendaDesa');
-Route::get('/surat-keluar/create', AgendaDesaCreateController::class)->name('AgendaDesa.create');
-Route::get('/surat-keluar/{id_agenda_surat}/edit', AgendaDesaEditController::class)->name('AgendaDesa.edit');
+Route::get('/agenda-surat', AgendaSuratDesaController::class)->name('AgendaSuratDesa');
+Route::get('/agenda-surat/create', AgendaSuratDesaCreateController::class)->name('AgendaSuratDesa.create');
+Route::get('/agenda-surat/{id_agenda_surat}/edit', AgendaSuratDesaEditController::class)->name('AgendaSuratDesa.edit');
+
+Route::get('/kader-pemberdayaan-masyarakat', KaderPemberdayaanController::class)->name('KaderPemberdayaanMasyarakat');
+Route::get('/kader-pemberdayaan-masyarakat/create', KaderPemberdayaanCreateController::class)->name('KaderPemberdayaanMasyarakat.create');
+Route::get('/kader-pemberdayaan-masyarakat/{id_kader_pemberdayaan}/edit', KaderPemberdayaanEditController::class)->name('KaderPemberdayaanMasyarakat.edit');
+
+Route::get('/kegiatan-pembangunan', KegiatanPembangunanController::class)->name('Pembangunan');
+Route::get('/kegiatan-pembangunan/create', KegiatanCreatePembangunanController::class)->name('Pembangunan.create');
+Route::get('/kegiatan-pembangunan/{id_pembangunan}/edit', KegiatanEditPembangunanController::class)->name('Pembangunan.edit');
+
+// Laporan Pembangunan View
+Route::get('D1', [LaporanPembangunanController::class, 'displayD1']);
+Route::get('D2', [LaporanPembangunanController::class, 'displayD2']);
+Route::get('D3', [LaporanPembangunanController::class, 'displayD3']);
+Route::get('D4', [LaporanPembangunanController::class, 'displayD4']);
+
+// Laporan Umum View
+Route::get('A1', [LaporanPeraturanDesaController::class, 'displayA1']);
+Route::get('A2', [LaporanKeputusanKepalaDesaController::class, 'displayA2']);
+Route::get('A4', [LaporanAparatDesaController::class, 'displayA4']);
+Route::get('A5', [LaporanTanahKasDesaController::class, 'displayA5']);
+Route::get('A6', [LaporanTanahDesaController::class, 'displayA6']);
+Route::get('A7', [LaporanAgendaSuratController::class, 'displayA7']);
+Route::get('A8', [LaporanEkspedisiController::class, 'displayA8']);
+Route::get('A9', [LaporanLembaranBeritaDesaController::class, 'displayA9']);
+
+// Laporan Kependuduk
+Route::get('B1', [LaporanIndukPendudukController::class, 'displayB1']);
+Route::get('B2', [LaporanMutasiPendudukController::class, 'displayB2']);
+Route::get('B3', [LaporanRekapitulasiPenduduk::class, 'displayB3']);
+Route::get('B4', [LaporanPendudukSementaraController::class, 'displayB4']);
+Route::get('B5', [LaporanKtpKkController::class, 'displayB5']);
+
+// Example pdf download routes
+Route::get('laporan-kader-pemberdayaan', [LaporanPembangunanController::class, 'kaderPemberdayaan']);
+
+Route::get('/kader-pemberdayaan-masyarakat/{id_kader_pemberdayaan}/edit', KaderPemberdayaanEditController::class)->name('KaderPemberdayaanMasyarakat.edit');
+
+
+Route::get('/', BerandaController::class)->name('beranda');
+Route::get('/profil-desa', ProfilController::class)->name('profil');
+Route::get('/berita-desa', BeritaController::class)->name('berita');
+Route::get('/berita-desa/detail', DetailBeritaController::class)->name('detail-berita');
+Route::get('/pengumuman', PengumumanController::class)->name('pengumuman');
 

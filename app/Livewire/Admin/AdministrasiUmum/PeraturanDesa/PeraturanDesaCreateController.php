@@ -36,6 +36,9 @@ class PeraturanDesaCreateController extends Component
     #[Rule('max:255', message: 'Input Uraian Singkat Terlalu Panjang!')]
     public $uraian_singkat;
 
+    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
+    public $keterangan;
+
     public function store()
     {
         $validated = $this->validate();
@@ -60,13 +63,7 @@ class PeraturanDesaCreateController extends Component
     public function render()
     {
         return view(
-            'admin.umum.peraturan-desa.create',
-            [
-                'jenisPeraturanData' => DB::table('jenis_peraturan')
-                    ->where('is_deleted', 0)
-                    ->orderBy('id_jenis_peraturan', 'desc')
-                    ->get()
-            ]
+            'admin.umum.peraturan-desa.create'
         );
     }
 }

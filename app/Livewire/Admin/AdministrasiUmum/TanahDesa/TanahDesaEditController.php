@@ -11,23 +11,9 @@ class TanahDesaEditController extends Component
 {
     public $id_tanah_desa;
 
-    #[Rule(
-        ['required_without:nama_badan_hukum', 'nullable', 'max:150'],
-        message: [
-            'required_without' => 'Mohon isi salah satu field: Perorangan atau Badan Hukum.',
-            'size' => 'Input Perorangan maksimal 150 karakter!'
-        ]
-    )]
+    #[Rule('required', message: 'Kolom Nama Pemegang Hak Tanah Harus Diisi')]
+    #[Rule('max:150', message: 'Batas Pengisian Kolom 150 karakter')]
     public $nama_pemegang_hak_tanah;
-
-    #[Rule(
-        ['required_without:nama_pemegang_hak_tanah', 'nullable', 'max:150'],
-        message: [
-            'required_without' => 'Mohon isi salah satu field: Perorangan atau Badan Hukum.',
-            'max' => 'Input Badan Hukum maksimal 150 karakter!'
-        ]
-    )]
-    public $nama_badan_hukum;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $luas_hm = 0;
@@ -109,7 +95,6 @@ class TanahDesaEditController extends Component
         $td = DB::table('tanah_desa')->where('id_tanah_desa', $this->id_tanah_desa)->first();
 
         $this->nama_pemegang_hak_tanah = $td->nama_pemegang_hak_tanah;
-        $this->nama_badan_hukum = $td->nama_badan_hukum;
         $this->luas_hm = $td->luas_hm;
         $this->luas_hgb = $td->luas_hgb;
         $this->luas_hp = $td->luas_hp;

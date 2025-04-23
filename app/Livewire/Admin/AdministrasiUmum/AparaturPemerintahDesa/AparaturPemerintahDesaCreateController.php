@@ -57,6 +57,10 @@ class AparaturPemerintahDesaCreateController extends Component
 
     #[Rule('required', message: 'Kolom Tanggal Pengangkatan Harus Diisi')]
     public $tanggal_pengangkatan;
+    
+    #[Rule('date', message: 'Format tanggal tidak valid')]
+    public $tanggal_pemberhentian;
+    
 
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang')]
     public $keterangan;

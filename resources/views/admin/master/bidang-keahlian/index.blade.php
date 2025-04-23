@@ -117,7 +117,7 @@
     </div>
 
     <!-- Edit modal -->
-    <div id="edit-modal" tabindex="-1" aria-hidden="true" class="{{ $this->bidang_keahlianId ? '' : 'hidden' }} flex inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div id="edit-modal" tabindex="-1" aria-hidden="true" class="{{ $this->bidangKeahlianId ? '' : 'hidden' }} flex inset-0 z-40 bg-black/50 transition-opacity duration-300 ease-out overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
         <div class="relative p-4 w-full max-w-xl max-h-full transform transition-all duration-300 ease-out scale-95">
             <!-- Modal content -->
             <div class="relative bg-white rounded-lg shadow-md border-2 border-gray-500">

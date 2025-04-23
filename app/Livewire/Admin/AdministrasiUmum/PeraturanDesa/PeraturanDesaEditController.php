@@ -38,13 +38,17 @@ class PeraturanDesaEditController extends Component
     #[Rule('max:255', message: 'Input Uraian Singkat Terlalu Panjang!')]
     public $uraian_singkat;
 
+    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
+    public $keterangan;
+
     public function mount($id_peraturan_desa)
     {
         $this->id_peraturan_desa = $id_peraturan_desa;
         $this->loadEditData();
     }
 
-    public function loadEditData(){
+    public function loadEditData()
+    {
         $pd = DB::table('peraturan_desa')->where('id_peraturan_desa', $this->id_peraturan_desa)->first();
 
         $this->tentang = $pd->tentang;
@@ -55,6 +59,7 @@ class PeraturanDesaEditController extends Component
         $this->tanggal_dilaporkan = $pd->tanggal_dilaporkan;
         $this->tanggal_diundangkan_berita_desa = $pd->tanggal_diundangkan_berita_desa;
         $this->uraian_singkat = $pd->uraian_singkat;
+        $this->keterangan = $pd->keterangan;
     }
 
     public function update()
@@ -71,14 +76,7 @@ class PeraturanDesaEditController extends Component
     public function render()
     {
         return view(
-            'admin.umum.peraturan-desa.edit',
-            [
-                'jenisPeraturanData' => DB::table('jenis_peraturan')
-                    ->where('is_deleted', 0)
-                    ->orderBy('id_jenis_peraturan', 'desc')
-                    ->get()
-            ]
+            'admin.umum.peraturan-desa.edit'
         );
     }
-
 }

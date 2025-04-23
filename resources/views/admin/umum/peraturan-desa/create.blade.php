@@ -21,9 +21,9 @@
                     <label for="jenis_peraturan" class="block mb-2 text-sm font-semibold text-gray-950">Jenis Peraturan</label>
                     <select id="jenis_peraturan" wire:model.live="jenis_peraturan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('jenis_peraturan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
                         <option selected>Pilih Jenis Peraturan</option>
-                        @foreach ($jenisPeraturanData as $jenis_peraturan)
-                        <option value="{{ $jenis_peraturan->id_jenis_peraturan }}">{{ $jenis_peraturan->jenis_peraturan }}</option>
-                        @endforeach
+                        <option value="Peraturan Desa">Peraturan Desa</option>
+                        <option value="Peraturan Bersama">Peraturan Bersama</option>
+                        <option value="Peraturan Kepala Desa">Peraturan Kepala Desa</option>
                     </select>
                     <div class="h-0.25">
                         @error('jenis_peraturan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
@@ -69,6 +69,13 @@
                     <input type="date" id="tanggal_diundangkan_berita_desa" wire:model.live="tanggal_diundangkan_berita_desa" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_diundangkan_berita_desa') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" autocomplete="off" />
                     <div class="h-0.25">
                         @error('tanggal_diundangkan_berita_desa') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="input-component">
+                    <label for="keterangan" class="block mb-2 text-sm font-semibold text-gray-950">Keterangan</label>
+                    <textarea id="keterangan" wire:model.live="keterangan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full h-26 p-2.5 placeholder:text-slate-600 @error('keterangan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Keterangan Tambahan (apabila ada)" autocomplete="off"></textarea>
+                    <div class="h-0.25">
+                        @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
             </div>

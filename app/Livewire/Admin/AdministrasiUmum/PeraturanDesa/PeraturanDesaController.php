@@ -47,14 +47,12 @@ class PeraturanDesaController extends Component
             'admin.umum.peraturan-desa.index',
             [
                 'peraturanDesaData' => DB::table('peraturan_desa')
-                    ->join('jenis_peraturan', 'peraturan_desa.jenis_peraturan', '=', 'jenis_peraturan.id_jenis_peraturan') 
-                    ->select('peraturan_desa.*', 'jenis_peraturan.jenis_peraturan')
                     ->when($this->search, function ($query) {
                         return $query
                         ->where('tentang', 'like', '%' . $this->search . '%');
                     }) 
-                    ->where('peraturan_desa.is_deleted', 0)
-                    ->orderBy('peraturan_desa.id_peraturan_desa', 'desc')
+                    ->where('is_deleted', 0)
+                    ->orderBy('id_peraturan_desa', 'desc')
                     ->paginate(10),
             ]
         );

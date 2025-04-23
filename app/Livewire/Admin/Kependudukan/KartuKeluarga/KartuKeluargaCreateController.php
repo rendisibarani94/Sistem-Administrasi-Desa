@@ -13,7 +13,6 @@ class KartuKeluargaCreateController extends Component
     public $currentStep = 1;
 
     // first form step
-
     #[Rule('required', message: 'Kolom Nomor Kartu Keluarga Harus Diisi!')]
     #[Rule('size:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
     public $nomor_kartu_keluarga;

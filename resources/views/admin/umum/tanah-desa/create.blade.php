@@ -9,23 +9,16 @@
 
     <div class="mx-6 mt-8">
         <form wire:submit.prevent="store">
-            <div class="grid gap-6 mb-6 md:grid-cols-2">
-                <div class="input-component">
-                    <label for="nama_pemegang_hak_tanah" class="block mb-2 text-sm font-semibold text-gray-950">Nama Perorangan Pemegang Hak Tanah</label>
-                    <input type="text" id="nama_pemegang_hak_tanah" wire:model.live="nama_pemegang_hak_tanah" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nama_pemegang_hak_tanah') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nama Perorangan Pemegang Hak Tanah" autocomplete="off" />
-                    <div class="h-0.25">
-                        @error('nama_pemegang_hak_tanah') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+            <div class="grid gap-6 mb-6 md:grid-cols-4">
+                <div class="md:col-span-2">
+                    <div class="input-component">
+                        <label for="nama_pemegang_hak_tanah" class="block mb-2 text-sm font-semibold text-gray-950">Nama Perorangan Pemegang Hak Tanah</label>
+                        <input type="text" id="nama_pemegang_hak_tanah" wire:model.live="nama_pemegang_hak_tanah" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nama_pemegang_hak_tanah') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nama Perorangan Pemegang Hak Tanah" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('nama_pemegang_hak_tanah') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
-                <div class="input-component">
-                    <label for="nama_badan_hukum" class="block mb-2 text-sm font-semibold text-gray-950">Nama Badan Hukum Pemegang Hak Tanah</label>
-                    <input type="text" id="nama_badan_hukum" wire:model.live="nama_badan_hukum" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nama_badan_hukum') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nama Badan Hukum Pemegang Hak Tanah" autocomplete="off" />
-                    <div class="h-0.25">
-                        @error('nama_badan_hukum') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
-                    </div>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
                 <div class="input-component">
                     <div class="relative">
                         <label for="luas_hm" class="block mb-2 text-sm font-semibold text-gray-950">Tanah Hak Milik</label>
@@ -46,6 +39,9 @@
                         @error('luas_hgb') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+
                 <div class="input-component">
                     <div class="relative">
                         <label for="luas_hp" class="block mb-2 text-sm font-semibold text-gray-950">Tanah Hak Pakai </label>
@@ -226,16 +222,6 @@
                         @error('luas_hutan_lebat') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
-
-                <div class="md:col-span-2">
-                    <div class="input-component">
-                        <label for="mutasi" class="block mb-2 text-sm font-semibold text-gray-950">Mutasi Tanah</label>
-                        <input type="text" id="mutasi" wire:model.live="mutasi" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('mutasi') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Keterangan Mutasi Tanah" autocomplete="off" />
-                        <div class="h-0.25">
-                            @error('mutasi') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
-                        </div>
-                    </div>
-                </div>
                 <div class="input-component">
                     <div class="relative">
                         <label for="luas_tanah_kosong" class="block mb-2 text-sm font-semibold text-gray-950">Tanah Kosong</label>
@@ -254,6 +240,15 @@
                     </div>
                     <div class="h-0.25">
                         @error('luas_tanah_lain') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="md:col-span-2">
+                    <div class="input-component">
+                        <label for="mutasi" class="block mb-2 text-sm font-semibold text-gray-950">Mutasi Tanah</label>
+                        <input type="text" id="mutasi" wire:model.live="mutasi" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('mutasi') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Keterangan Mutasi Tanah" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('mutasi') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
                     </div>
                 </div>
                 <div class="md:col-span-2">

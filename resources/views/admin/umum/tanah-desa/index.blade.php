@@ -58,7 +58,7 @@
                             {{ $index + 1 }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
-                            {{ $item->nama_pemegang_hak_tanah ?? $item->nama_badan_hukum }}
+                            {{ $item->nama_pemegang_hak_tanah }}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
                             {{ $item->volume.' ' }}m<sup>2</sup>

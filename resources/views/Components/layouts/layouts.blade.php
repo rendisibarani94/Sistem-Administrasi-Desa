@@ -52,6 +52,10 @@
                 [
                 'route' => 'jenisInventaris',
                 'text' => 'Jenis Inventaris Desa',
+                ],
+                [
+                'route' => 'bidangKeahlian',
+                'text' => 'Bidang Keahlian',
                 ]
                 ];
                 @endphp
@@ -85,8 +89,8 @@
                 'text' => 'Tanah Desa',
                 ],
                 [
-                'route' => 'AgendaDesa',
-                'text' => 'Agenda Desa',
+                'route' => 'AgendaSuratDesa',
+                'text' => 'Agenda Surat Desa',
                 ],
                 ];
                 @endphp
@@ -113,9 +117,17 @@
 
                 @php
                 $pembangunanIcon = '
-                <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd" />';
+                <path fill-rule="evenodd" d="M4 4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2v14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2V5a1 1 0 0 1-1-1Zm5 2a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1Zm-5 4a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1h-1Zm-3 4a2 2 0 0 0-2 2v3h2v-3h2v3h2v-3a2 2 0 0 0-2-2h-2Z" clip-rule="evenodd" />';
                 $childLinks = [
-                
+                [
+                'route' => 'KaderPemberdayaanMasyarakat',
+                'text' => 'Kader Pemberdayaan',
+                ],
+                [
+                'route' => 'Pembangunan',
+                'text' => 'Kegiatan Pembangunan',
+                ],
+
                 ];
                 @endphp
                 <x-nav-plus-link title="Pembangunan" :icon="$pembangunanIcon" :childLinks="$childLinks" id="pembangunan-dropdown" />

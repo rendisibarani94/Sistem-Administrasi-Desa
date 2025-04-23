@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\Admin\AdministrasiUmum\AgendaDesa;
+namespace App\Livewire\Admin\AdministrasiUmum\AgendaSuratDesa;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-class AgendaDesaController extends Component
+class AgendaSuratDesaController extends Component
 {
     use WithPagination;
 

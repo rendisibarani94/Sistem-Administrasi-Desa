@@ -155,6 +155,14 @@
                         @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
+
+                <div class="input-component">
+                    <label for="tanggal_pemberhentian" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Pemberhentian </label>
+                    <input type="date" id="tanggal_pemberhentian" wire:model.live="tanggal_pemberhentian" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_pemberhentian') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Tanggal Pemberhentian Aparatur" autocomplete="off" />
+                    <div class="h-0.25">
+                        @error('tanggal_pemberhentian') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
             </div>
             <div class="flex justify-between mt-6">
                 <a href="{{ route('AparaturDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>

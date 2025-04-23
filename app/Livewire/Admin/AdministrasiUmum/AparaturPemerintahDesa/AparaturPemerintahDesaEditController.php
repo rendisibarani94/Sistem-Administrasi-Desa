@@ -59,6 +59,9 @@ class AparaturPemerintahDesaEditController extends Component
     #[Rule('required', message: 'Kolom Tanggal Pengangkatan Harus Diisi')]
     public $tanggal_pengangkatan;
 
+    #[Rule('date', message: 'Format tanggal tidak valid')]
+    public $tanggal_pemberhentian;
+
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang')]
     public $keterangan;
 
@@ -81,6 +84,7 @@ class AparaturPemerintahDesaEditController extends Component
         $this->jabatan = $kkd->jabatan;
         $this->pendidikan = $kkd->pendidikan;
         $this->tanggal_pengangkatan = $kkd->tanggal_pengangkatan;
+        $this->tanggal_pemberhentian = $kkd->tanggal_pemberhentian;
         $this->keterangan = $kkd->keterangan;
     }
 
@@ -88,15 +92,6 @@ class AparaturPemerintahDesaEditController extends Component
     {
         $validated = $this->validate();
         $validated['updated_at'] = now();
-
-        // $data = [
-        //     'tanggal_keputusan' => $this->tanggal_keputusan,
-        //     'tentang' => $this->tentang,
-        //     'uraian' => $this->uraian,
-        //     'tanggal_dilaporkan' => $this->tanggal_dilaporkan,
-        //     'keterangan' => $this->keterangan,
-        //     'updated_at' => now()
-        // ];
 
         DB::table('aparatur_desa')->where('id_aparatur', $this->id_aparatur)->update($validated);
 
