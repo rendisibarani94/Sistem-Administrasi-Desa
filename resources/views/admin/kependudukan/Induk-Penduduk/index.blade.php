@@ -38,21 +38,23 @@
 
         {{-- Create Button & Table Search Section --}}
         <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-between">
-            <!-- Tambah Induk Penduduk Button -->
-            <a href="{{ route('indukPenduduk.create') }}" type="button" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
-                </svg>
-                <span>Tambah Data Induk Penduduk</span>
-            </a>
+            <div class="flex flex-wrap gap-2">
+                <!-- Tambah Induk Penduduk Button -->
+                <a href="{{ route('indukPenduduk.create') }}" type="button" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Tambah Data Induk Penduduk</span>
+                </a>
 
-            <!-- Penduduk Pindah / Mutasi Button -->
-            {{-- <a href="{{ route('indukPenduduk.pindah') }}" class="cursor-pointer bg-blue-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
-                <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
-                </svg>
-                <span>Penduduk Mutasi / Pindah</span>
-            </a> --}}
+                <!-- Tambah Induk Penduduk Button -->
+                <a href="{{ route('indukPenduduk.pindah') }}" type="button" class="cursor-pointer bg-orange-500 text-white focus:ring-2 focus:outline-none focus:ring-orange-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Penduduk Pindah</span>
+                </a>
+            </div>
 
             <!-- Search Input -->
             <div class="relative w-full sm:w-72">
@@ -92,7 +94,7 @@
                 </thead>
                 <tbody id="tableBody">
                     @foreach ($pendudukData as $index => $item)
-                    <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 @if($loop->index >= 10) hidden @endif" data-index="{{ $index }}" >  
+                    <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 @if($loop->index >= 10) hidden @endif" data-index="{{ $index }}">
                         <td class="px-6 py-4 whitespace-nowrap text-center font-semibold ">
                             {{ $loop->iteration }}
                         </td>
@@ -118,11 +120,11 @@
                             </a>
 
                             <!-- Edit Button -->
-                            <a href="{{ route('indukPenduduk.pindah', $item->id_penduduk) }}" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                            <a href="{{ route('indukPenduduk.mutasi', $item->id_penduduk) }}" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg class="w-6 h-6 text-orange-500 hover:text-orange-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-6 pt-1">
-                                    <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd"/>
-                                  </svg>
-                                  
+                                    <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />
+                                </svg>
+
                                 <span>Mutasi</span>
                             </a>
 
@@ -144,7 +146,7 @@
             </div>
         </div>
     </div>
-    
+
 </div>
 
 @push('scripts')
@@ -153,35 +155,36 @@
         // Handle the confirmation dialog
         @this.on('swal:confirm', (parameters) => {
             Swal.fire({
-                title: parameters[0].title,
-                text: parameters[0].text,
-                icon: parameters[0].icon,
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: parameters[0].confirmButtonText,
-                cancelButtonText: parameters[0].cancelButtonText,
-                reverseButtons: true
+                title: parameters[0].title
+                , text: parameters[0].text
+                , icon: parameters[0].icon
+                , showCancelButton: true
+                , confirmButtonColor: '#d33'
+                , cancelButtonColor: '#3085d6'
+                , confirmButtonText: parameters[0].confirmButtonText
+                , cancelButtonText: parameters[0].cancelButtonText
+                , reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     @this.delete();
                 }
             });
         });
-        
+
         // Handle the success message with custom GIF
         @this.on('swal:success', (parameters) => {
             Swal.fire({
-                title: parameters[0].title,
-                text: parameters[0].text,
-                imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}", 
-                imageWidth: 250, 
-                imageHeight: 250, 
-                imageAlt: 'Custom GIF', 
-                confirmButtonText: 'OK', 
-                confirmButtonColor: '#0f766e'
+                title: parameters[0].title
+                , text: parameters[0].text
+                , imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}"
+                , imageWidth: 250
+                , imageHeight: 250
+                , imageAlt: 'Custom GIF'
+                , confirmButtonText: 'OK'
+                , confirmButtonColor: '#0f766e'
             });
         });
     });
+
 </script>
 @endpush

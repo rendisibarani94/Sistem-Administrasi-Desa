@@ -3,6 +3,28 @@
         Edit Hapus Inventaris Desa
     </x-slot:judul>
 
+    <div class="bg-teal-700 mt-4 mb-6 mx-6 rounded-sm p-2 ">
+        <h5 class="text-xl text-white font-semibold text-center">Data Inventaris</h5>
+    </div>
+
+    <dl class="grid grid-cols-[max-content_max-content_1fr] gap-x-3 gap-y-3 px-8">
+        <!-- Item 1 -->
+        <dt class="text-md font-semibold text-left">Jenis Inventaris</dt>
+        <dd class="text-md text-center">:</dd>
+        <dd class="text-md">{{ $jenis_inventaris }}</dd>
+
+        <!-- Item 1 -->
+        <dt class="text-md font-semibold text-left">Jumlah Inventaris</dt>
+        <dd class="text-md text-center">:</dd>
+        <dd class="text-md">{{ $jumlah_baik + $jumlah_rusak }}</dd>
+
+
+        <!-- Add as many items as you like… -->
+        <dt class="text-md font-semibold text-left">Tanggal Penerimaan</dt>
+        <dd class="text-md text-center">:</dd>
+        <dd class="text-md">{{ \Carbon\Carbon::parse($created_at)->locale('id')->translatedFormat('d F Y') }}</dd>
+    </dl>
+
     <div class="bg-teal-700 my-4 mx-6 rounded-sm p-2 ">
         <h5 class="text-xl text-white font-semibold text-center">Formulir Edit Penghapusan Inventaris Desa</h5>
     </div>

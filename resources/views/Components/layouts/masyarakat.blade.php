@@ -24,8 +24,8 @@
             <div class="flex items-center space-x-2 rtl:space-x-reverse w-full md:w-auto">
                 <!-- Logo and Brand Name -->
                 <a href="#" class="flex items-center">
-                    <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">Flowbite</span>
+                    {{-- <img src="https://flowbite.com/docs/images/logo.svg" class="h-8" alt="Flowbite Logo" />
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">Flowbite</span> --}}
                 </a>
 
                 <!-- Mobile Menu Button -->
@@ -42,14 +42,14 @@
                 <ul class="flex flex-col md:flex-row md:space-x-4 lg:space-x-6 xl:space-x-8 mt-4 md:mt-0 text-sm md:text-base">
                     <!-- Home -->
                     <li>
-                        <a href="#" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
+                        <a href="{{ route('beranda') }}" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
                             Beranda
                         </a>
                     </li>
 
                     <!-- Profile -->
                     <li>
-                        <a href="#" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
+                        <a href="{{ route('profil') }}" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
                             Profil
                         </a>
                     </li>
@@ -64,10 +64,10 @@
                         </button>
                         <div id="infoDropdown" class="absolute z-10 hidden w-48 bg-white shadow-lg rounded-lg md:mt-2 overflow-hidden">
                             <ul class="py-2">
-                                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Informasi I</a></li>
-                                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Informasi II</a></li>
-                                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Informasi III</a></li>
-                                <li><a href="#" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Informasi IV</a></li>
+                                <li><a href="{{ route('berita') }}" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Berita desa</a></li>
+                                <li><a href="{{ route('pengumuman') }}" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Pengumuman</a></li>
+                                <li><a href="{{ route('agenda-desa') }}" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Agenda Desa</a></li>
+                                <li><a href="{{ route('pembangunan') }}" class="block px-4 py-2 text-gray-800 hover:bg-teal-600 hover:text-white transition-colors">Pembangunan Desa</a></li>
                             </ul>
                         </div>
                     </li>
@@ -92,7 +92,7 @@
 
                     <!-- Organization -->
                     <li>
-                        <a href="#" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
+                        <a href="{{ route('organisasi.desa') }}" class="flex items-center py-2 px-3 text-white hover:bg-teal-600 md:hover:bg-transparent md:border-0 md:p-0 transition-colors">
                             Organisasi Desa
                         </a>
                     </li>

@@ -9,6 +9,7 @@ use App\Http\Controllers\Laporan\Pembangunan\LaporanPembangunanController;
 use App\Http\Controllers\Laporan\Umum\LaporanAgendaSuratController;
 use App\Http\Controllers\Laporan\Umum\LaporanAparatDesaController;
 use App\Http\Controllers\Laporan\Umum\LaporanEkspedisiController;
+use App\Http\Controllers\Laporan\Umum\LaporanInventarisDesaController;
 use App\Http\Controllers\Laporan\Umum\LaporanKeputusanKepalaDesaController;
 use App\Http\Controllers\Laporan\Umum\LaporanLembaranBeritaDesaController;
 use App\Http\Controllers\Laporan\Umum\LaporanPeraturanDesaController;
@@ -25,7 +26,7 @@ use App\Livewire\Admin\AdministrasiUmum\PeraturanDesa\PeraturanDesaController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukEditController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaEditController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateController;
-use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukPindahController;
+use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaCreateController;
 use App\Livewire\Admin\AdministrasiUmum\PeraturanDesa\PeraturanDesaEditController;
 use App\Livewire\Admin\Kependudukan\PendudukSementara\PendudukSementaraController;
@@ -59,18 +60,24 @@ use App\Livewire\Admin\AdministrasiUmum\TanahDesa\TanahDesaEditController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaCreateController;
 use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaEditController;
+use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukEditMutasiController;
+use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukPindahController;
 use App\Livewire\Admin\Master\BidangKeahlianController;
 use App\Livewire\Admin\Master\JenisInventarisController;
+use App\Livewire\Masyarakat\Agenda\AgendaController;
 use App\Livewire\Masyarakat\BerandaController;
 use App\Livewire\Masyarakat\Berita\BeritaController;
 use App\Livewire\Masyarakat\Berita\DetailBeritaController;
+use App\Livewire\Masyarakat\Organisasi\OrganisasiController;
+use App\Livewire\Masyarakat\Pembangunan\DetailPembangunanController;
+use App\Livewire\Masyarakat\Pembangunan\PembangunanController;
 use App\Livewire\Masyarakat\Pengumuman\PengumumanController;
 use App\Livewire\Masyarakat\ProfilController;
 use Symfony\Component\HttpKernel\Profiler\Profile;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
+Route::get('/admin', function () {
+    return view('welcome');
+});
 
 Route::get('/pekerjaan', PekerjaanController::class)->name('pekerjaan');
 Route::get('/dusun', DusunController::class)->name('dusun');
@@ -81,9 +88,11 @@ Route::get('/bidang-keahlian', BidangKeahlianController::class)->name('bidangKea
 
 // Administrasi Kependudukan
 Route::get('/induk-penduduk', IndukPendudukController::class)->name('indukPenduduk');
+Route::get('/induk-penduduk/pindah', IndukPendudukPindahController::class)->name('indukPenduduk.pindah');
 Route::get('/induk-penduduk/create', IndukPendudukCreateController::class)->name('indukPenduduk.create');
 Route::get('/induk-penduduk/{id}/edit', IndukPendudukEditController::class)->name('indukPenduduk.edit');
-Route::get('/induk-penduduk/{id}/pindah', IndukPendudukPindahController::class)->name('indukPenduduk.pindah');
+Route::get('/induk-penduduk/{id}/mutasi', IndukPendudukMutasiController::class)->name('indukPenduduk.mutasi');
+Route::get('/induk-penduduk/{id}/mutasi/edit', IndukPendudukEditMutasiController::class)->name('indukPenduduk.mutasi.edit');
 
 Route::get('/kartu-keluarga', KartuKeluargaController::class)->name('kartuKeluarga');
 Route::get('/kartu-keluarga/create', KartuKeluargaCreateController::class)->name('kartuKeluarga.create');
@@ -142,6 +151,7 @@ Route::get('D4', [LaporanPembangunanController::class, 'displayD4']);
 // Laporan Umum View
 Route::get('A1', [LaporanPeraturanDesaController::class, 'displayA1']);
 Route::get('A2', [LaporanKeputusanKepalaDesaController::class, 'displayA2']);
+Route::get('A3', [LaporanInventarisDesaController::class, 'displayA3']);
 Route::get('A4', [LaporanAparatDesaController::class, 'displayA4']);
 Route::get('A5', [LaporanTanahKasDesaController::class, 'displayA5']);
 Route::get('A6', [LaporanTanahDesaController::class, 'displayA6']);
@@ -165,6 +175,10 @@ Route::get('/kader-pemberdayaan-masyarakat/{id_kader_pemberdayaan}/edit', KaderP
 Route::get('/', BerandaController::class)->name('beranda');
 Route::get('/profil-desa', ProfilController::class)->name('profil');
 Route::get('/berita-desa', BeritaController::class)->name('berita');
-Route::get('/berita-desa/detail', DetailBeritaController::class)->name('detail-berita');
+Route::get('/berita-desa/detail', DetailBeritaController::class)->name('detail.berita');
 Route::get('/pengumuman', PengumumanController::class)->name('pengumuman');
+Route::get('/agenda-desa', AgendaController::class)->name('agenda-desa');
+Route::get('/organisasi-desa', OrganisasiController::class)->name('organisasi.desa');
+Route::get('/pembangunan', PembangunanController::class)->name('pembangunan');
+Route::get('/pembangunan/detail', DetailPembangunanController::class)->name('pembangunan.detail');
 

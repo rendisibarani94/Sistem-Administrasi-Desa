@@ -3,6 +3,38 @@
         Hapus Inventaris Desa
     </x-slot:judul>
 
+    <div class="bg-teal-700 mt-4 mb-6 mx-6 rounded-sm p-2 ">
+        <h5 class="text-xl text-white font-semibold text-center">Data Inventaris</h5>
+    </div>
+
+    <div class="px-8">
+        <div class="border border-gray-400 rounded-md overflow-hidden">
+            <table class="min-w-full">
+                <thead class="bg-gray-100 border-b border-gray-400">
+                    <tr>
+                        <th class="py-2 px-4 text-left font-semibold">Informasi</th>
+                        <th class="py-2 px-4 text-left font-semibold">Detail</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="py-2 px-4 font-semibold">Jenis Inventaris</td>
+                        <td class="py-2 px-4">{{ $jenis_inventaris }}</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 font-semibold">Jumlah Inventaris</td>
+                        <td class="py-2 px-4">{{ $jumlah_baik + $jumlah_rusak }}</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 font-semibold">Tanggal Penerimaan</td>
+                        <td class="py-2 px-4">{{ \Carbon\Carbon::parse($created_at)->locale('id')->translatedFormat('d F Y') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+
     <div class="bg-teal-700 my-4 mx-6 rounded-sm p-2 ">
         <h5 class="text-xl text-white font-semibold text-center">Formulir Penghapusan Inventaris Desa</h5>
     </div>
@@ -46,7 +78,7 @@
                 </div>
             </div>
             <div class="flex justify-between mt-6">
-                <a href="{{ route('InventarisDesa.deleted') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
+                <a href="{{ route('InventarisDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Hapus Inventaris Desa</button>
             </div>
         </form>

@@ -11,8 +11,8 @@
         <form wire:submit.prevent="store">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div class="input-component">
-                    <label for="jenis_inventaris" class="block mb-2 text-sm font-semibold text-gray-950">Jenis Barang Tanah Kas Desa</label>
-                    <input type="text" id="jenis_inventaris" wire:model.live="jenis_inventaris" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('jenis_inventaris') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Jenis Barang Tanah Kas Desa" autocomplete="off" />
+                    <label for="jenis_inventaris" class="block mb-2 text-sm font-semibold text-gray-950">Jenis/Nama Barang Inventaris Desa</label>
+                    <input type="text" id="jenis_inventaris" wire:model.live="jenis_inventaris" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('jenis_inventaris') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Jenis/Nama Barang Inventaris Desa" autocomplete="off" />
                     <div class="h-0.25">
                         @error('jenis_inventaris') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>

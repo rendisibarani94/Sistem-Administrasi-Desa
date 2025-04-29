@@ -1,50 +1,67 @@
 <?php
+
 namespace App\Livewire\Admin\Kependudukan\IndukPenduduk;
 
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\Attributes\Rule;
+use Livewire\WithPagination;
 
 class IndukPendudukPindahController extends Component
 {
-    #[Rule('required', message: 'Kolom Tanggal Pengurangan Harus Diisi!')]
-    public $tanggal_pengurangan;
+    use WithPagination;
 
-    #[Rule('max:255', message: 'Input Tujuan Pindah Terlalu Panjang!')]
-    public $tujuan_pindah;
+    public $deleteId;
+    public $search;
 
-    #[Rule('max:255', message: 'Input Tempat Meninggal Terlalu Panjang!')]
-    public $tempat_meninggal;
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
 
-    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
-    public $keterangan;
-
-    public $pindahId;
-
-    public function mount($id){
-        $this->pindahId = $id;
+        $this->dispatch('swal:confirm', [
+            'title' => 'Apakah Anda yakin?',
+            'text' => 'Data penduduk ini akan dihapus.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya, hapus!',
+            'cancelButtonText' => 'Batal',
+        ]);
     }
 
-    public function pindah(){
-        $validated = $this->validate();
+    public function delete()
+    {
+        DB::table('penduduk')
+            ->where('id_penduduk', $this->deleteId)
+            ->update(['is_deleted' => 1, 'updated_at' => now()]);
 
-        $data = [
-            'tanggal_pengurangan' => $this->tanggal_pengurangan,
-            'tujuan_pindah' => $this->tujuan_pindah,
-            'tempat_meninggal' => $this->tempat_meninggal,
-            'keterangan' => $this->keterangan,
-            'updated_at' => now()
-        ];
-
-        DB::table('penduduk')->where('id_penduduk', $this->pindahId)->update($data);
-
-        return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Diubah');
+        // Show success message
+        $this->dispatch('swal:success', [
+            'title' => 'Berhasil!',
+            'text' => 'Data penduduk berhasil dihapus.',
+        ]);
     }
 
     #[Layout('Components.layouts.layouts')]
     public function render()
     {
-        return view('admin.kependudukan.induk-penduduk.pindah');
+        return view(
+            'admin.kependudukan.Induk-Penduduk.pindah',
+            [
+                'pendudukData' => DB::table('penduduk')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('nama_lengkap', 'like', '%' . $this->search . '%')
+                                ->orWhere('nik', 'like', '%' . $this->search . '%')
+                                ->orWhere('alamat', 'like', '%' . $this->search . '%')
+                                ->orWhere('status_perkawinan', 'like', '%' . $this->search . '%');
+                        });
+                    })
+                    ->where([
+                        ['is_deleted', '=', 0],
+                        ['is_mutated', '=', 1],
+                    ])
+                    // ->whereNull('tanggal_pengurangan')
+                    ->paginate(10)
+            ]
+        );
     }
 }

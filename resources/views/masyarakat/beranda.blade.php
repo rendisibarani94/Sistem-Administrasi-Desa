@@ -6,9 +6,9 @@
     <section class="relative mb-20 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-4 md:px-8 py-6" style="background-image: url('{{ asset('images/masyarakat/beranda.png') }}');">
         <div class="absolute inset-0 bg-teal-700/25 z-0"></div>
         <div class="relative z-10 w-full mx-30">
-            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-left [text-shadow:2px_2px_4px_rgba(0,0,0,0.99)] max-w-2xl">
+            <h1 class="text-center md:text-left text-4xl md:text-5xl lg:text-6xl font-bold mb-4 [text-shadow:2px_2px_4px_rgba(0,0,0,0.99)] max-w-2xl">
                 Selamat Datang di Sistem Informasi Desa
-            </h1>
+            </h1>            
         </div>
     </section>
 

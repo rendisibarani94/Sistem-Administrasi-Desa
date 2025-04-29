@@ -25,5 +25,7 @@ class InventarisDesaPenghapusanController extends Component
                 ->paginate(10),
             ]
         );
+
+
     }
 }

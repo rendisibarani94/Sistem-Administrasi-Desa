@@ -30,7 +30,8 @@
         </section>
 
         <!-- Sidebar List Berita -->
-        <section class="list_berita md:col-span-1 p-5 border border-gray-300 shadow-md shadow-slate-400">
+        <div class="list_berita-wrapper">
+        <section class="list_berita md:col-span-1 p-5 md:mt-5 border border-gray-300 shadow-md shadow-slate-400">
             <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                 Berita Desa
             </h3>
@@ -54,6 +55,7 @@
                 </div>
             </div>
         </section>
+    </div>
     </div>
 
 

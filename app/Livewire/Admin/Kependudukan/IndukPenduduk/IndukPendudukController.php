@@ -56,7 +56,8 @@ class IndukPendudukController extends Component
                         });
                     })
                     ->where('is_deleted', 0)
-                    ->whereNull('tanggal_pengurangan')
+                    ->where('is_mutated', 0)
+                    // ->whereNull('tanggal_pengurangan')
                     ->paginate(10)
             ]
         );
