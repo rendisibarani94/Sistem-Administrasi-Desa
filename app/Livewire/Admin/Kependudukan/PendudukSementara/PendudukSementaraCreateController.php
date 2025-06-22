@@ -13,54 +13,54 @@ class PendudukSementaraCreateController extends Component
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
     #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
     public $nama_lengkap;
-    
+
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
     public $jenis_kelamin;
-    
+
     #[Rule('required', message: 'Kolom Nomor Pengenal Harus Diisi!')]
     #[Rule('max:50', message: 'Input Nomor Pengenal Terlalu Panjang!')]
     #[Rule('unique:penduduk_sementara,nomor_pengenal', message: 'Nomor Pengenal sudah digunakan!')]
     public $nomor_pengenal;
-    
+
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
     #[Rule('max:255', message: 'Input Tempat Lahir Terlalu Panjang!')]
     public $tempat_lahir;
-    
+
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
     public $tanggal_lahir;
-    
+
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
     public $pekerjaan;
-    
+
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
     public $kewarganegaraan;
-    
+
     #[Rule('required', message: 'Kolom Keturunan Harus Diisi!')]
     #[Rule('max:50', message: 'Input Keturunan Terlalu Panjang!')]
     public $keturunan;
-    
+
     #[Rule('required', message: 'Kolom Asal Kedatangan Harus Diisi!')]
     #[Rule('max:255', message: 'Input Asal Kedatangan Terlalu Panjang!')]
     public $asal;
-    
+
     #[Rule('required', message: 'Kolom Maksud Kedatangan Harus Diisi!')]
     #[Rule('max:255', message: 'Input Maksud Kedatangan Terlalu Panjang!')]
     public $maksud_kedatangan;
-    
+
     #[Rule('required', message: 'Kolom Tokoh Tujuan Harus Diisi!')]
     #[Rule('max:150', message: 'Input Tokoh Tujuan Terlalu Panjang!')]
     public $tokoh_tujuan;
-    
+
     #[Rule('required', message: 'Kolom Alamat Tujuan Harus Diisi!')]
     #[Rule('max:255', message: 'Input Alamat Tujuan Terlalu Panjang!')]
     public $alamat_tujuan;
-    
+
     #[Rule('required', message: 'Kolom Tanggal Kedatangan Harus Diisi!')]
     public $tanggal_kedatangan;
-    
+
     #[Rule('required', message: 'Kolom Tanggal Kepulangan Harus Diisi!')]
     public $tanggal_kepulangan;
-    
+
     #[Rule('required', message: 'Kolom Keterangan Harus Diisi!')]
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
     public $keterangan;
@@ -91,7 +91,7 @@ class PendudukSementaraCreateController extends Component
         return redirect()->route('pendudukSementara')->with('success', 'Data penduduk sementara berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

@@ -62,10 +62,10 @@ class IndukPendudukEditMutasiController extends Component
 
         DB::table('penduduk')->where('id_penduduk', $this->id_penduduk)->update($validated);
 
-        return redirect()->route('indukPenduduk.pindah')->with('success', 'Data Penduduk Pindah Berhasil Diubah');   
+        return redirect()->route('indukPenduduk.pindah')->with('success', 'Data Penduduk Pindah Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         $pendudukData = DB::table('penduduk')

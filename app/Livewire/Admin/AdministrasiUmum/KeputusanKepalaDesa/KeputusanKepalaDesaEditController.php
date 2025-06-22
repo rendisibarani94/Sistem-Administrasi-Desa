@@ -64,7 +64,7 @@ class KeputusanKepalaDesaEditController extends Component
         return redirect()->route('keputusanKepalaDesa')->with('success', 'Data Keputusan Kepala Desa Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render(){
         return view('admin.umum.keputusan-kepala-desa.edit');
     }

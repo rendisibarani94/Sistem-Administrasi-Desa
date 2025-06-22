@@ -27,7 +27,7 @@ class KelasTanahController extends Component
             'kelas_tanah' => $this->kelas_tanah,
         ]);
         $this->reset();
-        
+
         return redirect()->route('kelasTanah')->with('success', 'Data Kelas Tanah Berhasil Ditambahkan.');
     }
 
@@ -77,7 +77,7 @@ class KelasTanahController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Kelas Tanah ini akan dihapus.',
@@ -92,7 +92,7 @@ class KelasTanahController extends Component
         DB::table('kelas_tanah')
             ->where('id_kelas_tanah', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -100,7 +100,7 @@ class KelasTanahController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.master.kelas-tanah.index', [

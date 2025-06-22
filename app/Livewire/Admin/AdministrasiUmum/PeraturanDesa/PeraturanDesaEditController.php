@@ -72,7 +72,7 @@ class PeraturanDesaEditController extends Component
         return redirect()->route('PeraturanDesa')->with('success', 'Data Peraturan Desa Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

@@ -9,14 +9,14 @@ use Livewire\WithPagination;
 class KeputusanKepalaDesaController extends Component
 {
     use WithPagination;
-    
+
     public $search;
     public $deleteId;
 
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Keputusan Kepala Desa ini akan dihapus.',
@@ -31,7 +31,7 @@ class KeputusanKepalaDesaController extends Component
         DB::table('keputusan_kepala_desa')
             ->where('id_keputusan_kepala_desa', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -39,7 +39,7 @@ class KeputusanKepalaDesaController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

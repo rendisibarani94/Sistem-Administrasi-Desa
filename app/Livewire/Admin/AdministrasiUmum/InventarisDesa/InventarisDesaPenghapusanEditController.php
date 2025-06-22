@@ -135,7 +135,7 @@ class InventarisDesaPenghapusanEditController extends Component
         return redirect()->route('InventarisDesa.deleted')->with('success', 'Data Penghapusan Inventaris Desa Berhasil Diubah!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.inventaris-desa.edit-penghapusan');

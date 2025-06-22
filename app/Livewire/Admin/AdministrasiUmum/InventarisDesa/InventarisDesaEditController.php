@@ -171,7 +171,7 @@ class InventarisDesaEditController extends Component
         return redirect()->route('InventarisDesa')->with('success', 'Data Inventaris Desa Berhasil Diubah!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.inventaris-desa.edit');

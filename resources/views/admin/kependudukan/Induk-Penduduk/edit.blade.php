@@ -61,15 +61,67 @@
             <div class="grid gap-6 mb-6 md:grid-cols-4">
                 <div class="md:col-span-2">
                     <label for="id_kartu_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Keluarga</label>
-                    <select id="id_kartu_keluarga" wire:model.live="id_kartu_keluarga" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('id_kartu_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
-                        <option selected>Pilih Keluarga</option>
-                        here!
-                        @foreach ($kkData as $data)
-                        <option value="{{ $data->id_kartu_keluarga }}">{{ $data->nomor_kartu_keluarga }} - {{ "Nama Kepala Keluarga" }}</option>
-                        @endforeach
-                    </select>
+
+                    <div x-data="{
+                        open: false,
+                        search: '',
+                        get filteredOptions() {
+                            return this.search === ''
+                                ? this.allOptions
+                                : this.allOptions.filter(option =>
+                                    option.text.toLowerCase().includes(this.search.toLowerCase())
+                                );
+                        },
+                        allOptions: [
+                            @foreach ($kkData as $data)
+                            {
+                                id: '{{ $data->id_kartu_keluarga }}',
+                                text: '{{ $data->nomor_kartu_keluarga }}{{ $data->nama_lengkap ? " - ".$data->nama_lengkap : "" }}'
+                            },
+                            @endforeach
+                        ],
+                        selectedId: '',
+                        selectedText: 'Pilih Keluarga',
+                        select(id, text) {
+                            this.selectedId = id;
+                            this.selectedText = text;
+                            this.open = false;
+                            // Update Livewire model
+                            $wire.set('id_kartu_keluarga', id);
+                        }
+                    }" class="relative" @click.away="open = false">
+                        <!-- Selected option display -->
+                        <button @click="open = !open" type="button" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm w-full p-2.5 flex justify-between items-center @error('id_kartu_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
+                            <span x-text="selectedText"></span>
+                            <svg class="w-4 h-4" :class="{'rotate-180': open}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div x-show="open" x-transition class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-sm shadow-lg max-h-60 overflow-y-auto">
+                            <!-- Search input -->
+                            <div class="sticky top-0 bg-white p-2 border-b border-gray-300">
+                                <input x-model="search" @click.stop type="text" placeholder="Cari Kepala Keluarga..." class="w-full p-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            </div>
+
+                            <!-- Options list -->
+                            <template x-for="option in filteredOptions" :key="option.id">
+                                <div @click="select(option.id, option.text)" class="px-4 py-2 cursor-pointer hover:bg-blue-600 hover:text-white focus:outline-none focus:bg-indigo-600 focus:text-white" :class="{'bg-blue-50': selectedId === option.id}" x-text="option.text"></div>
+                            </template>
+
+                            <!-- Empty state when no results -->
+                            <div x-show="filteredOptions.length === 0" class="px-4 py-2 text-sm text-gray-500">
+                                Keluarga Tidak Ditemukan
+                            </div>
+                        </div>
+
+                        <!-- Hidden input to maintain Livewire binding -->
+                        <input type="hidden" id="id_kartu_keluarga" x-model="selectedId" wire:model.live="id_kartu_keluarga">
+                    </div>
+
                     <div class="h-0.25">
-                        @error('pekerjaan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        @error('id_kartu_keluarga') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
                 <div class="md:col-span-1">
@@ -88,6 +140,24 @@
                 </div>
             </div>
             <div class="grid gap-6 mb-10 md:grid-cols-2">
+                <div class="input-component">
+                    <label for="kewarganegaraan" class="block mb-2 text-sm font-semibold text-gray-950">Kewarganegaraan</label>
+                    <select id="kewarganegaraan" wire:model.live="kewarganegaraan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('kewarganegaraan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
+                        <option selected>Pilih Kewarganegaraan</option>
+                        <option value="WNI">Warga Negara Indonesia</option>
+                        <option value="WNA">Warga Negara Asing</option>
+                    </select>
+                    <div class="h-0.25">
+                        @error('kewarganegaraan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                    <div class="input-component">
+                        <label for="nomor_akta_lahir" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Akte Kelahiran <span class="text-gray-500">*Jika Ada</span></label>
+                        <input type="text" id="nomor_akta_lahir" wire:model.live="nomor_akta_lahir" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_akta_lahir') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Akte Kelahiran" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('nomor_akta_lahir') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
                 <div class="input-component">
                     <label for="golongan_darah" class="block mb-2 text-sm font-semibold text-gray-950">Golongan Darah</label>
                     <select id="golongan_darah" wire:model.live="golongan_darah" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('golongan_darah') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
@@ -123,6 +193,20 @@
                     </select>
                     <div class="h-0.25">
                         @error('agama') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="input-component">
+                    <label for="tanggal_keluar_ktp" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Keluar E-KTP <span class="text-xs font-light">*jika ada</span></label>
+                    <input type="date" id="tanggal_keluar_ktp" wire:model.live="tanggal_keluar_ktp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_keluar_ktp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Tanggal Keluar E-KTP <sup>*</sup>jika ada<sup>*</sup> " autocomplete="off" />
+                    <div class="h-0.25">
+                        @error('tanggal_keluar_ktp') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="input-component">
+                    <label for="keturunan" class="block mb-2 text-sm font-semibold text-gray-950">Negara Keturunan <span class="text-gray-500 font-light">*Jika Ada</span></label>
+                    <input type="text" id="keturunan" wire:model.live="keturunan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('keturunan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Negara Asal Keturunan (WNI untuk Indonesia)" autocomplete="off" />
+                    <div class="h-0.25">
+                        @error('keturunan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
                 <div class="input-component">
@@ -209,10 +293,24 @@
                     </div>
                 </div>
                 <div class="input-component">
-                    <label for="asal_penduduk" class="block mb-2 text-sm font-medium text-semibold-950">Asal Penduduk</label>
+                    <label for="asal_penduduk" class="block mb-2 text-sm font-medium text-semibold-950">Alamat Asal Penduduk <span class="text-gray-500">*Jika Pindahan</span></label>
                     <input type="text" id="asal_penduduk" wire:model.live="asal_penduduk" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('asal_penduduk') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Asal Penduduk " autocomplete="off" />
                     <div class="h-0.25">
                         @error('asal_penduduk') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                                    <div class="input-component">
+                        <label for="suku" class="block mb-2 text-sm font-medium text-semibold-950">Asal Suku Penduduk</label>
+                        <input type="text" id="suku" wire:model.live="suku" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('suku') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Asal Suku Penduduk " autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('suku') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                <div class="input-component">
+                    <label for="keterangan" class="block mb-2 text-sm font-semibold text-gray-950">Keterangan</label>
+                    <textarea id="keterangan" wire:model.live="keterangan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full h-26 p-2.5 placeholder:text-slate-600 @error('keterangan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Keterangan Tambahan" autocomplete="off"></textarea>
+                    <div class="h-0.25">
+                        @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
                 <div class="input-component">
@@ -222,6 +320,7 @@
                         @error('tanggal_penambahan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
+
             </div>
             <div class="flex justify-between mt-6">
             <a href="{{ route('indukPenduduk') }}" class="text-white bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-teal-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Kembali</a>

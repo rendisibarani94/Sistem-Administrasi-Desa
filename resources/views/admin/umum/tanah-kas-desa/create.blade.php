@@ -19,36 +19,32 @@
                         </div>
                     </div>
                 </div>
-                <div class="md:col-span-1">
+                <div class="md:col-span-2">
                     <div class="input-component">
-                        <label for="letter_c" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Letter C Tanah</label>
-                        <input type="text" id="letter_c" wire:model.live="letter_c" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('letter_c') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Letter C Tanah" autocomplete="off" />
+                        <label for="lokasi" class="block mb-2 text-sm font-semibold text-gray-950">Lokasi Tanah Kas Desa</label>
+                        <input type="text" id="lokasi" wire:model.live="lokasi" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('lokasi') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Lokasi Tanah Kas Desa" autocomplete="off" />
                         <div class="h-0.25">
-                            @error('letter_c') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                            @error('lokasi') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
+
                 </div>
-                <div class="md:col-span-1">
-                    <div class="input-component">
-                        <label for="persil" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Persil Tanah</label>
-                        <input type="text" id="persil" wire:model.live="persil" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('persil') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Persil Tanah" autocomplete="off" />
-                        <div class="h-0.25">
-                            @error('persil') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
-                        </div>
-                    </div>
-                </div>
+
             </div>
+
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div class="input-component">
-                    <label for="kelas" class="block mb-2 text-sm font-semibold text-gray-950">Kelas Tanah Desa</label>
-                    <select id="kelas" wire:model.live="kelas" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('pekerjaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
-                        <option selected>Pilih Kelas Tanah</option>
-                        @foreach ($kelasTanahData as $kelas)
-                        <option value="{{ $kelas->id_kelas_tanah }}">{{ $kelas->kelas_tanah }}</option>
-                        @endforeach
-                    </select>
+                    <label for="persil" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Persil Tanah</label>
+                    <input type="text" id="persil" wire:model.live="persil" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('persil') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Persil Tanah" autocomplete="off" />
                     <div class="h-0.25">
-                        @error('kelas') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        @error('persil') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="input-component">
+                    <label for="letter_c" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Letter C Tanah</label>
+                    <input type="text" id="letter_c" wire:model.live="letter_c" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('letter_c') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Letter C Tanah" autocomplete="off" />
+                    <div class="h-0.25">
+                        @error('letter_c') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
                 <div class="input-component">
@@ -58,13 +54,7 @@
                         @error('tanggal_perolehan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
-                <div class="input-component">
-                    <label for="lokasi" class="block mb-2 text-sm font-semibold text-gray-950">Lokasi Tanah Kas Desa</label>
-                    <input type="text" id="lokasi" wire:model.live="lokasi" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('lokasi') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Lokasi Tanah Kas Desa" autocomplete="off" />
-                    <div class="h-0.25">
-                        @error('lokasi') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
-                    </div>
-                </div>
+
                 <div class="input-component">
                     <label for="peruntukan" class="block mb-2 text-sm font-semibold text-gray-950">Peruntukan Tanah Kas Desa</label>
                     <input type="text" id="peruntukan" wire:model.live="peruntukan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('peruntukan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Peruntukan Tanah Kas Desa" autocomplete="off" />
@@ -241,7 +231,7 @@
                 </div>
             </div>
 
-            
+
             <div class="flex justify-between mt-6">
                 <a href="{{ route('TanahKasDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
 

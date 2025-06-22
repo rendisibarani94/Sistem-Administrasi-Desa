@@ -17,7 +17,7 @@ class AgendaSuratDesaController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Surat Keluar ini akan dihapus.',
@@ -29,10 +29,10 @@ class AgendaSuratDesaController extends Component
 
     public function delete()
     {
-        DB::table('surat_keluar')
-            ->where('id_surat_keluar', $this->deleteId)
+        DB::table('agenda_surat')
+            ->where('id_agenda_surat', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -40,7 +40,7 @@ class AgendaSuratDesaController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

@@ -59,7 +59,7 @@ class PeraturanDesaCreateController extends Component
         return redirect()->route('PeraturanDesa')->with('success', 'Data Peraturan Desa berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

@@ -68,13 +68,16 @@
                             get filteredOptions() {
                                 return this.search === ''
                                     ? this.allOptions
-                                    : this.allOptions.filter(option => 
+                                    : this.allOptions.filter(option =>
                                         option.text.toLowerCase().includes(this.search.toLowerCase())
                                     );
                             },
                             allOptions: [
                                 @foreach ($kkData as $data)
-                                { id: '{{ $data->id_kartu_keluarga }}', text: '{{ $data->nomor_kartu_keluarga }}' },
+                                {
+                                    id: '{{ $data->id_kartu_keluarga }}',
+                                    text: '{{ $data->nomor_kartu_keluarga }}{{ $data->nama_lengkap ? " - ".$data->nama_lengkap : "" }}'
+                                },
                                 @endforeach
                             ],
                             selectedId: '',
@@ -149,10 +152,10 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="keturunan" class="block mb-2 text-sm font-semibold text-gray-950">Asal Keturunan</label>
-                        <input type="text" id="keturunan" wire:model.live="keturunan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('keturunan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Negara Asal Keturunan (WNI untuk Indonesia)" autocomplete="off" />
+                        <label for="nomor_akta_lahir" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Akte Kelahiran <span class="text-gray-500">*Jika Ada</span></label>
+                        <input type="text" id="nomor_akta_lahir" wire:model.live="nomor_akta_lahir" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_akta_lahir') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Nomor Akte Kelahiran" autocomplete="off" />
                         <div class="h-0.25">
-                            @error('keturunan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                            @error('nomor_akta_lahir') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
                     <div class="input-component">
@@ -193,10 +196,17 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="tanggal_keluar_ktp" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Keluar E-KTP <span class="text-xs font-light">*jika ada</span></label>
+                        <label for="tanggal_keluar_ktp" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Keluar E-KTP <span class="text-gray-500 font-light">*Jika Ada</span></label>
                         <input type="date" id="tanggal_keluar_ktp" wire:model.live="tanggal_keluar_ktp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_keluar_ktp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Tanggal Keluar E-KTP <sup>*</sup>jika ada<sup>*</sup> " autocomplete="off" />
                         <div class="h-0.25">
                             @error('tanggal_keluar_ktp') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
+                        <label for="keturunan" class="block mb-2 text-sm font-semibold text-gray-950">Negara Keturunan <span class="text-gray-500 font-light">*Jika Ada</span></label>
+                        <input type="text" id="keturunan" wire:model.live="keturunan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('keturunan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Negara Asal Keturunan (WNI untuk Indonesia)" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('keturunan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
                     <div class="input-component">
@@ -283,10 +293,17 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="asal_penduduk" class="block mb-2 text-sm font-medium text-semibold-950">Asal Penduduk</label>
+                        <label for="asal_penduduk" class="block mb-2 text-sm font-medium text-semibold-950">Alamat Asal Penduduk <span class="text-gray-500">*Jika Pindahan</span></label>
                         <input type="text" id="asal_penduduk" wire:model.live="asal_penduduk" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('asal_penduduk') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Asal Penduduk " autocomplete="off" />
                         <div class="h-0.25">
                             @error('asal_penduduk') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
+                        <label for="suku" class="block mb-2 text-sm font-medium text-semibold-950">Asal Suku Penduduk</label>
+                        <input type="text" id="suku" wire:model.live="suku" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('suku') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Asal Suku Penduduk " autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('suku') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
                     <div class="input-component">

@@ -13,10 +13,8 @@ class LaporanAparatDesaController extends Controller
     public function displayA4()
     {
         $aparaturDesaData = DB::table('aparatur_desa')
-        ->join('jabatan', 'aparatur_desa.jabatan', '=', 'jabatan.id_jabatan') // Adjust FK if needed
-        ->select('aparatur_desa.*', 'jabatan.jabatan') // Select required fields
-        ->where('aparatur_desa.is_deleted', 0)
-        ->orderBy('aparatur_desa.id_aparatur', 'desc')
+        ->where('is_deleted', 0)
+        ->orderBy('id_aparatur', 'desc')
         ->get();
 
         return view(

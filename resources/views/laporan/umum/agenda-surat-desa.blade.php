@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="mx-20">
-    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU AGENDA 2025</h1>
+    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU AGENDA {{ $settings['nama_desa'] }} 2025</h1>
 
     <table class="table-auto mx-auto border mb-4 text-sm">
         <thead>
@@ -62,12 +62,12 @@
         <div class="p-10 text-center">
             <h5 class="font-semibold">MENGETAHUI</h5>
             <h5 class="mb-10 ">KEPALA DESA</h5>
-            <h5 class="border-b-2 border-gray-900 pb-1 px-1">Nama Kepala Desa </h5>
+            <h5 class="border-b-2 border-gray-900 pb-1 px-1">{{ $kepala_desa  }}</h5>
         </div>
         <div class="p-10 text-center">
             <h5 class="font-semibold">{{ $date }}</h5>
             <h5 class="mb-10 ">SEKRETARIS DESA</h5>
-            <h5 class="border-b-2 border-gray-900 pb-1 px-1">Nama Sekertaris</h5>
+            <h5 class="border-b-2 border-gray-900 pb-1 px-1">{{ $sekretaris }}</h5>
         </div>
     </div>
 </div>

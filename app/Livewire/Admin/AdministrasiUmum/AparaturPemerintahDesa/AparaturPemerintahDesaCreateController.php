@@ -6,10 +6,12 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
-
+use Carbon\Carbon;
+use Livewire\WithFileUploads;
 
 class AparaturPemerintahDesaCreateController extends Component
 {
+    use WithFileUploads;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
     #[Rule('max:150', message: 'Kolom Nama Lengkap Harus Diisi!')]
@@ -55,52 +57,101 @@ class AparaturPemerintahDesaCreateController extends Component
     #[Rule('required', message: 'Kolom Jabatan Harus Diisi')]
     public $pendidikan;
 
-    #[Rule('required', message: 'Kolom Tanggal Pengangkatan Harus Diisi')]
+    #[Rule('required|date', message: 'Tanggal pengangkatan harus diisi')]
     public $tanggal_pengangkatan;
-    
-    #[Rule('date', message: 'Format tanggal tidak valid')]
+
+    #[Rule('nullable|date', message: 'Format tanggal tidak valid')]
     public $tanggal_pemberhentian;
-    
+
+    #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    public $foto;
+    public $oldFoto;
+    public $existingFoto;
+
+    public $is_active = true;
 
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang')]
     public $keterangan;
+
+    protected function validateDates()
+{
+    if ($this->tanggal_pemberhentian) {
+        if (Carbon::parse($this->tanggal_pengangkatan)->gte(Carbon::parse($this->tanggal_pemberhentian))) {
+            $this->addError('tanggal_pengangkatan', 'Tanggal pengangkatan harus sebelum pemberhentian');
+            return false;
+        }
+    }
+    return true;
+}
+
+public function updated($propertyName)
+{
+    if (in_array($propertyName, ['tanggal_pengangkatan', 'tanggal_pemberhentian'])) {
+        $this->validateOnly($propertyName);
+        $this->validateDates();
+    }
+}
+
+    public function updatedFoto()
+    {
+        // Clean up previous file if exists
+        if ($this->oldFoto) {
+            cleanup_livewire_temp_files($this->oldFoto);
+        }
+
+        // Store reference to current file
+        $this->oldFoto = $this->foto;
+    }
 
     public function store()
     {
         $validated = $this->validate();
 
-        DB::table('aparatur_desa')->insert($validated);
+        if (!$this->validateDates()) {
+        return; // Stop if date validation fails
+        }
 
+        // Calculate active status based on dates
+        $isActive = !$this->tanggal_pemberhentian || Carbon::parse($this->tanggal_pemberhentian)->isFuture();
 
-        $this->reset([
-            'nama_lengkap',
-            'nip',
-            'nipd',
-            'jenis_kelamin',
-            'agama',
-            'tempat_lahir',
-            'tanggal_lahir',
-            'golongan',
-            'jabatan',
-            'pendidikan',
-            'tanggal_pengangkatan',
-            'keterangan'
-        ]);
+        if ($this->foto) {
+            // Store new image
+            $imagePath = $this->foto->store('images/aparatur-desa', 'public');
+        }
+
+        $validated['foto'] = $imagePath ?? null;
+
+        DB::transaction(function () use ($validated, $isActive) {
+            // Deactivate others in same position ONLY if activating new entry
+            if ($isActive) {
+                DB::table('aparatur_desa')
+                    ->where('jabatan', $this->jabatan)
+                    ->where('is_active', true)
+                    ->whereNull('is_deleted')
+                    ->update(['is_active' => false]);
+            }
+
+            // Insert with calculated active status
+            DB::table('aparatur_desa')->insert([
+                ...$validated,
+                'is_active' => $isActive,
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        });
+
+        cleanup_livewire_temp_files($this->foto);
+
+        $this->reset();
 
         return redirect()->route('AparaturDesa')->with('success', 'Data Aparatur Desa berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(
             'admin.umum.aparatur-pemerintah-desa.create',
-            [
-                'jabatanData' => DB::table('jabatan')
-                    ->where('is_deleted', 0)
-                    ->orderBy('id_jabatan', 'desc')
-                    ->get()
-            ]
         );
     }
 }

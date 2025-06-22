@@ -153,7 +153,7 @@ class InventarisDesaCreateController extends Component
         return redirect()->route('InventarisDesa')->with('success', 'Data Inventaris Desa berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.inventaris-desa.create');

@@ -27,17 +27,20 @@
                 <!-- Carousel Items -->
                 <div class="overflow-hidden mx-4 w-full max-w-[90%] sm:max-w-2xl md:max-w-4xl lg:max-w-6xl" x-ref="carouselContainer">
                     <div class="flex transition-transform duration-500 ease-in-out" :style="`transform: translateX(-${currentIndex * slideWidth}px)`">
-                        @if(isset($perangkatDesa) && count($perangkatDesa) > 0)
-                        @foreach($perangkatDesa as $item)
+                        @if(isset($organisasiDesa) && count($organisasiDesa) > 0)
+                        @foreach($organisasiDesa as $item)
                         <div class="flex-shrink-0 px-2 sm:px-4 w-full sm:w-1/2 md:w-1/3">
-                            <div class="card border border-teal-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
-                                <div class="card-header mb-4">
-                                    <img src="{{ $item->image ?? asset('images/masyarakat/beranda.png') }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->name ?? 'Perangkat Desa' }}">
+                            <a href="{{ route('organisasi.desa.detail', $item->id_organisasi) }}" class="block h-full">
+                                <div class="card border border-teal-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
+                                    <div class="card-header mb-4">
+                                        <img src="{{ asset('storage/'.$item->logo_organisasi) }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->nama_organisasi ?? 'Perangkat Desa' }}">
+                                    </div>
+                                    <div class="card-text">
+                                        <h4 class="text-black font-bold text-center text-lg sm:text-xl">{{ $item->nama_organisasi ?? 'Tidak ada nama' }}</h4>
+                                    </div>
                                 </div>
-                                <div class="card-text">
-                                    <h4 class="text-black font-bold text-center text-lg sm:text-xl">{{ $item->name ?? 'Tidak ada nama' }}</h4>
-                                </div>
-                            </div>
+                            </a>
+
                         </div>
                         @endforeach
                         @else
@@ -114,7 +117,7 @@
 
                 if (screenWidth < 640) { // sm breakpoint (Tailwind default)
                     this.itemsPerView = 1;
-                } else if (screenWidth < 768) { // md breakpoint (Tailwind default) 
+                } else if (screenWidth < 768) { // md breakpoint (Tailwind default)
                     this.itemsPerView = 2;
                 } else { // lg breakpoint and above (Tailwind default)
                     this.itemsPerView = 3;

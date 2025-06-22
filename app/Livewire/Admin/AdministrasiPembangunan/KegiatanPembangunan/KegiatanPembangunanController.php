@@ -17,7 +17,7 @@ class KegiatanPembangunanController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Rencana Keagiatan ini akan dihapus.',
@@ -32,7 +32,7 @@ class KegiatanPembangunanController extends Component
         DB::table('pembangunan')
             ->where('id_pembangunan', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -40,7 +40,7 @@ class KegiatanPembangunanController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

@@ -110,9 +110,14 @@
                     <label for="jabatan" class="block mb-2 text-sm font-semibold text-gray-950">Jabatan</label>
                     <select id="jabatan" wire:model.live="jabatan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('jabatan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
                         <option selected>Pilih Jabatan</option>
-                        @foreach ($jabatanData as $data)
-                        <option value="{{ $data->id_jabatan }}">{{ $data->jabatan }}</option>
-                        @endforeach
+                        <option value="Kepala Desa">Kepala Desa</option>
+                        <option value="Sekretaris Desa">Sekretaris Desa</option>
+                        <option value="Kaur Umum dan Tata Usaha">Kaur Umum dan Tata Usaha</option>
+                        <option value="Kaur Keuangan">Kaur Keuangan</option>
+                        <option value="Kaur Perencanaan">Kaur Perencanaan</option>
+                        <option value="Kasi Pemerintahan">Kasi Pemerintahan</option>
+                        <option value="Kasi Kesejahteraan">Kasi Kesejahteraan</option>
+                        <option value="Kasi Pelayanan">Kasi Pelayanan</option>
                     </select>
                     <div class="h-0.25">
                         @error('jabatan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
@@ -122,22 +127,18 @@
                     <label for="golongan" class="block mb-2 text-sm font-semibold text-gray-950">Golongan</label>
                     <select id="golongan" wire:model.live="golongan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('golongan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror">
                         <option selected>Pilih Golongan</option>
-                        <option value="I">I - Juru</option>
                         <option value="Ia">Ia</option>
                         <option value="Ib">Ib</option>
                         <option value="Ic">Ic</option>
                         <option value="Id">Id</option>
-                        <option value="II">II - Pengatur</option>
                         <option value="IIa">IIa</option>
                         <option value="IIb">IIb</option>
                         <option value="IIc">IIc</option>
                         <option value="IId">IId</option>
-                        <option value="III">III - Penata</option>
                         <option value="IIIa">IIIa</option>
                         <option value="IIIb">IIIb</option>
                         <option value="IIIc">IIIc</option>
                         <option value="IIId">IIId</option>
-                        <option value="IV">IV - Pembina</option>
                         <option value="IVa">IVa</option>
                         <option value="IVb">IVb</option>
                         <option value="IVc">IVc</option>
@@ -149,10 +150,20 @@
                     </div>
                 </div>
                 <div class="input-component">
-                    <label for="keterangan" class="block mb-2 text-sm font-semibold text-gray-950">Keterangan</label>
-                    <textarea id="keterangan" wire:model.live="keterangan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full h-26 p-2.5 placeholder:text-slate-600 @error('keterangan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Keterangan Tambahan" autocomplete="off"></textarea>
+                    <label for="foto" class="block text-sm font-medium text-black mb-2 ">Foto Aparat Desa</label>
+                    <!-- Show preview of new image if selected -->
+                    @if($foto)
+                    <div class="mb-4">
+                        <img src="{{ $foto->temporaryUrl() }}" alt="Preview" class="mx-auto w-96 h-auto object-cover border border-gray-300">
+                    </div>
+                    @endif
+                    <!-- File Input -->
+                    <input id="foto" wire:model="foto" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer bg-gray-50 focus:outline-none file:cursor-pointer file:bg-blue-600 file:border-0 file:me-4 file:py-2 file:px-4 file:text-sm file:text-white file:font-semibold @error('foto') border-red-500 @enderror" type="file">
+                    {{-- Error Message --}}
                     <div class="h-0.25">
-                        @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        @error('foto')
+                        <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span>
+                        @enderror
                     </div>
                 </div>
                 <div class="input-component">
@@ -162,7 +173,15 @@
                         @error('tanggal_pemberhentian') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
+                <div class="input-component">
+                    <label for="keterangan" class="block mb-2 text-sm font-semibold text-gray-950">Keterangan</label>
+                    <textarea id="keterangan" wire:model.live="keterangan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full h-26 p-2.5 placeholder:text-slate-600 @error('keterangan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukan Keterangan Tambahan" autocomplete="off"></textarea>
+                    <div class="h-0.25">
+                        @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
             </div>
+
             <div class="flex justify-between mt-6">
                 <a href="{{ route('AparaturDesa') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
                 <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Tambahkan Aparatur Desa</button>
@@ -170,3 +189,5 @@
         </form>
     </div>
 </div>
+
+

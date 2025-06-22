@@ -2,16 +2,24 @@
 
 namespace App\Livewire\Masyarakat\Pembangunan;
 
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class PembangunanController extends Component
 {
 
-    #[Layout('Components.layouts.masyarakat')]
+    #[Layout('components.layouts.masyarakat')]
     public function render()
     {
-        return view('masyarakat.pembangunan.pembangunan');
+        $pembangunan = DB::table('pembangunan')
+        ->where('is_deleted', 0)
+        ->orderBy('id_pembangunan', 'desc')
+        ->paginate(5);
+
+        return view('masyarakat.pembangunan.pembangunan', [
+            'pembangunan' => $pembangunan,
+            ]);
     }
 
 }

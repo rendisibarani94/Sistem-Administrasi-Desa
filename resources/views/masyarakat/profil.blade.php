@@ -3,50 +3,84 @@
         <!-- teks + button -->
         <div class="space-y-4 md:space-y-6">
             <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl">PROFIL DESA</h3>
-            <p class="text-gray-700 text-base  md:text-md leading-relaxed w-full text-justify">
-                Desa Sosor Dolok merupakan desa yang terletak di Kecamatan Sosor Gadong, Kabupaten Simalungun, Provinsi Sumatera Utara, Indonesia. Desa ini terdiri dari beberapa dusun. Penduduk Desa Sosor Dolok mayoritas berprofesi sebagai petani dengan mata pencaharian utama bercocok tanam padi, karet, dan tanaman palawija lainnya.
-                <br><br>
-                Sosor dolok dikenal dengan keindahan alamnya, seperti hamparan sawah yang hijau dan udara yang sejuk karena dikelilingi oleh perbukitan. Selain itu, Desa Sosor Dolok juga memiliki potensi wisata alam yang menarik, seperti air terjun dan hutan lindung, yang menawarkan pengalaman eksplorasi alam yang memikat bagi para wisatawan.
-                Masyarakat Desa Sosor Dolok dikenal ramah dan memiliki kearifan lokal yang kental dalam menjaga kelestarian alam serta mempertahankan budaya tradisional mereka
-            </p>
-            <a href="#profil-desa" class="inline-block bg-teal-700 text-white font-semibold py-3 px-4 md:py-4 md:px-5 text-sm md:text-base rounded-sm hover:bg-teal-800 transition">
-                PROFIL DESA →
-            </a>
+            <div class="text-gray-700 text-base  md:text-md leading-relaxed w-full text-justify">
+                @if(isset($profil['profil_desa']))
+                {!! $profil['profil_desa'] !!}
+                @else
+                <p class="text-gray-500 italic">
+                    Deskripsi beranda belum tersedia. Silakan hubungi admin.
+                </p>
+                @endif
+            </div>
+
         </div>
 
+        {{-- <iframe src="" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> --}}
         <!-- gambar -->
         <div class="w-full h-full mt-4 md:mt-0">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d65816.12445215354!2d98.63734465596427!3d2.5312537327745077!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3031d0933c31e0a5%3A0xdb7c1c2489e8d729!2sSosor%20Dolok%2C%20Kec.%20Harian%2C%20Kabupaten%20Samosir%2C%20Sumatera%20Utara!5e0!3m2!1sid!2sid!4v1745240207743!5m2!1sid!2sid" class="w-full h-full border-2 border-gray-300" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+            @if(isset($profil['link_iframe_maps']))
+            <iframe src="{{ $profil['link_iframe_maps'] }}" class="w-full h-full border-2 border-gray-300" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
             </iframe>
+            @else
+            <div class="bg-gray-100 border-2 border-dashed border-gray-300 w-full h-full flex items-center justify-center">
+                <div class="text-center p-4">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                    </svg>
+                    <h3 class="mt-2 text-sm font-medium text-gray-900">Peta Tidak Tersedia</h3>
+                    <p class="mt-1 text-sm text-gray-500">
+                        Link peta belum dikonfigurasi untuk halaman ini.
+                    </p>
+                </div>
+            </div>
+            @endif
         </div>
     </section>
 
     <section class="visi_misi bg-cyan-200">
         <div class="py-10 md:py-20 px-4 md:px-8 lg:px-30">
             <div class="visi mb-15">
-                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">VISI DESA SOSOR DOLOK</h3>
-                <p class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
-                    "Menjadi Desa yang Mandiri, Berkembang, dan Berkelanjutan, Berlandaskan Kearifan Lokal serta Kebersamaan dalam Mewujudkan Kesejahteraan dan Keseimbangan Alam."
-                </P>
+                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">VISI {{ $settings['nama_desa'] }}</h3>
+                <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                    @if(isset($profil['visi_desa']))
+                    {!! $profil['visi_desa'] !!}
+                    @else
+                    <p class="text-gray-500 italic">
+                        Visi Desa belum tersedia. Silakan hubungi admin.
+                    </p>
+                    @endif
+                </div>
+
             </div>
 
             <div class="misi">
-                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">MISI DESA SOSOR DOLOK</h3>
-                <p class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
-                    1. Meningkatkan Kesejahteraan Masyarakat: Melalui berbagai program dan kegiatan, kami bertujuan untuk meningkatkan kesejahteraan ekonomi, sosial, dan pendidikan masyarakat Desa Sosor Dolok. <br>
-                    2. Mengembangan Sumber Daya Manusia: Kami berkomitmen untuk meningkatkan kualitas pendidikan dan pelatihan, serta memberdayakan masyarakat dalam meningkatkan keterampilan dan potensi diri guna mencapai kemandirian. <br>
-                    3. Pemanfaatan Sumber Daya Alam yang Berkelanjutan: Kami akan memastikan pemanfaatan sumber daya alam Desa Sosor Dolok dilakukan secara bijaksana dan berkelanjutan, dengan menjaga kelestarian lingkungan dan mengutamakan prinsip-prinsip pelestarian alam. <br>
-                </P>
+                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">MISI {{ $settings['nama_desa'] }}</h3>
+                <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                    @if(isset($profil['misi_desa']))
+                    {!! $profil['misi_desa'] !!}
+                    @else
+                    <p class="text-gray-500 italic">
+                        Misi Desa belum tersedia. Silakan hubungi admin.
+                    </p>
+                    @endif
+                </div>
+
             </div>
         </div>
     </section>
 
     <section class="py-10 md:py-20 px-4 md:px-8 lg:px-30">
         <div class="sejarah">
-            <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">SEJARAH DESA SOSOR DOLOK</h3>
-            <p class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
-                Setelah kemerdekaan Indonesia pada tahun 1945, Desa Sosor Dolok ikut serta dalam pembangunan negara yang baru lahir. Mungkin merjadi perubahan signifikan dalam hal infrastruktur, pendidikan, dan kesejahteraan masyarakat desa. Seiring berjalannya waktu, Desa Sosor Dolok terus berkembang dan memainkan peran penting dalam pembangunan daerahnya. Mungkin terjadi peningkatan dalam sektor-sektor seperti pertanian, pendidikan, dan pariwisata.
-            </P>
+            <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">SEJARAH {{ $settings['nama_desa'] }}</h3>
+            <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                @if(isset($profil['sejarah_desa']))
+                {!! $profil['sejarah_desa'] !!}
+                @else
+                <p class="text-gray-500 italic">
+                    Sejarah Desa belum tersedia. Silakan hubungi admin.
+                </p>
+                @endif
+            </div>
         </div>
     </section>
 

@@ -12,26 +12,26 @@ class KaderPemberdayaanCreateController extends Component
     #[Rule('required', message: 'Kolom Nama Kader Harus Diisi!')]
     #[Rule('max:150', message: 'Input Nama Terlalu Panjang!')]
     public $nama_lengkap;
-    
+
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
     public $tanggal_lahir;
-    
+
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
     public $jenis_kelamin;
-    
+
     #[Rule('required', message: 'Kolom Pendidikan Harus Diisi!')]
     public $pendidikan;
-    
+
     #[Rule('required', message: 'Kolom Bidang Keahlian Harus Diisi!')]
     public $bidang_keahlian;
-    
+
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
     #[Rule('max:255', message: 'Input Alamat Terlalu Panjang!')]
     public $alamat;
-    
+
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
     public $keterangan;
-    
+
 
     public function store()
     {
@@ -45,7 +45,7 @@ class KaderPemberdayaanCreateController extends Component
     }
 
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

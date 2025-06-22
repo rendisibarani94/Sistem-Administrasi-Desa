@@ -15,7 +15,7 @@ class PendudukSementaraController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Penduduk Sementara ini akan dihapus.',
@@ -30,7 +30,7 @@ class PendudukSementaraController extends Component
         DB::table('penduduk_sementara')
             ->where('id_penduduk', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -38,7 +38,7 @@ class PendudukSementaraController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render(){
         return view('admin.kependudukan.penduduk-sementara.index',
         [

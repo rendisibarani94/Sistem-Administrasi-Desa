@@ -109,7 +109,7 @@ class PekerjaanController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.master.pekerjaan.index', [

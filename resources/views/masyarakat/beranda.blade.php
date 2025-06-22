@@ -3,12 +3,12 @@
 </x-slot:judul>
 
 <div>
-    <section class="relative mb-20 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-4 md:px-8 py-6" style="background-image: url('{{ asset('images/masyarakat/beranda.png') }}');">
+    <section class="relative mb-20 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-4 md:px-8 py-6" style="background-image: url('{{ asset('storage/'.$profil['gambar_landing_page']) }}');">
         <div class="absolute inset-0 bg-teal-700/25 z-0"></div>
         <div class="relative z-10 w-full mx-30">
             <h1 class="text-center md:text-left text-4xl md:text-5xl lg:text-6xl font-bold mb-4 [text-shadow:2px_2px_4px_rgba(0,0,0,0.99)] max-w-2xl">
-                Selamat Datang di Sistem Informasi Desa
-            </h1>            
+                {{ strip_tags($profil['deskripsi_beranda']) ?? 'Selamat Datang di Sistem Informasi Desa Kami'}}
+            </h1>
         </div>
     </section>
 
@@ -27,16 +27,20 @@
             <!-- Carousel Items -->
             <div class="overflow-hidden mx-4 w-full max-w-[90%] sm:max-w-2xl md:max-w-4xl lg:max-w-6xl" x-ref="carouselContainer">
                 <div class="flex transition-transform duration-500 ease-in-out" :style="`transform: translateX(-${currentIndex * slideWidth}px)`">
-                    @if(isset($perangkatDesa) && count($perangkatDesa) > 0)
+                    @if($perangkatDesa->count() > 0)
                     @foreach($perangkatDesa as $item)
                     <div class="flex-shrink-0 px-2 sm:px-4 w-full sm:w-1/2 md:w-1/3">
                         <div class="card border border-teal-500 rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
                             <div class="card-header mb-4">
-                                <img src="{{ $item->image ?? asset('images/masyarakat/beranda.png') }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->name ?? 'Perangkat Desa' }}">
+                                <img src="{{ $item->foto ? asset('storage/'.$item->foto) : asset('images/masyarakat/beranda.png') }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->nama_lengkap }}">
                             </div>
                             <div class="card-text">
-                                <h4 class="text-black font-bold text-center text-lg sm:text-xl">{{ $item->name ?? 'Tidak ada nama' }}</h4>
-                                <h5 class="text-teal-600 text-center italic text-sm sm:text-base">{{ $item->position ?? 'Tidak ada jabatan' }}</h5>
+                                <h4 class="text-black font-bold text-center text-lg sm:text-xl">
+                                    {{ $item->nama_lengkap }}
+                                </h4>
+                                <h5 class="text-teal-600 text-center italic text-sm sm:text-base">
+                                    {{ $item->jabatan }}
+                                </h5>
                             </div>
                         </div>
                     </div>
@@ -87,30 +91,33 @@
                     <span>Berita Desa</span>
                 </h1>
             </div>
+
             <div class="cards_berita grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+                @foreach ($beritaData as $berita)
                 <!-- Card 1 -->
                 <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
                     <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
+                        <img src="{{ asset('storage/'.$berita->gambar) }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
                     </div>
                     <div class="card_heading mb-3 md:mb-4">
                         <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
+                            {{ $berita->judul }}
                         </h3>
                     </div>
                     <div class="card_date mb-2 flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
+                        <span class="text-sm md:text-base">{{ \Carbon\Carbon::parse($berita->created_at)->locale('id')->translatedFormat('d F Y') }}</span>
                     </div>
                     <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
+                        <div class="text-slate-800 text-sm md:text-base mb-3">
+                            {{ Str::limit(strip_tags($berita->deskripsi), 50, '...') }}
+                        </div>
+                        <a href="{{ route('detail.berita', $berita->id_berita) }}" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Baca Lebih Lanjut</a>
                     </div>
                 </div>
+                @endforeach
 
             </div>
         </div>
@@ -120,10 +127,16 @@
         <!-- teks + button -->
         <div class="space-y-4 md:space-y-6">
             <h3 class="text-teal-700 font-bold text-2xl md:text-3xl">TERKAIT DESA</h3>
-            <p class="text-gray-700 text-base md:text-lg leading-relaxed w-full md:w-8/9">
-                Desa Sosor Dolok adalah sebuah desa yang terletak di Kecamatan Sosor Gadong, Kabupaten Simalungun, Provinsi Sumatera Utara, Indonesia. Desa ini memiliki luas wilayah sekitarkilometer persegi dan terdiri dari beberapa dusun, antara lain.
-            </p>
-            <a href="#profil-desa" class="inline-block bg-teal-700 text-white font-semibold py-3 px-4 md:py-4 md:px-5 text-sm md:text-base rounded-sm hover:bg-teal-800 transition">
+            <div class="text-gray-700 text-base md:text-lg leading-relaxed w-full md:w-8/9">
+                @if(isset($profil['deskripsi_singkat_desa']))
+                {!! $profil['deskripsi_singkat_desa'] !!}
+                @else
+                <p class="text-gray-500 italic">
+                    Deskripsi Sekitar Desa Desa belum tersedia. Silakan hubungi admin.
+                </p>
+                @endif
+            </div>
+            <a href="{{ route('profil') }}" class="inline-block bg-teal-700 text-white font-semibold py-3 px-4 md:py-4 md:px-5 text-sm md:text-base rounded-sm hover:bg-teal-800 transition">
                 PROFIL DESA →
             </a>
         </div>
@@ -143,10 +156,16 @@
         <!-- text + button, bottom‑aligned -->
         <div class="order-2 md:order-2 space-y-4 md:space-y-6 self-end">
             <h3 class="text-teal-700 font-bold text-2xl md:text-3xl">ORGANISASI DESA</h3>
-            <p class="text-gray-700 text-base md:text-lg leading-relaxed">
-                Desa Sosor Dolok memiliki berbagai organisasi desa yang dibentuk untuk membantu pengelolaan pemerintah, pembangunan dan pemberdayaan masyarakat.
-            </p>
-            <a href="#organisasi-desa" class="inline-block bg-teal-700 text-white font-semibold py-3 px-4 md:py-4 md:px-5 text-sm md:text-base rounded-md hover:bg-teal-800 transition">
+            <div class="text-gray-700 text-base md:text-lg leading-relaxed">
+                @if(isset($profil['deskripsi_singkat_organisasi']))
+                {!! $profil['deskripsi_singkat_organisasi'] !!}
+                @else
+                <p class="text-gray-500 italic">
+                    Deskripsi Organisasi Desa belum tersedia. Silakan hubungi admin.
+                </p>
+                @endif
+               </div>
+            <a href="{{ route('organisasi.desa') }}" class="inline-block bg-teal-700 text-white font-semibold py-3 px-4 md:py-4 md:px-5 text-sm md:text-base rounded-md hover:bg-teal-800 transition">
                 LIHAT ORGANISASI DESA →
             </a>
         </div>
@@ -163,19 +182,17 @@
             , containerWidth: 0
             , totalItems: {
                 {
-                    isset($perangkatDesa) ? count($perangkatDesa) : 1
+                    $perangkatDesa - > count() > 0 ? $perangkatDesa - > count() : 1
                 }
-            }, // Handle null/empty data
+            },
 
             init() {
                 this.updateItemsPerView();
                 this.calculateSlideWidth();
 
-                // Add resize listener for responsiveness
                 window.addEventListener('resize', () => {
                     this.updateItemsPerView();
                     this.calculateSlideWidth();
-                    // Adjust current index to stay within bounds
                     if (this.currentIndex > this.maxIndex) {
                         this.currentIndex = this.maxIndex;
                     }
@@ -183,14 +200,12 @@
             },
 
             updateItemsPerView() {
-                // Responsive items per view based on screen width
                 const screenWidth = window.innerWidth;
-
-                if (screenWidth < 640) { // sm breakpoint (Tailwind default)
+                if (screenWidth < 640) {
                     this.itemsPerView = 1;
-                } else if (screenWidth < 768) { // md breakpoint (Tailwind default) 
+                } else if (screenWidth < 768) {
                     this.itemsPerView = 2;
-                } else { // lg breakpoint and above (Tailwind default)
+                } else {
                     this.itemsPerView = 3;
                 }
             },
@@ -212,24 +227,16 @@
             },
 
             prev() {
-                if (this.currentIndex > 0) {
-                    this.currentIndex--;
-                }
+                if (this.currentIndex > 0) this.currentIndex--;
             },
 
             next() {
-                if (this.currentIndex < this.maxIndex) {
-                    this.currentIndex++;
-                }
+                if (this.currentIndex < this.maxIndex) this.currentIndex++;
             },
 
             goToPage(pageIndex) {
                 const newIndex = pageIndex * this.itemsPerView;
-                if (newIndex <= this.maxIndex) {
-                    this.currentIndex = newIndex;
-                } else {
-                    this.currentIndex = this.maxIndex;
-                }
+                this.currentIndex = Math.min(newIndex, this.maxIndex);
             }
         }));
     });

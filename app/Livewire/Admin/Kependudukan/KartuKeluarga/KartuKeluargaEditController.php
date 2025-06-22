@@ -99,7 +99,7 @@ class KartuKeluargaEditController extends Component
         return redirect()->route('kartuKeluarga')->with('success', 'Data Kartu Keluarga Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.kependudukan.kartu-keluarga.edit');

@@ -63,10 +63,10 @@ class AgendaSuratDesaCreateController extends Component
         $this->reset();
         $this->jenis_surat = 'Surat Keluar';
 
-        return redirect()->route('AgendaDesa')->with('success', 'Data Surat Keluar berhasil disimpan!');
+        return redirect()->route('AgendaSuratDesa')->with('success', 'Data Surat Keluar berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.agenda-surat.create');

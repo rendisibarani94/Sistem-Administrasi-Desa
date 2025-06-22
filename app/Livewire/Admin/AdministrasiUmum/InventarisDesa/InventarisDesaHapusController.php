@@ -129,7 +129,7 @@ class InventarisDesaHapusController extends Component
             return;
         }
 
-        
+
         $validated['updated_at'] = now();
         $validated['is_deleted'] = 1;
 
@@ -138,7 +138,7 @@ class InventarisDesaHapusController extends Component
         return redirect()->route('InventarisDesa')->with('success', 'Penghapusan Data Inventaris Desa Berhasil dilakukan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.inventaris-desa.hapus');

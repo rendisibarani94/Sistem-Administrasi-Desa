@@ -40,7 +40,44 @@ class IndukPendudukController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    public function mutasi($id_penduduk)
+    {
+
+        $penduduk = DB::table('penduduk')
+            ->where('is_deleted', 0)
+            ->where('id_penduduk', $id_penduduk)
+            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+            ->first();
+
+        $familyCardId = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->value('id_kartu_keluarga');
+
+
+        // 1. Check if he is a non-deleted Head
+        $isHead = DB::table('penduduk')
+            ->where('id_penduduk', $id_penduduk)
+            ->where('is_deleted', 0)
+            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+            ->exists();
+
+        // 2. Check if he is the only one in his family
+        $isOnlyMember = DB::table('penduduk')
+            ->where('id_kartu_keluarga', $familyCardId) // Get this from the first query if needed
+            ->where('is_deleted', 0)
+            ->count() == 1; // Only 1 member left?
+
+        $isLoneHead = $isHead && $isOnlyMember;
+
+        if ($isLoneHead) {
+            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
+        }
+        if ($penduduk) {
+            return $this->redirect(route('indukPenduduk.mutasi.kepala-keluarga', ['id' => $id_penduduk]));
+        } else {
+            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
+        }
+    }
+
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

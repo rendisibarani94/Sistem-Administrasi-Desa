@@ -35,13 +35,53 @@ class IndukPendudukMutasiController extends Component
 
     public $pindahId;
 
+    public $isLoneHead;
+
+    public $pendudukPindahIdKk;
+
     public function mount($id)
     {
+    $this->pendudukPindahIdKk = DB::table('penduduk')->where('id_penduduk', $id)->value('id_kartu_keluarga');
+
         $this->pindahId = $id;
+
+// 1. Check if he is a non-deleted Head
+$isHead = DB::table('penduduk')
+    ->where('id_penduduk', $id)
+    ->where('is_deleted', 0)
+    ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+    ->exists();
+
+// 2. Check if he is the only one in his family
+$isOnlyMember = DB::table('penduduk')
+    ->where('id_kartu_keluarga', $this->pendudukPindahIdKk) // Get this from the first query if needed
+    ->where('is_deleted', 0)
+    ->count() == 1; // Only 1 member left?
+
+    $this->isLoneHead = $isHead && $isOnlyMember;
     }
 
     public function pindah()
     {
+        if ($this->isLoneHead){
+        $validated = $this->validate();
+        $validated['updated_at'] = now();
+        $validated['is_mutated'] = 1;
+        $validated['is_deleted'] = 1;
+        $validated['id_kartu_keluarga'] = null;
+
+        DB::table('penduduk')->where('id_penduduk', $this->pindahId)->update($validated);
+
+        DB::table('kartu_keluarga')
+            ->where('id_kartu_keluarga', $this->pendudukPindahIdKk)
+            ->update([
+                'is_deleted' => 1,
+                'updated_at' => now() // Optional: update timestamp if needed
+            ]);
+
+        return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Diubah');
+        }
+
         $validated = $this->validate();
         $validated['updated_at'] = now();
         $validated['is_mutated'] = 1;
@@ -51,7 +91,7 @@ class IndukPendudukMutasiController extends Component
         return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         $pendudukData = DB::table('penduduk')

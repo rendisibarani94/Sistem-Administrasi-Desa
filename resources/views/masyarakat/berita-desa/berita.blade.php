@@ -10,126 +10,34 @@
                 </h1>
             </div>
             <div class="cards_berita grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
+                @foreach ($beritaData as $berita)
                 <!-- Card 1 -->
                 <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
                     <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
+                        <img src="{{ asset('storage/'.$berita->gambar) }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
                     </div>
                     <div class="card_heading mb-3 md:mb-4">
                         <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
+                            {{ $berita->judul }}
                         </h3>
                     </div>
                     <div class="card_date mb-2 flex items-center space-x-2">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
+                        <span class="text-sm md:text-base">{{ \Carbon\Carbon::parse($berita->created_at)->locale('id')->translatedFormat('d F Y') }}</span>
                     </div>
                     <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
+                        <div class="text-slate-800 text-sm md:text-base mb-3">
+                            {{ Str::limit(strip_tags($berita->deskripsi), 50, '...') }}
+                        </div>
+                        <a href="{{ route('detail.berita', $berita->id_berita) }}" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Baca Lebih Lanjut</a>
                     </div>
                 </div>
-
-                <!-- Card 2 -->
-                <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
-                    <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
-                    </div>
-                    <div class="card_heading mb-3 md:mb-4">
-                        <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
-                        </h3>
-                    </div>
-                    <div class="card_date mb-2 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                        </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
-                    </div>
-                    <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
-                    </div>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
-                    <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
-                    </div>
-                    <div class="card_heading mb-3 md:mb-4">
-                        <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
-                        </h3>
-                    </div>
-                    <div class="card_date mb-2 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                        </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
-                    </div>
-                    <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
-                    </div>
-                </div>
-
-                <!-- Card 4 -->
-                <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
-                    <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
-                    </div>
-                    <div class="card_heading mb-3 md:mb-4">
-                        <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
-                        </h3>
-                    </div>
-                    <div class="card_date mb-2 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                        </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
-                    </div>
-                    <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
-                    </div>
-                </div>
-
-                <!-- Card 5 -->
-                <div class="card p-3 md:p-4 bg-white w-7/8 mx-auto md:bg-gray-200 border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
-                    <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('images/masyarakat/berita.png') }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
-                    </div>
-                    <div class="card_heading mb-3 md:mb-4">
-                        <h3 class="text-cyan-900 font-semibold text-lg md:text-xl">
-                            Program Beasiswa Desa Sosor Dolok
-                        </h3>
-                    </div>
-                    <div class="card_date mb-2 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5 text-cyan-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                        </svg>
-                        <span class="text-sm md:text-base">18 Juni 2024</span>
-                    </div>
-                    <div class="card_text">
-                        <p class="text-slate-800 text-sm md:text-base mb-3">
-                            Program Beasiswa Bagi siswa siswi asal desa sosor dolok TAHUN 2025...
-                        </p>
-                        <a href="#" class="text-blue-600 text-sm md:text-base underline hover:text-blue-800">Read more</a>
-                    </div>
-                </div>
-
+                @endforeach
+            </div>
+            <div class="mt-8">
+                {{ $beritaData->links('vendor.pagination.tailwind') }}
             </div>
         </div>
     </section>

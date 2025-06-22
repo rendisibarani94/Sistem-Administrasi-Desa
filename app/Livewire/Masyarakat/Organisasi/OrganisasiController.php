@@ -3,15 +3,23 @@
 namespace App\Livewire\Masyarakat\Organisasi;
 
 use Livewire\Attributes\Layout;
+use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
 class OrganisasiController extends Component
 {
 
-    #[Layout('Components.layouts.masyarakat')]
+    #[Layout('components.layouts.masyarakat')]
     public function render()
     {
-        return view('masyarakat.organisasi-desa.organisasi-desa');
+        $organisasiDesa = DB::table('organisasi')
+            ->where('is_deleted', 0)
+            ->get();
+
+
+        return view('masyarakat.organisasi-desa.organisasi-desa',
+            ['organisasiDesa' => $organisasiDesa]
+        );
     }
 
 }

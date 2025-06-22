@@ -6,7 +6,37 @@
     {{-- Full Page Container --}}
     <div class="mx-4">
         <div class="flex justify-between">
-            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Kartu Keluarga</h1>
+            <h1 class="text-3xl font-semibold mt-6 mb-6">Kartu Keluarga</h1>
+        </div>
+
+        <div class="flex justify-between mx-4">
+            <nav class="flex " aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="#" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
+                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Kartu Keluarga</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <a href="/B5" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd" />
+                </svg>
+                <span>Cetak Buku Kartu Keluarga</span>
+            </a>
         </div>
 
         {{-- Create Modals Button & Table Search --}}
@@ -30,74 +60,82 @@
             </div>
         </div>
 
-                {{-- Table --}}
-                <div class="relative overflow-x-auto shadow-md mt-4 border-b-2 border-gray-300">
-                    <table class="min-w-full divide-y divide-gray-200 table-fixed" id="dataTable">
-                        <thead class="bg-gray-100">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
-                                    No
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
-                                    Nomor Kartu Keluarga
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
-                                    Kepala Keluarga
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
-                                    Alamat
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
-                                    Tanggal Keluar Surat
-                                </th>
-                                <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
-                                    Aksi
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                            @foreach ($kartu_keluargaData as $index => $item)
-                            <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 " >  {{-- @if($loop->index >= 10) hidden @endif" data-index="{{ $index }} --}}
-                                <td class="px-6 py-4 whitespace-nowrap text-center text-center font-semibold">
-                                    {{ $index + 1 }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
-                                    {{ $item->nomor_kartu_keluarga }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
-                                    {{ $item->nama_kepala_keluarga  }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
-                                    {{ $item->alamat_kk  }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
-                                    {{ \Carbon\Carbon::parse($item->tanggal_keluar)->locale('id')->translatedFormat('d F Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap font-semibold flex justify-center space-x-4">
-                                    <!-- Edit Button -->
-                                    <a href="{{ route('kartuKeluarga.edit', $item->id_kartu_keluarga) }}" class="text-blue-600 hover:text-blue-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-6 pt-1">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
-                                        </svg>
-                                        <span>Edit</span>
-                                    </a>
-                                    <!-- Delete Button -->
-                                    <a type="button" wire:click="confirmDelete({{ $item->id_kartu_keluarga }})"  class="text-red-600 hover:text-red-900 font-medium transition duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                        </svg>
-                                        <span>Hapus</span>
-                                    </a>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-        
-                    <div class="mt-4">
-                        {{ $kartu_keluargaData->links('vendor.pagination.tailwind') }}
-                    </div>
-                </div>
+        {{-- Table --}}
+        <div class="relative overflow-x-auto shadow-md mt-4 border-b-2 border-gray-300">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed" id="dataTable">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            No
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
+                            Nomor Kartu Keluarga
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
+                            Kepala Keluarga
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
+                            Alamat
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 cursor-pointer">
+                            Tanggal Keluar Surat
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Aksi
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    @foreach ($kartu_keluargaData as $index => $item)
+                    <tr class="page-row bg-white hover:bg-gray-300 transition duration-200 border-b-2 border-gray-300 "> {{-- @if($loop->index >= 10) hidden @endif" data-index="{{ $index }} --}}
+                        <td class="px-6 py-4 whitespace-nowrap text-center text-center font-semibold">
+                            {{ $index + 1 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
+                            {{ $item->nomor_kartu_keluarga }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
+                            {{ $item->nama_kepala_keluarga  }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
+                            {{ $item->alamat_kk  }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
+                            {{ \Carbon\Carbon::parse($item->tanggal_keluar)->locale('id')->translatedFormat('d F Y') }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap font-semibold flex justify-center space-x-4">
+
+                            <a href="{{ route('kartuKeluarga.detail', $item->id_kartu_keluarga) }}" class="text-teal-600 hover:text-teal-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                                <svg class="w-6 h-6" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-width="2" d="M21 12c0 1.2-4.03 6-9 6s-9-4.8-9-6c0-1.2 4.03-6 9-6s9 4.8 9 6Z" />
+                                    <path stroke="currentColor" stroke-width="2" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                                <span>Detail</span>
+                            </a>
+                            <!-- Edit Button -->
+                            <a href="{{ route('kartuKeluarga.edit', $item->id_kartu_keluarga) }}" class="text-blue-600 hover:text-blue-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-6 pt-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
+                                </svg>
+                                <span>Edit</span>
+                            </a>
+                            <!-- Delete Button -->
+                            <a type="button" wire:click="confirmDelete({{ $item->id_kartu_keluarga }})" class="text-red-600 hover:text-red-900 font-medium transition duration-200 flex items-center space-x-1.5 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
+                                <span>Hapus</span>
+                            </a>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+
+            <div class="mt-4">
+                {{ $kartu_keluargaData->links('vendor.pagination.tailwind') }}
+            </div>
+        </div>
 
     </div>
 
@@ -109,36 +147,37 @@
         // Handle the confirmation dialog
         @this.on('swal:confirm', (parameters) => {
             Swal.fire({
-                title: parameters[0].title,
-                text: parameters[0].text,
-                icon: parameters[0].icon,
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: parameters[0].confirmButtonText,
-                cancelButtonText: parameters[0].cancelButtonText,
-                reverseButtons: true
+                title: parameters[0].title
+                , text: parameters[0].text
+                , icon: parameters[0].icon
+                , showCancelButton: true
+                , confirmButtonColor: '#d33'
+                , cancelButtonColor: '#3085d6'
+                , confirmButtonText: parameters[0].confirmButtonText
+                , cancelButtonText: parameters[0].cancelButtonText
+                , reverseButtons: true
             }).then((result) => {
                 if (result.isConfirmed) {
                     @this.delete();
                 }
             });
         });
-        
+
         // Handle the success message
         @this.on('swal:success', (parameters) => {
             Swal.fire({
-                title: parameters[0].title,
-                text: parameters[0].text,
-                icon: parameters[0].icon,
-                imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}", 
-                imageWidth: 250, 
-                imageHeight: 250, 
-                imageAlt: 'Custom GIF', 
-                confirmButtonText: 'OK', 
-                confirmButtonColor: '#0f766e'
+                title: parameters[0].title
+                , text: parameters[0].text
+                , icon: parameters[0].icon
+                , imageUrl: "{{ asset('vendor/sweetalert/success/sukses.gif') }}"
+                , imageWidth: 250
+                , imageHeight: 250
+                , imageAlt: 'Custom GIF'
+                , confirmButtonText: 'OK'
+                , confirmButtonColor: '#0f766e'
             });
         });
     });
+
 </script>
 @endpush

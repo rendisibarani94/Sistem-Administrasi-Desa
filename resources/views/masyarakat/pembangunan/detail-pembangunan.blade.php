@@ -4,10 +4,10 @@
         <section class="pembangunan md:col-span-3 p-5 rounded-lg">
             <div class="judul_pembangunan mb-8">
                 <h5 class="text-teal-700 font-bold text-base md:text-lg mb-2 md:mb-4">
-                    P2
+                    Pembangunan {{ $pembangunan->sifat_proyek }}
                 </h5>
                 <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center space-x-2  mb-4">
-                    Pembangunan Wisma Di Sosor Dolok
+                    {{ $pembangunan->nama_kegiatan }}
                 </h1>
 
                 <div class="pembangunan_locate mb-6 sm:mb-4 flex items-center space-x-2">
@@ -15,14 +15,14 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                     </svg>
-                    <span class="text-sm sm:text-md">Laguboti</span>
+                    <span class="text-sm sm:text-md">{{ $pembangunan->lokasi }}</span>
                 </div>
 
                 <div class="pembangunan_date sm:mb-10 flex items-center space-x-2">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-teal-700">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                     </svg>
-                    <span class="text-sm sm:text-md">18 Juni 2024</span>
+                    <span class="text-sm sm:text-md">{{ \Carbon\Carbon::parse($pembangunan->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($pembangunan->tanggal_selesai)->locale('id')->translatedFormat('d F Y') }}</span>
                 </div>
             </div>
 
@@ -31,7 +31,7 @@
                     Tujuan Kegiatan
                 </h1>
                 <p class="text-black text-lg leading-relaxed text-justify w-9/10">
-                    Kegiatan ini bertujuan untuk membangun infrastruktur jalan desa sepanjang 1,2 km yang menghubungkan Dusun II dan Dusun IV. Pembangunan ini diharapkan dapat memperlancar distribusi hasil pertanian warga, mempermudah akses ke sekolah dan fasilitas kesehatan, serta meningkatkan konektivitas antarwilayah dalam desa.
+                    {{ $pembangunan->manfaat }}
                 </p>
             </div>
 
@@ -53,25 +53,25 @@
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     Pemerintah
                                 </th>
-                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">Rp 30.000.000</td>
+                                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">@rupiah($pembangunan->biaya_pemerintah)</td>
                             </tr>
                             <tr class="bg-white">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     Provinsi
                                 </th>
-                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">Rp 30.000.000</td>
+                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">@rupiah($pembangunan->biaya_provinsi)</td>
                             </tr>
                             <tr class="bg-white">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     Kabupaten/Kota
                                 </th>
-                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">Rp 30.000.000</td>
+                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">@rupiah($pembangunan->biaya_kabupaten_kota)</td>
                             </tr>
                             <tr class="bg-white">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     Swadaya
                                 </th>
-                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">Rp 30.000.000</td>
+                                <td class="px-6 py-4  font-medium text-gray-900 whitespace-nowrap">@rupiah($pembangunan->biaya_swadaya)</td>
                             </tr>
                         </tbody>
                     </table>
@@ -83,7 +83,7 @@
                 <h1 class="text-teal-700 font-bold text-xl sm:text-2xl md:text-3xl flex items-center space-x-2 mb-4 sm:mb-8">
                     Dokumentasi Kegiatan
                 </h1>
-                <img src="{{ asset('images/masyarakat/berita.png') }}" alt="Upacara HUT" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
+                <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" alt="Upacara HUT" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
             </div>
 
             <div class="keterangan mb-8">
@@ -91,7 +91,7 @@
                     Keterangan
                 </h1>
                 <p class="text-black text-lg leading-relaxed text-justify w-9/10">
-                    Kegiatan ini bertujuan untuk membangun infrastruktur jalan desa sepanjang 1,2 km yang menghubungkan Dusun II dan Dusun IV. Pembangunan ini diharapkan dapat memperlancar distribusi hasil pertanian warga, mempermudah akses ke sekolah dan fasilitas kesehatan, serta meningkatkan konektivitas antarwilayah dalam desa.
+                    {{ $pembangunan->keterangan }}
                 </p>
             </div>
         </section>

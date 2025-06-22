@@ -17,7 +17,7 @@ class TanahDesaController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Tanah Desa ini akan dihapus.',
@@ -32,7 +32,7 @@ class TanahDesaController extends Component
         DB::table('tanah_desa')
             ->where('id_tanah_desa', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -40,7 +40,7 @@ class TanahDesaController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         $tanahDesaData = DB::table('tanah_desa')

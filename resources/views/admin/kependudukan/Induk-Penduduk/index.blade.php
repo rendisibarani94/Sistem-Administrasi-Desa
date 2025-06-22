@@ -5,35 +5,52 @@
 
     {{-- Full Page Container --}}
     <div class="mx-4">
-        {{-- Information Container --}}
-        <div class="my-6 rounded-sm border-2 border-gray-300 p-4 md:p-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <!-- Cards - Stack vertically on mobile, horizontally on larger screens -->
-            <div class="card rounded-xl border-2 shadow-lg shadow-gray-500/50 border-gray-300 w-full md:w-1/5 mb-4 md:mb-0">
-                <div class="p-4 md:p-8 text-center">
-                    <h4 class="font-bold">Total Penduduk</h4>
-                    <h4 class="font-bold text-teal-700">60 Orang</h4>
-                </div>
-            </div>
-            <div class="card rounded-xl border-2 shadow-lg shadow-gray-500/50 border-gray-300 w-full md:w-1/5 mb-4 md:mb-0">
-                <div class="p-4 md:p-8 text-center">
-                    <h4 class="font-bold">Total Penduduk</h4>
-                    <h4 class="font-bold text-teal-700">60 Orang</h4>
-                </div>
-            </div>
-            <div class="card rounded-xl border-2 shadow-lg shadow-gray-500/50 border-gray-300 w-full md:w-1/5 mb-4 md:mb-0">
-                <div class="p-4 md:p-8 text-center">
-                    <h4 class="font-bold">Total Penduduk</h4>
-                    <h4 class="font-bold text-teal-700">60 Orang</h4>
-                </div>
-            </div>
+        <div class="flex justify-between">
+            <h1 class="text-3xl font-semibold mt-6 mb-6">Induk Penduduk</h1>
+        </div>
 
-            <!-- Button - Full width on mobile -->
-            <a type="button" class="cursor-pointer bg-teal-700 text-white font-bold py-2 px-4 h-10 rounded flex items-center justify-center md:justify-start space-x-2 w-full md:w-auto">
-                <svg class="w-5 h-5 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
-                    <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd" />
-                </svg>
-                <span>Cetak Data Kependudukan</span>
-            </a>
+        <div class="flex justify-between mx-4 ">
+            <nav class="flex mr-30" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="#" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
+                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Induk Penduduk</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <div class="flex space-x-2">
+                <a href="/B1" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Buku Induk Penduduk</span>
+                </a>
+                <a href="/B2" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Buku Mutasi Penduduk</span>
+                </a>
+                <a href="B3" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M8 3a2 2 0 0 0-2 2v3h12V5a2 2 0 0 0-2-2H8Zm-3 7a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h1v-4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v4h1a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2H5Zm4 11a1 1 0 0 1-1-1v-4h8v4a1 1 0 0 1-1 1H9Z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Buku Rekapitulasi Jumlah Penduduk</span>
+                </a>
+            </div>
         </div>
 
         {{-- Create Button & Table Search Section --}}
@@ -41,7 +58,7 @@
             <div class="flex flex-wrap gap-2">
                 <!-- Tambah Induk Penduduk Button -->
                 <a href="{{ route('indukPenduduk.create') }}" type="button" class="cursor-pointer bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M9 4a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm-2 9a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-1a4 4 0 0 0-4-4H7Zm8-1a1 1 0 0 1 1-1h1v-1a1 1 0 1 1 2 0v1h1a1 1 0 1 1 0 2h-1v1a1 1 0 1 1-2 0v-1h-1a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                     </svg>
                     <span>Tambah Data Induk Penduduk</span>
@@ -49,7 +66,7 @@
 
                 <!-- Tambah Induk Penduduk Button -->
                 <a href="{{ route('indukPenduduk.pindah') }}" type="button" class="cursor-pointer bg-orange-500 text-white focus:ring-2 focus:outline-none focus:ring-orange-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
-                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                         <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />
                     </svg>
                     <span>Penduduk Pindah</span>
@@ -120,7 +137,8 @@
                             </a>
 
                             <!-- Edit Button -->
-                            <a href="{{ route('indukPenduduk.mutasi', $item->id_penduduk) }}" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                            {{-- href="{{ route('indukPenduduk.mutasi', $item->id_penduduk) }}" --}}
+                            <a wire:click="mutasi({{ $item->id_penduduk }})" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg class="w-6 h-6 text-orange-500 hover:text-orange-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-6 pt-1">
                                     <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />
                                 </svg>

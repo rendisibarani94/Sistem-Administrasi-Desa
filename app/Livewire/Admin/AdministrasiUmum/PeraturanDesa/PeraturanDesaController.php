@@ -17,7 +17,7 @@ class PeraturanDesaController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Peraturan Desa ini akan dihapus.',
@@ -32,7 +32,7 @@ class PeraturanDesaController extends Component
         DB::table('peraturan_Desa')
             ->where('id_peraturan_desa', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -40,7 +40,7 @@ class PeraturanDesaController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(
@@ -50,7 +50,7 @@ class PeraturanDesaController extends Component
                     ->when($this->search, function ($query) {
                         return $query
                         ->where('tentang', 'like', '%' . $this->search . '%');
-                    }) 
+                    })
                     ->where('is_deleted', 0)
                     ->orderBy('id_peraturan_desa', 'desc')
                     ->paginate(10),

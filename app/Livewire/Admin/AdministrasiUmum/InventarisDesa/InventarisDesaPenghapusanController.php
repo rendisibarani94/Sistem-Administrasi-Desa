@@ -13,7 +13,7 @@ class InventarisDesaPenghapusanController extends Component
 
     public $search;
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

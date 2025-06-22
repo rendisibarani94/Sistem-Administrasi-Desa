@@ -77,12 +77,12 @@ class AgendaSuratDesaEditController extends Component
         $this->reset();
         $this->jenis_surat = 'Surat Masuk';
 
-        return redirect()->route('AgendaDesa')->with('success', 'Data Agenda Surat berhasil diubah!');
+        return redirect()->route('AgendaSuratDesa')->with('success', 'Data Agenda Surat berhasil diubah!');
     }
 
 
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.umum.agenda-surat.edit');

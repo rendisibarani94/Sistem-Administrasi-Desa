@@ -1,8 +1,8 @@
-@props(['active' => false, 'path' => null, 'customClass' => ''])
+@props(['active' => false, 'path' => null, 'customClass' => '', 'viewBox' => null])
 
 @php
     // Base classes always applied to the anchor element
-    $baseClasses = 'flex items-center p-2 transition duration-150 rounded-lg group';
+    $baseClasses = 'flex text-sm items-center p-1.5 transition duration-150 rounded-lg group cursor-pointer';
 
     // Classes for inactive (default) state
     $inactiveClasses = 'dark:text-zinc-950 hover:text-white dark:hover:bg-teal-700';
@@ -23,7 +23,8 @@
 <li>
     <a {{ $attributes->merge(['class' => $aClasses . ' ' . $customClass]) }} aria-current="{{ $active ? 'page' : 'false' }}">
         @if ($path)
-            <svg class="{{ $svgClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 21">
+            <svg class="{{ $svgClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="{{ $viewBox ?? '0 0 16 16' }}">
+                {{-- If the path is a string, use it directly; otherwise, assume it's an SVG path --}}
                 {!! $path !!}
             </svg>
         @endif

@@ -20,8 +20,6 @@ class TanahKasDesaCreateController extends Component
     #[Rule('max:10', message: 'Kolom Nomor Persil Terlalu Panjang')]
     public $persil;
 
-    #[Rule('required', message: 'Kolom Kelas Tanah Kas Desa Harus Diisi!')]
-    public $kelas;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $oleh_desa = 0;
@@ -78,7 +76,7 @@ class TanahKasDesaCreateController extends Component
 
     #[Rule('max:255', message: 'Kolom Keterngan Terlalu Panjang')]
     public $keterangan;
-    
+
     public function store(){
         $validated = $this->validate();
 
@@ -89,17 +87,11 @@ class TanahKasDesaCreateController extends Component
         return redirect()->route('TanahKasDesa')->with('success', 'Data Tanah Kas Desa berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(
-            'admin.umum.tanah-kas-desa.create',
-            [
-                'kelasTanahData' => DB::table('kelas_tanah')
-                ->where('is_deleted', 0)
-                ->orderBy('id_kelas_tanah', 'desc')
-                ->get()
-            ]
+            'admin.umum.tanah-kas-desa.create'
         );
     }
 }

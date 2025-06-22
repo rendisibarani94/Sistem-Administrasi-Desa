@@ -78,7 +78,7 @@ class DusunController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Dusun ini akan dihapus.',
@@ -87,13 +87,13 @@ class DusunController extends Component
             'cancelButtonText' => 'Batal',
         ]);
     }
-    
+
     public function delete()
     {
         DB::table('dusun')
             ->where('id_dusun', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -101,7 +101,7 @@ class DusunController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.master.dusun.index', [

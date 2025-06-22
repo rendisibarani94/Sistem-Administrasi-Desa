@@ -73,7 +73,7 @@ class JabatanController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Jabatan ini akan dihapus.',
@@ -88,7 +88,7 @@ class JabatanController extends Component
         DB::table('jabatan')
             ->where('id_jabatan', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -96,7 +96,7 @@ class JabatanController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.master.jabatan.index', [

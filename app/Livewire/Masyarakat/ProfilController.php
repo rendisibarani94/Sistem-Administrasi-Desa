@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Livewire\Masyarakat;
+use Illuminate\Support\Facades\DB;
 
 use Livewire\Attributes\Layout;
 use Livewire\Component;
@@ -8,10 +9,17 @@ use Livewire\Component;
 class ProfilController extends Component
 {
 
-    #[Layout('Components.layouts.masyarakat')]
+    #[Layout('components.layouts.masyarakat')]
     public function render()
     {
-        return view('masyarakat.profil');
+        $profil = DB::table('profil')->pluck('value', 'key');
+
+
+        return view(
+            'masyarakat.profil',[
+                'profil' => $profil
+            ]
+    );
     }
 
 }

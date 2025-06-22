@@ -76,7 +76,7 @@ class JenisInventarisController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Jenis Inventaris ini akan dihapus.',
@@ -90,7 +90,7 @@ class JenisInventarisController extends Component
         DB::table('jenis_inventaris')
             ->where('id_jenis_inventaris', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -98,7 +98,7 @@ class JenisInventarisController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.master.jenis-inventaris.index', [

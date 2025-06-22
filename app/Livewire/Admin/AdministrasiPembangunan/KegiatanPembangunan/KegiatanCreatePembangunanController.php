@@ -6,9 +6,12 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\Attributes\Rule;
+use Livewire\WithFileUploads;
 
 class KegiatanCreatePembangunanController extends Component
 {
+    use WithFileUploads;
+
     #[Rule('required', message: 'Kolom Nama Kegiatan Harus Diisi!')]
     #[Rule('max:255', message: 'Kolom Nama Kegiatan Maksimal 255 Karakter!')]
     public $nama_kegiatan;
@@ -46,21 +49,47 @@ class KegiatanCreatePembangunanController extends Component
     #[Rule('required', message: 'Kolom Sifat Proyek Kegiatan Harus Diisi!')]
     public $sifat_proyek;
 
+    #[Rule('required', message: 'Kolom Status Pengerjaan Kegiatan Harus Diisi!')]
+    public $status_pengerjaan;
+
     #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 Karakter!')]
     public $keterangan;
+
+    #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    public $dokumentasi;
+    public $oldDokumentasi;
+
+        public function updatedDokumentasi()
+    {
+        // Clean up previous file if exists
+        if ($this->oldDokumentasi) {
+            cleanup_livewire_temp_files($this->oldDokumentasi);
+        }
+
+        // Store reference to current file
+        $this->oldDokumentasi = $this->dokumentasi;
+    }
+
 
     public function store()
     {
         $validated = $this->validate();
 
+        if ($this->gambar) {
+
+            // Store new image
+            $imagePath = $this->dokumentasi->store('images/kegiatan-pembangunan', 'public');
+        }
+        $validated['dokumentasi'] = $imagePath ?? null;
+
         DB::table('pembangunan')->insert($validated);
 
         $this->reset();
 
-        return redirect()->route('RencanaPembangunan')->with('success', 'Data Rencana Kegiatan Pembangunan berhasil disimpan!');
+        return redirect()->route('Pembangunan')->with('success', 'Data Kegiatan Pembangunan berhasil disimpan!');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view('admin.pembangunan.rencana-kegiatan-pembangunan.create');

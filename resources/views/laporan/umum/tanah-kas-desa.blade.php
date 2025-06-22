@@ -3,7 +3,7 @@
 
 @section('content')
 <div class="mx-20">
-    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU TANAH KAS DESA 2025</h1>
+    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU TANAH KAS {{ $settings['nama_desa'] }} 2025</h1>
     <table class="table-auto mx-auto border mb-4 text-[10px]">
         <thead>
             <tr>
@@ -11,7 +11,6 @@
                 <th class="border px-2" rowspan="3">ASAL TANAH KAS DESA</th>
                 <th class="border px-2" rowspan="3">NOMOR SERTIFIKAT BUKU LETTER C / PERSIL</th>
                 <th class="border px-2" rowspan="3">LUAS (m)</th>
-                <th class="border px-2" rowspan="3">KELAS</th>
                 <th class="border px-2" colspan="6">PEROLEHAN TKD</th>
                 <th class="border px-2" colspan="5">JENIS TKD</th>
                 <th class="border px-2" colspan="2">PATOK TANDA BATAS</th>
@@ -49,7 +48,6 @@
                 <td class="border px-4">{{ $item->asal_tkd }}</td>
                 <td class="border px-4">{{ $item->letter_c }}</td>
                 <td class="border px-4">{{ $item->oleh_desa + $item->oleh_pemerintah + $item->oleh_provinsi + $item->oleh_kabupaten + $item->oleh_lain_lain }}m<sup>2</sup></td>
-                <td class="border px-4">{{ $item->kelas }}</td>
                 <td class="border px-4">{{ $item->oleh_desa }}m<sup>2</sup></td>
                 <td class="border px-4">{{ $item->oleh_pemerintah }}m<sup>2</sup></td>
                 <td class="border px-4">{{ $item->oleh_provinsi }}m<sup>2</sup></td>
@@ -78,12 +76,12 @@
         <div class="p-10 text-center">
             <h5 class="font-semibold">MENGETAHUI</h5>
             <h5 class="mb-10 ">KEPALA DESA</h5>
-            <h5 class="border-b-2 border-gray-900 pb-1 px-1">Nama Kepala Desa </h5>
+            <h5 class="border-b-2 border-gray-900 pb-1 px-1">{{ $kepala_desa }} </h5>
         </div>
         <div class="p-10 text-center">
             <h5 class="font-semibold">{{ $date }}</h5>
             <h5 class="mb-10 ">SEKRETARIS DESA</h5>
-            <h5 class="border-b-2 border-gray-900 pb-1 px-1">Nama Sekertaris</h5>
+            <h5 class="border-b-2 border-gray-900 pb-1 px-1">{{ $sekretaris }}</h5>
         </div>
     </div>
 </div>

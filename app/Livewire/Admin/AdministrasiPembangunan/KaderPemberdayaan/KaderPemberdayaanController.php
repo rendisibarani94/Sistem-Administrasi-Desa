@@ -17,7 +17,7 @@ class KaderPemberdayaanController extends Component
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
-        
+
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
             'text' => 'Data Kader Pemberdayaan ini akan dihapus.',
@@ -32,7 +32,7 @@ class KaderPemberdayaanController extends Component
         DB::table('kader_pemberdayaan')
             ->where('id_kader_pemberdayaan', $this->deleteId)
             ->update(['is_deleted' => 1]);
-        
+
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
@@ -40,7 +40,7 @@ class KaderPemberdayaanController extends Component
         ]);
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(

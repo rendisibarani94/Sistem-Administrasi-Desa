@@ -81,8 +81,17 @@ class IndukPendudukCreateController extends Component
     #[Rule('max:255', message: 'Input Asal Penduduk Maksimal 255 Karakter!')]
     public $asal_penduduk;
 
+    #[Rule('nullable|max:21', message: 'Input Asal Penduduk Maksimal 21 Karakter!')]
+    public $nomor_akta_lahir;
+
+    #[Rule('nullable|max:255', message: 'Input Asal Penduduk Maksimal 255 Karakter!')]
+    public $suku;
+
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
+
+    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang')]
+    public $keterangan;
 
     public function store()
     {
@@ -99,15 +108,30 @@ class IndukPendudukCreateController extends Component
     }
 
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
+        $kkData = DB::table('kartu_keluarga as kk')
+            ->join('penduduk as p', function ($join) {
+                $join->on('p.id_kartu_keluarga', '=', 'kk.id_kartu_keluarga')
+                    ->where('p.kedudukan_keluarga', 'KEPALA KELUARGA')
+                    ->where('p.is_mutated', 0)
+                    ->where('p.is_deleted', 0);
+            })
+            ->where('kk.is_deleted', 0)
+            ->select([
+                'kk.id_kartu_keluarga',
+                'kk.nomor_kartu_keluarga',
+                'p.nama_lengkap',
+            ])
+            ->get();
+
         return view(
             'admin.kependudukan.induk-penduduk.create',
             [
                 'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
                 'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
-                'kkData' => DB::table('kartu_keluarga')->where('is_deleted', 0)->get(),
+                'kkData' => $kkData,
             ]
         );
     }

@@ -22,8 +22,6 @@ class TanahKasDesaEditController extends Component
     #[Rule('max:10', message: 'Kolom Nomor Persil Terlalu Panjang')]
     public $persil;
 
-    #[Rule('required', message: 'Kolom Kelas Tanah Kas Desa Harus Diisi!')]
-    public $kelas;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $oleh_desa;
@@ -93,7 +91,6 @@ class TanahKasDesaEditController extends Component
         $this->asal_tkd = $tkd->asal_tkd;
         $this->letter_c = $tkd->letter_c;
         $this->persil = $tkd->persil;
-        $this->kelas = $tkd->kelas;
         $this->oleh_desa = $tkd->oleh_desa;
         $this->oleh_pemerintah = $tkd->oleh_pemerintah;
         $this->oleh_provinsi = $tkd->oleh_provinsi;
@@ -123,17 +120,11 @@ class TanahKasDesaEditController extends Component
         return redirect()->route('TanahKasDesa')->with('success', 'Data Tanah Kas Desa Berhasil Diubah');
     }
 
-    #[Layout('Components.layouts.layouts')]
+    #[Layout('components.layouts.layouts')]
     public function render()
     {
         return view(
-            'admin.umum.tanah-kas-desa.edit',
-            [
-                'kelasTanahData' => DB::table('kelas_tanah')
-                ->where('is_deleted', 0)
-                ->orderBy('id_kelas_tanah', 'desc')
-                ->get()
-            ]
+            'admin.umum.tanah-kas-desa.edit'
         );
     }
 }
