@@ -219,7 +219,7 @@ class AdminApbdesCreateController extends Component
         $apbdes['pendapatan_desa'] = $pendapatanId;
         $apbdes['pembiayaan_desa'] = $pembiayaanId;
         $apbdes['belanja_desa'] = $belanjaId;
-
+        $apbdes['id_dibuat_oleh'] = auth()->id();
         DB::table('apbdes')->insert($apbdes);
 
         $this->reset();

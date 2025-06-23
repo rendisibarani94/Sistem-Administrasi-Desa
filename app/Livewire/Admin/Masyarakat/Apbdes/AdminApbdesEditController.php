@@ -225,10 +225,11 @@ class AdminApbdesEditController extends Component
 
         $apbdesUpdate['tahun_anggaran'] = $this->tahun_anggaran;
         $apbdesUpdate['updated_at'] = now();
-
+        $apbdesUpdate['id_dibuat_oleh'] = auth()->id();
         DB::table('pendapatan_desa')->where('id_pendapatan_desa', $this->pendapatan_desa)->update($pendapatanUpdate);
         DB::table('pembiayaan_desa')->where('id_pembiayaan_desa', $this->pembiayaan_desa)->update($pembiayaanUpdate);
         DB::table('belanja_desa')->where('id_belanja_desa', $this->belanja_desa)->update($belanjaUpdate);
+
         DB::table('apbdes')->where('id_apbdes', $this->id_apbdes)->update($apbdesUpdate);
 
         // FIXED: Redirect BEFORE resetting

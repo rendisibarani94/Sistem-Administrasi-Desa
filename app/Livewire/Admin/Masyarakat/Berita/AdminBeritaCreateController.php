@@ -54,6 +54,7 @@ class AdminBeritaCreateController extends Component
             $imagePath = $this->gambar->store('images/berita', 'public');
         }
         $validated['gambar'] = $imagePath ?? null;
+        $validated['id_dibuat_oleh'] = auth()->id();
         DB::table('berita')->insert($validated);
 
         // Clean up current temporary file

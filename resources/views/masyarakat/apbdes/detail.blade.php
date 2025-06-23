@@ -10,13 +10,21 @@
                 <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4 border-b-2 pb-2 border-gray-500">
                     Grafik Laporan Kuangan Tahun {{ $apbdes->tahun_anggaran }}
                 </h3>
+
+            <div class="flex space-x-4">
                 <div class="date flex space-x-2 w-full md:w-auto">
                     <svg class="w-5 h-5 text-teal-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z" />
                     </svg>
                     <p class="text-sm md:text-sm font-semibold text-teal-900">{{ \Carbon\Carbon::parse($apbdes->created_at)->locale('id')->translatedFormat('d F Y') }}</p>
-
                 </div>
+                <div class="flex items-center space-x-2 text-gray-600 mb-4">
+                    <svg class="w-6 h-6 text-teal-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd"/>
+                    </svg>
+                    <span class="text-sm md:text-sm font-semibold text-teal-900w">{{$apbdes->nama_pembuat}}</span>
+                </div>
+            </div>
             </div>
 
             <div class="apbdes-pelaksanaan mb-8">

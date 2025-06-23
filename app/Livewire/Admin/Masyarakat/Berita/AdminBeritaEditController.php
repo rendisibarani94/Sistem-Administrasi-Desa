@@ -70,7 +70,7 @@ class AdminBeritaEditController extends Component
         }
         // If no new image is uploaded, keep the existing image
         $validated['gambar'] = $imagePath ?? $this->existingGambarBerita ?? null; // Use existing image if no new image is uploaded
-
+        $validated['id_dibuat_oleh'] = auth()->id();
         DB::table('berita')->where('id_berita', $this->id_berita)->update($validated);
 
         // Clean up current temporary file

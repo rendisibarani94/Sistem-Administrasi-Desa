@@ -10,11 +10,19 @@
                 {{ $pengumuman->judul }}
             </h3>
 
-            <div class="flex items-center space-x-2 text-gray-600 mb-4">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-teal-700">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                </svg>
-                <span class="text-sm md:text-base">{{ \Carbon\Carbon::parse($pengumuman->created_at)->locale('id')->translatedFormat('d F Y') }}</span>
+            <div class="flex space-x-4">
+                <div class="flex items-center space-x-2 text-gray-600 mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="size-5 text-teal-700">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                    </svg>
+                    <span class="text-sm md:text-base">{{ \Carbon\Carbon::parse($pengumuman->created_at)->locale('id')->translatedFormat('d F Y') }}</span>
+                </div>
+                <div class="flex items-center space-x-2 text-gray-600 mb-4">
+                    <svg class="w-6 h-6 text-teal-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm md:text-base">{{$pengumuman->nama_pembuat}}</span>
+                </div>
             </div>
 
             <div class="gambar flex justify-center mb-6">
@@ -22,7 +30,7 @@
             </div>
 
             <div class="text-gray-700 text-base md:text-md leading-relaxed">
-            {!! $pengumuman->deskripsi !!}
+                {!! $pengumuman->deskripsi !!}
             </div>
         </section>
 

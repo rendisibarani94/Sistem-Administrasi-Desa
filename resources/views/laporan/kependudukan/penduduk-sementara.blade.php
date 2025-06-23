@@ -10,7 +10,7 @@
                 <th class="border px-2" rowspan="2">NAMA LENGKAP</th>
                 <th class="border px-2" colspan="2">JENIS KELAMIN</th>
                 <th class="border px-2" rowspan="2">NOMOR IDENTITAS / TANDA PENGENAL</th>
-                <th class="border px-2" rowspan="2">TEMPAT DAN TANGGAL LAHIR / UMUR</th>
+                <th class="border px-2" rowspan="2">TEMPAT DAN TANGGAL LAHIR </th>
                 <th class="border px-2" rowspan="2">PEKERJAAN</th>
                 <th class="border px-2" colspan="2">KEWARGANEGARAAN</th>
                 <th class="border px-2" rowspan="2">DATANG DARI</th>
@@ -28,26 +28,25 @@
             </tr>
         </thead>
         <tbody>
-            {{-- @foreach($indukPendudukData as $index => $item) --}}
+            @foreach($pendudukSementaraData as $index => $item)
             <tr>
-                {{-- <td class="border px-4 text-center">{{ $index + 1 }}</td>
+                <td class="border px-4 text-center">{{ $index + 1 }}</td>
                 <td class="border px-4">{{ $item->nama_lengkap }}</td>
-                <td class="border px-4">{{ $item->jenis_kelamin }}</td>
-                <td class="border px-4">{{ $item->status_perkawinan }}</td>
-                <td class="border px-4">{{ $item->tempat_lahir }}</td>
-                <td class="border px-4"> {{ \Carbon\Carbon::parse($item->tanggal_lahir)->locale('id')->translatedFormat('d F Y') }}</td>
-                <td class="border px-4">{{ $item->agama }}</td>
-                <td class="border px-4">{{ $item->pendidikan_terakhir }}</td>
-                <td class="border px-4">{{ $item->pekerjaan }}</td>
-                <td class="border px-4">{{ $item->baca_huruf }}</td>
-                <td class="border px-4">{{ $item->kewarganegaraan ?? '-' }}</td>
-                <td class="border px-4">{{ $item->alamat }}</td>
-                <td class="border px-4">{{ $item->kedudukan_keluarga }}</td>
-                <td class="border px-4">{{ $item->nik }}</td>
-                <td class="border px-4">{{ $item->nomor_kartu_keluarga }}</td>
-                <td class="border px-4">{{ $item->keterangan ?? '-' }}</td> --}}
+                <td class="border px-4">{{ $item->jenis_kelamin == 'Laki-laki' ? 'L' : '-' }}</td>
+                <td class="border px-4">{{ $item->jenis_kelamin == 'Perempuan' ? 'P' : '-' }}</td>
+                <td class="border px-4">{{ $item->nomor_pengenal }}</td>
+                <td class="border px-4">{{ $item->tempat_lahir.', '. $item->tanggal_lahir }}</td>
+                <td class="border px-4">{{ $item->nama_pekerjaan }}</td>
+                <td class="border px-4">{{ $item->kewarganegaraan }}</td>
+                <td class="border px-4">{{ $item->keturunan }}</td>
+                <td class="border px-4">{{ $item->asal }}</td>
+                <td class="border px-4">{{ $item->maksud_kedatangan }}</td>
+                <td class="border px-4">{{ $item->tokoh_tujuan . ', '. $item->alamat_tujuan }}</td>
+                <td class="border px-4">{{ $item->tanggal_kedatangan }}</td>
+                <td class="border px-4">{{ $item->tanggal_kepulangan }}</td>
+                <td class="border px-4">{{ $item->keterangan ?? '-' }}</td>
             </tr>
-            {{-- @endforeach --}}
+            @endforeach
         </tbody>
     </table>
 

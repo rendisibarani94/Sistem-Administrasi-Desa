@@ -19,11 +19,12 @@ class DetailBeritaController extends Component
     public function render()
     {
         $berita = DB::table('berita')
-            ->where('id_berita', $this->id_berita_detail) // $id is the specific ID you're looking for
-            ->where('is_deleted', 0)
+            ->join('users', 'berita.id_dibuat_oleh', '=', 'users.id')
+            ->where('berita.id_berita', $this->id_berita_detail)
+            ->where('berita.is_deleted', 0)
+            ->select('berita.*', 'users.name as nama_pembuat')
             ->first();
 
         return view('masyarakat.berita-desa.detail-berita', ['berita' => $berita]);
     }
-
 }

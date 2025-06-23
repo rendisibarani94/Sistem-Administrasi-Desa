@@ -55,15 +55,11 @@ class AdminAgendaCreateController extends Component
         $validated = $this->validate();
 
         if ($this->gambar) {
-            // Delete old image if exists
-            if ($this->existingGambarBerita && Storage::disk('public')->exists($this->existingGambarBerita)) {
-                Storage::disk('public')->delete($this->existingGambar);
-            }
-
             // Store new image
             $imagePath = $this->gambar->store('images/agenda', 'public');
         }
         $validated['gambar'] = $imagePath ?? null;
+        $validated['id_dibuat_oleh'] = auth()->id();
         DB::table('agenda')->insert($validated);
 
         // Clean up current temporary file

@@ -19,8 +19,10 @@ class DetailPengumumanController extends Component
     public function render()
     {
         $pengumuman = DB::table('pengumuman')
-            ->where('id_pengumuman', $this->id_pengumuman)
-            ->where('is_deleted', 0)
+            ->join('users', 'pengumuman.id_dibuat_oleh', '=', 'users.id')
+            ->where('pengumuman.id_pengumuman', $this->id_pengumuman)
+            ->where('pengumuman.is_deleted', 0)
+            ->select('pengumuman.*', 'users.name as nama_pembuat')
             ->first();
 
         return view('masyarakat.pengumuman.detail-pengumuman', [

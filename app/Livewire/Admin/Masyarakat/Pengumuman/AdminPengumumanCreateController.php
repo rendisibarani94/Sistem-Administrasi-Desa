@@ -55,6 +55,7 @@ class AdminPengumumanCreateController extends Component
             $imagePath = $this->gambar->store('images/pengumuman', 'public');
         }
         $validated['gambar'] = $imagePath ?? null;
+        $validated['id_dibuat_oleh'] = auth()->id();
         DB::table('pengumuman')->insert($validated);
 
         // Clean up current temporary file

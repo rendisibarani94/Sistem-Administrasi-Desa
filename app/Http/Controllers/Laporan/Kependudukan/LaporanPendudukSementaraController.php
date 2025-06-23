@@ -11,23 +11,19 @@ class LaporanPendudukSementaraController extends Controller
 {
     public function displayB4()
     {
-        // $indukPendudukData = DB::table('penduduk')
-        // ->where('is_deleted', 0)
-        // ->orderBy('id_penduduk', 'desc')
-        // ->get();
 
-        $indukPendudukData = DB::table('penduduk')
-        ->join('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
-        ->select('penduduk.*', 'kartu_keluarga.nomor_kartu_keluarga')
-        ->where('penduduk.is_deleted', 0)
-        ->orderBy('penduduk.id_kartu_keluarga', 'desc')
+        $pendudukSementaraData = DB::table('penduduk_sementara')
+        ->join('pekerjaan', 'penduduk_sementara.pekerjaan', '=', 'pekerjaan.id_pekerjaan')
+        ->select('penduduk_sementara.*', 'pekerjaan.pekerjaan as nama_pekerjaan')
+        ->where('penduduk_sementara.is_deleted', 0)
+        ->orderBy('penduduk_sementara.id_penduduk', 'desc')
         ->get();
 
 
         return view(
             'laporan.kependudukan.penduduk-sementara',
             [
-                'indukPendudukData' => $indukPendudukData,
+                'pendudukSementaraData' => $pendudukSementaraData,
                 'date' => date('m/d/Y'),
                 'year' => date('Y')
             ],

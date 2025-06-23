@@ -93,12 +93,14 @@ $results = DB::table('apbdes')
     ->join('belanja_desa', 'apbdes.belanja_desa', '=', 'belanja_desa.id_belanja_desa')
     ->join('pendapatan_desa', 'apbdes.pendapatan_desa', '=', 'pendapatan_desa.id_pendapatan_desa')
     ->join('pembiayaan_desa', 'apbdes.pembiayaan_desa', '=', 'pembiayaan_desa.id_pembiayaan_desa')
+    ->join('users', 'apbdes.id_dibuat_oleh', '=', 'users.id')
     ->where('apbdes.id_apbdes', $this->id_apbdes)
     ->select([
         'apbdes.*',
         'belanja_desa.*',
         'pembiayaan_desa.*',
         'pendapatan_desa.*',
+        'users.name as nama_pembuat',
         DB::raw("({$belanjaAnanggaranExpr}) AS anggaranBelanja"),
         DB::raw("({$belanjaRealisasiExpr}) AS realisasiBelanja"),
         DB::raw("({$pembiayaanAnanggaranExpr}) AS anggaranPembiayaan"),

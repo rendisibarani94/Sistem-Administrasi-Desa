@@ -9,13 +9,17 @@ use Livewire\Component;
 class AgendaController extends Component
 {
 
-        public $selectedAgenda; // Store selected agenda data
+    public $selectedAgenda; // Store selected agenda data
     public $showModal = false; // Control modal visibility
 
     // Show agenda details in modal
     public function showAgenda($id)
     {
         $this->selectedAgenda = DB::table('agenda')
+            ->join('users', 'agenda.id_dibuat_oleh', '=', 'users.id')
+            ->where('agenda.is_deleted', 0)
+            ->orderBy('agenda.id_agenda', 'desc')
+            ->select('agenda.*', 'users.name as nama_pembuat')
             ->where('id_agenda', $id)
             ->first();
 
@@ -33,13 +37,14 @@ class AgendaController extends Component
     public function render()
     {
         $agenda = DB::table('agenda')
-                ->where('is_deleted', 0)
-                ->orderBy('id_agenda', 'desc')
-                ->paginate(5);
+            ->join('users', 'agenda.id_dibuat_oleh', '=', 'users.id')
+            ->where('agenda.is_deleted', 0)
+            ->orderBy('agenda.id_agenda', 'desc')
+            ->select('agenda.*', 'users.name as nama_pembuat')
+            ->paginate(5);
 
         return view('masyarakat.agenda-desa.agenda-desa', [
             'agendaData' => $agenda,
         ]);
     }
-
 }
