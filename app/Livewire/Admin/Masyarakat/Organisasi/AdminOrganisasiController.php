@@ -45,6 +45,12 @@ class AdminOrganisasiController extends Component
             'admin.masyarakat.organisasi.index',
             [
                 'organisasiData' => DB::table('organisasi')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('nama_organisasi', 'like', '%' . $this->search . '%')
+                                ->orWhere('ketua', 'like', '%' . $this->search . '%');
+                        });
+                    })
                     ->where('is_deleted', 0)
                     ->paginate(10),
             ]

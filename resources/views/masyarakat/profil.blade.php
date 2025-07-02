@@ -1,3 +1,4 @@
+
 <div>
     <section class="terkait px-4 md:px-8 lg:px-36 py-8 md:py-12 bg-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center mb-10">
         <!-- teks + button -->
@@ -5,7 +6,8 @@
             <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl">PROFIL DESA</h3>
             <div class="text-gray-700 text-base  md:text-md leading-relaxed w-full text-justify">
                 @if(isset($profil['profil_desa']))
-                {!! $profil['profil_desa'] !!}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($profil['profil_desa']) !!}
+
                 @else
                 <p class="text-gray-500 italic">
                     Deskripsi beranda belum tersedia. Silakan hubungi admin.
@@ -43,7 +45,8 @@
                 <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">VISI {{ $settings['nama_desa'] }}</h3>
                 <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
                     @if(isset($profil['visi_desa']))
-                    {!! $profil['visi_desa'] !!}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($profil['visi_desa']) !!}
+
                     @else
                     <p class="text-gray-500 italic">
                         Visi Desa belum tersedia. Silakan hubungi admin.
@@ -57,7 +60,7 @@
                 <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">MISI {{ $settings['nama_desa'] }}</h3>
                 <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
                     @if(isset($profil['misi_desa']))
-                    {!! $profil['misi_desa'] !!}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($profil['misi_desa']) !!}
                     @else
                     <p class="text-gray-500 italic">
                         Misi Desa belum tersedia. Silakan hubungi admin.
@@ -74,7 +77,7 @@
             <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">SEJARAH {{ $settings['nama_desa'] }}</h3>
             <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
                 @if(isset($profil['sejarah_desa']))
-                {!! $profil['sejarah_desa'] !!}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($profil['sejarah_desa']) !!}
                 @else
                 <p class="text-gray-500 italic">
                     Sejarah Desa belum tersedia. Silakan hubungi admin.

@@ -47,6 +47,14 @@ class KegiatanPembangunanController extends Component
             'admin.pembangunan.rencana-kegiatan-pembangunan.index',
             [
                 'pembangunanData' => DB::table('pembangunan')
+                                ->when($this->search, function ($query) {
+                    return $query->where(function ($subQuery) {
+                        $subQuery->where('nama_kegiatan', 'like', '%' . $this->search . '%')
+                            ->orWhere('pelaksana', 'like', '%' . $this->search . '%')
+                            ->orWhere('sifat_proyek', 'like', '%' . $this->search . '%')
+                            ->orWhere('status_pengerjaan', 'like', '%' . $this->search . '%');
+                    });
+                })
                 ->where('is_deleted', 0)
                 ->orderBy('id_pembangunan', 'desc')
                 ->paginate(10),

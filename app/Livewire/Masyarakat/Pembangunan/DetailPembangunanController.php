@@ -22,8 +22,13 @@ class DetailPembangunanController extends Component
             ->where('is_deleted', 0)
             ->first();
 
+        $daftarPembangunan = DB::table('pembangunan')
+            ->where('is_deleted', 0)
+            ->get();
+
         return view('masyarakat.pembangunan.detail-pembangunan', [
             'pembangunan' => $pembangunan,
+            'daftarPembangunan' => $daftarPembangunan,
         ]);
     }
 

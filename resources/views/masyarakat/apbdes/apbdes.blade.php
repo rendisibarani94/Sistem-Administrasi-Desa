@@ -53,21 +53,27 @@
                 <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                     Berita Desa
                 </h3>
-                <div class="container">
-                    <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-teal-300 p-2 rounded-xs shadow-sm shadow-slate-400">
-                        <div class="w-full sm:w-1/3">
-                            <img src="{{ asset('images/masyarakat/berita.png') }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
-                        </div>
-                        <div class="flex flex-col justify-between flex-1 h-full">
-                            <h4 class="text-xs font-semibold mb-2">
-                                Berita desa pada hari senin
-                            </h4>
-                            <a href="#" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
-                                Baca Selengkapnya
-                            </a>
+                @foreach ($daftarBerita as $beritas)
+                    <div class="container space-y-2">
+                        <!-- Berita item -->
+                        <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
+                            <!-- thumbnail -->
+                            <div class="w-full sm:w-1/3">
+                                <img src="{{ asset('storage/' . $beritas->gambar) }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
+                            </div>
+                            <!-- title + link -->
+                            <div class="flex flex-col justify-between flex-1 h-full">
+                                <h4 class="text-xs font-semibold mb-2">
+                                    {{ $beritas->judul }}
+                                </h4>
+                                <a href="#" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
+                                    Baca Selengkapnya
+                                </a>
+
+                            </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
             </section>
         </div>
     </div>

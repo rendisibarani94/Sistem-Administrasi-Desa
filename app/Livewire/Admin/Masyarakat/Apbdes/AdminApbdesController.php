@@ -111,29 +111,31 @@ class AdminApbdesController extends Component
             $pendapatanColumns
         ));
 
-        // Build the query with join
-$results = DB::table('apbdes')
-    ->join('belanja_desa', 'apbdes.belanja_desa', '=', 'belanja_desa.id_belanja_desa')
-    ->join('pendapatan_desa', 'apbdes.pendapatan_desa', '=', 'pendapatan_desa.id_pendapatan_desa')
-    ->join('pembiayaan_desa', 'apbdes.pembiayaan_desa', '=', 'pembiayaan_desa.id_pembiayaan_desa')
-    ->select([
-        'apbdes.*',
-        'belanja_desa.*',
-        'pembiayaan_desa.*',
-        'pendapatan_desa.*',
-        DB::raw("({$belanjaAnanggaranExpr}) AS anggaranBelanja"),
-        DB::raw("({$belanjaRealisasiExpr}) AS realisasiBelanja"),
-        DB::raw("({$pembiayaanAnanggaranExpr}) AS anggaranPembiayaan"),
-        DB::raw("({$pembiayaanRealisasiExpr}) AS realisasiPembiayaan"),
-        DB::raw("({$pendapatAnanggaranExpr}) AS anggaranPendapatan"),
-        DB::raw("({$pendapatanRealisasiExpr}) AS realisasiPendapatan")
-    ])
-    ->paginate(10);
+
 
         return view(
             'admin.masyarakat.apbdes.index',
             [
-                'apbdesData' => $results,
+                'apbdesData' => DB::table('apbdes')
+                    ->when($this->search, function ($query) {
+                        return $query->where('tahun_anggaran', 'like', '%' . $this->search . '%');
+                    })
+                    ->join('belanja_desa', 'apbdes.belanja_desa', '=', 'belanja_desa.id_belanja_desa')
+                    ->join('pendapatan_desa', 'apbdes.pendapatan_desa', '=', 'pendapatan_desa.id_pendapatan_desa')
+                    ->join('pembiayaan_desa', 'apbdes.pembiayaan_desa', '=', 'pembiayaan_desa.id_pembiayaan_desa')
+                    ->select([
+                        'apbdes.*',
+                        'belanja_desa.*',
+                        'pembiayaan_desa.*',
+                        'pendapatan_desa.*',
+                        DB::raw("({$belanjaAnanggaranExpr}) AS anggaranBelanja"),
+                        DB::raw("({$belanjaRealisasiExpr}) AS realisasiBelanja"),
+                        DB::raw("({$pembiayaanAnanggaranExpr}) AS anggaranPembiayaan"),
+                        DB::raw("({$pembiayaanRealisasiExpr}) AS realisasiPembiayaan"),
+                        DB::raw("({$pendapatAnanggaranExpr}) AS anggaranPendapatan"),
+                        DB::raw("({$pendapatanRealisasiExpr}) AS realisasiPendapatan")
+                    ])
+                    ->paginate(10),
             ]
         );
     }

@@ -44,9 +44,9 @@ class TanahDesaController extends Component
     public function render()
     {
         $tanahDesaData = DB::table('tanah_desa')
-        ->select(
-            '*',
-            DB::raw('
+            ->select(
+                '*',
+                DB::raw('
                 luas_hm +
                 luas_hgb +
                 luas_hp +
@@ -69,10 +69,16 @@ class TanahDesaController extends Component
                 luas_tanah_kosong +
                 luas_tanah_lain AS volume
             ')
-        )
-        ->where('is_deleted', 0)
-        ->orderBy('id_tanah_desa', 'desc')
-        ->paginate(10);
+            )
+            ->when($this->search, function ($query) {
+                return $query->where(function ($subQuery) {
+                    $subQuery->where('nama_pemegang_hak_tanah', 'like', '%' . $this->search . '%')
+                        ->orWhere('mutasi', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->where('is_deleted', 0)
+            ->orderBy('id_tanah_desa', 'desc')
+            ->paginate(10);
 
         return view('admin.umum.tanah-desa.index', compact('tanahDesaData'));
     }

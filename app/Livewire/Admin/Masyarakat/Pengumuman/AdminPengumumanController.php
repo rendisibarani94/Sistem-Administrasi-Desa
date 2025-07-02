@@ -45,6 +45,12 @@ class AdminPengumumanController extends Component
             'admin.masyarakat.pengumuman.index',
             [
                 'pengumumanData' => DB::table('pengumuman')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('judul', 'like', '%' . $this->search . '%')
+                                ->orWhere('deskripsi', 'like', '%' . $this->search . '%');
+                        });
+                    })
                     ->where('is_deleted', 0)
                     ->paginate(10),
             ]

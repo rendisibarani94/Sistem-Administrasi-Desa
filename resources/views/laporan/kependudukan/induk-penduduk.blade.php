@@ -1,8 +1,4 @@
-@extends('Components.layouts.laporan')
-
-@push('styles')
-<link rel="stylesheet" href="{{ asset('build/assets/app-DnvfNtza.css') }}">
-@endpush
+@extends('components.layouts.laporan')
 
 @section('content')
 <div class="mx-5">

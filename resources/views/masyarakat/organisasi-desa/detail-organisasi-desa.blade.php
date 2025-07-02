@@ -21,7 +21,7 @@
                         <span class="ml-2">: {{ $organisasiDesa->tanggal_berdiri ?? 'Belum ada tahun' }}</span>
                     </div>
                     <div class="flex">
-                        <span class="w-42 sm:w-50">Ketua</span>
+                        <span class="w-42 sm:w-50 font-semibold">Ketua</span>
                         <span class="ml-2">: {{ $organisasiDesa->ketua ?? 'Belum ada ketua' }}</span>
                     </div>
                     <div class="flex">
@@ -101,13 +101,14 @@
             </div>
         </div>
 
-        <div class="visi-misi my-10 space-y-10">
+        <div class="visi-misi my-10 space-y-10 py-4 px-8">
             <div class="visi">
                 <h1 class="text-teal-700 font-bold text-xl md:text-3xl flex items-center space-x-2 mb-6 md:mb-8">
                     Visi {{ $organisasiDesa->nama_organisasi ?? 'Organisasi Desa' }}
                 </h1>
                 <div class="text-slate-800 text-sm md:text-base mb-3">
-                    {!! Str::of($organisasiDesa->misi)->stripTags('p,br') !!}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($organisasiDesa->visi) !!}
+
                 </div>
             </div>
 
@@ -116,7 +117,7 @@
                     Misi {{ $organisasiDesa->nama_organisasi ?? 'Organisasi Desa' }}
                 </h1>
                 <div class="text-slate-800 text-sm md:text-base mb-3">
-                    {{ nl2br(strip_tags($organisasiDesa->misi)) }}
+                    {!! App\Helpers\HtmlSanitizer::cleanList($organisasiDesa->misi) !!}
                 </div>
             </div>
         </div>

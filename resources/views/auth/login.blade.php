@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
-            background-image: url('https://picsum.photos/1920/1080');
+            background-image: url({{ asset('images/masyarakat/beranda.png') }});
             background-size: cover;
             background-position: center;
             background-attachment: fixed;

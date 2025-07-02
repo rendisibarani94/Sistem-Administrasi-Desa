@@ -45,6 +45,12 @@ class AdminAgendaController extends Component
             'admin.masyarakat.agenda.index',
             [
                 'agendaData' => DB::table('agenda')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('judul', 'like', '%' . $this->search . '%')
+                                ->orWhere('tujuan_agenda', 'like', '%' . $this->search . '%');
+                        });
+                    })
                     ->where('is_deleted', 0)
                     ->paginate(10),
             ]

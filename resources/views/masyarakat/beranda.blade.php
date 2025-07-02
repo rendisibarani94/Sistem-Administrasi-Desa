@@ -12,7 +12,7 @@
         </div>
     </section>
 
-    <section class="card carousel mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-15" x-data="carousel()">
+    {{-- <section class="card carousel mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-15" x-data="carousel()">
         <h1 class="text-3xl font-bold text-teal-700 text-center mb-10">Perangkat Desa</h1>
         <div class="flex items-center justify-center mt-4">
             <!-- Left Arrow -->
@@ -79,7 +79,76 @@
                 </button>
             </template>
         </div>
-    </section>
+    </section> --}}
+
+    <section class="card carousel mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mb-15" x-data="carousel()">
+    <h1 class="text-3xl font-bold text-teal-700 text-center mb-10">Perangkat Desa</h1>
+    <div class="flex items-center justify-center mt-4">
+        <!-- Left Arrow -->
+        <div class="arrow-left">
+            <a href="#" @click.prevent="prev()" class="bg-gray-200 p-2 rounded-full inline-block transition-opacity duration-300" :class="{'opacity-50 cursor-not-allowed': currentIndex === 0, 'hover:bg-gray-300': currentIndex > 0}">
+                <svg class="w-8 h-8 sm:w-10 sm:h-10 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 19-7-7 7-7" />
+                </svg>
+            </a>
+        </div>
+
+        <!-- Carousel Items -->
+        <div class="overflow-hidden mx-4 w-full max-w-[90%] sm:max-w-2xl md:max-w-4xl lg:max-w-6xl" x-ref="carouselContainer">
+            <div class="flex transition-transform duration-500 ease-in-out" :style="`transform: translateX(-${currentIndex * slideWidth}px)`">
+                <template x-if="perangkatDesa.length > 0">
+                    <div class="flex">
+                        <template x-for="(item, index) in perangkatDesa" :key="index">
+                            <div class="flex-shrink-0 px-2 sm:px-4 w-full sm:w-1/2 md:w-1/3">
+                                <div class="card border border-teal-500 rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
+                                    <div class="card-header mb-4">
+                                        <img :src="item.foto ? `storage/${item.foto}` : 'images/masyarakat/beranda.png'" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" :alt="item.nama_lengkap">
+                                    </div>
+                                    <div class="card-text">
+                                        <h4 class="text-black font-bold text-center text-lg sm:text-xl" x-text="item.nama_lengkap"></h4>
+                                        <h5 class="text-teal-600 text-center italic text-sm sm:text-base" x-text="item.jabatan"></h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Empty State -->
+                <template x-if="perangkatDesa.length === 0">
+                    <div class="flex-shrink-0 px-2 sm:px-4 w-full">
+                        <div class="card border border-teal-500 rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
+                            <div class="card-header mb-4">
+                                <img src="images/masyarakat/beranda.png" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="Default Image">
+                            </div>
+                            <div class="card-text">
+                                <h4 class="text-black font-bold text-center text-lg sm:text-xl">Data tidak tersedia</h4>
+                                <h5 class="text-teal-600 text-center italic text-sm sm:text-base">Belum ada data perangkat desa</h5>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Right Arrow -->
+        <div class="arrow-right">
+            <a href="#" @click.prevent="next()" class="bg-gray-200 p-2 rounded-full inline-block transition-opacity duration-300" :class="{'opacity-50 cursor-not-allowed': currentIndex >= maxIndex, 'hover:bg-gray-300': currentIndex < maxIndex}">
+                <svg class="w-8 h-8 sm:w-10 sm:h-10 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </a>
+        </div>
+    </div>
+
+    <!-- Dots Navigation -->
+    <div class="flex justify-center mt-6 space-x-2" x-show="totalPages > 1">
+        <template x-for="(_, index) in totalPages" :key="index">
+            <button @click="goToPage(index)" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-300" :class="{'bg-teal-700': Math.floor(currentIndex / itemsPerView) === index, 'bg-gray-300 hover:bg-gray-400': Math.floor(currentIndex / itemsPerView) !== index}">
+            </button>
+        </template>
+    </div>
+</section>
 
     <section class="berita_desa bg-cyan-200 mb-15">
         <div class="py-10 md:py-20 px-4 md:px-8 lg:px-30">
@@ -173,73 +242,71 @@
 
 </div>
 @push('scripts')
+<!-- Add this script tag before your carousel section -->
 <script>
-    document.addEventListener('alpine:init', () => {
-        Alpine.data('carousel', () => ({
-            currentIndex: 0
-            , itemsPerView: 3
-            , slideWidth: 0
-            , containerWidth: 0
-            , totalItems: {
-                {
-                    $perangkatDesa - > count() > 0 ? $perangkatDesa - > count() : 1
-                }
-            },
-
-            init() {
-                this.updateItemsPerView();
-                this.calculateSlideWidth();
-
-                window.addEventListener('resize', () => {
-                    this.updateItemsPerView();
-                    this.calculateSlideWidth();
-                    if (this.currentIndex > this.maxIndex) {
-                        this.currentIndex = this.maxIndex;
-                    }
-                });
-            },
-
-            updateItemsPerView() {
-                const screenWidth = window.innerWidth;
-                if (screenWidth < 640) {
-                    this.itemsPerView = 1;
-                } else if (screenWidth < 768) {
-                    this.itemsPerView = 2;
-                } else {
-                    this.itemsPerView = 3;
-                }
-            },
-
-            calculateSlideWidth() {
-                const container = this.$refs.carouselContainer;
-                if (container) {
-                    this.containerWidth = container.offsetWidth;
-                    this.slideWidth = this.containerWidth / this.itemsPerView;
-                }
-            },
-
-            get maxIndex() {
-                return Math.max(0, this.totalItems - this.itemsPerView);
-            },
-
-            get totalPages() {
-                return Math.ceil(this.totalItems / this.itemsPerView);
-            },
-
-            prev() {
-                if (this.currentIndex > 0) this.currentIndex--;
-            },
-
-            next() {
-                if (this.currentIndex < this.maxIndex) this.currentIndex++;
-            },
-
-            goToPage(pageIndex) {
-                const newIndex = pageIndex * this.itemsPerView;
-                this.currentIndex = Math.min(newIndex, this.maxIndex);
-            }
-        }));
-    });
-
+    window.perangkatDesaData = @json($perangkatDesa);
 </script>
+
+<script>
+function carousel() {
+    return {
+        currentIndex: 0,
+        slideWidth: 0,
+        itemsPerView: 3,
+        perangkatDesa: window.perangkatDesaData || [],
+
+        init() {
+            this.calculateDimensions();
+            window.addEventListener('resize', () => {
+                this.calculateDimensions();
+            });
+        },
+
+        calculateDimensions() {
+            const container = this.$refs.carouselContainer;
+            if (!container) return;
+
+            const containerWidth = container.offsetWidth;
+
+            if (containerWidth < 640) {
+                this.itemsPerView = 1;
+            } else if (containerWidth < 768) {
+                this.itemsPerView = 2;
+            } else {
+                this.itemsPerView = 3;
+            }
+
+            this.slideWidth = containerWidth / this.itemsPerView;
+        },
+
+        get maxIndex() {
+            return Math.max(0, this.perangkatDesa.length - this.itemsPerView);
+        },
+
+        get totalPages() {
+            return Math.ceil(this.perangkatDesa.length / this.itemsPerView);
+        },
+
+        prev() {
+            if (this.currentIndex > 0) {
+                this.currentIndex--;
+            }
+        },
+
+        next() {
+            if (this.currentIndex < this.maxIndex) {
+                this.currentIndex++;
+            }
+        },
+
+        goToPage(pageIndex) {
+            this.currentIndex = pageIndex * this.itemsPerView;
+            if (this.currentIndex > this.maxIndex) {
+                this.currentIndex = this.maxIndex;
+            }
+        }
+    }
+}
+</script>
+
 @endpush

@@ -1,4 +1,4 @@
-@extends('Components.layouts.laporan')
+@extends('components.layouts.laporan')
 
 
 @section('content')
@@ -38,8 +38,7 @@
                 <td class="border px-4 text-center" >{{ $i + 1 }}</td>
                 {{-- Surat Masuk --}}
                 <td class="border px-4">{{ $agendaSuratMasukDesaData[$i]->tanggal_pengiriman_penerimaan ?? '-' }}</td>
-                {{-- <td class="border px-4">{{ $agendaSuratMasukDesaData[$i] + 1 }}</td> --}}
-                <td class="border px-4">{{ $i + 1 }}</td>
+                <td class="border px-4">{{ isset($agendaSuratMasukDesaData[$i]) && $agendaSuratMasukDesaData[$i]->tanggal_pengiriman_penerimaan ? $i + 1 : '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratMasukDesaData[$i]->tanggal_pengiriman_penerimaan ?? '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratMasukDesaData[$i]->pengirim_penerima ?? '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratMasukDesaData[$i]->isi_singkat ?? '-' }}</td>
@@ -48,7 +47,8 @@
                 {{-- Surat Keluar --}}
                 <td class="border px-4">{{ $agendaSuratKeluarDesaData[$i]->tanggal_pengiriman_penerimaan ?? '-' }}</td>
                 {{-- <td class="border px-4">{{ $agendaSuratKeluarDesaData[$i] + 1 }}</td> --}}
-                <td class="border px-4">{{ $i + 1 }}</td>
+                {{-- <td class="border px-4">{{ $i + 1 }}</td> --}}
+                <td class="border px-4">{{ isset($agendaSuratKeluarDesaData[$i]) && $agendaSuratKeluarDesaData[$i]->tanggal_pengiriman_penerimaan ? $i + 1 : '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratKeluarDesaData[$i]->tanggal_pengiriman_penerimaan ?? '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratKeluarDesaData[$i]->pengirim_penerima ?? '-' }}</td>
                 <td class="border px-4">{{ $agendaSuratKeluarDesaData[$i]->isi_singkat ?? '-' }}</td>

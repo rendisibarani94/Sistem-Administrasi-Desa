@@ -1,4 +1,4 @@
-@extends('Components.layouts.laporan')
+@extends('components.layouts.laporan')
 
 @section('content')
 <div class="mx-5">

@@ -99,6 +99,7 @@ use App\Livewire\Masyarakat\Pengumuman\DetailPengumumanController;
 use App\Livewire\Masyarakat\Pengumuman\PengumumanController;
 use App\Livewire\Masyarakat\ProfilController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Livewire\Admin\BerandaAdminController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukKkMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaDetailController;
 
@@ -112,10 +113,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Your protected routes here
-    Route::get('/admin', function () {
-    return view('welcome');
-    });
-
+    Route::get('/admin', BerandaAdminController::class)->name('beranda.admin');
 
 Route::get('/pekerjaan', PekerjaanController::class)->name('pekerjaan');
 Route::get('/dusun', DusunController::class)->name('dusun');

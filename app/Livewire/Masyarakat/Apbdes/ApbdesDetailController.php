@@ -110,9 +110,17 @@ $results = DB::table('apbdes')
     ])
     ->first();
 
+            $daftarBerita = DB::table('berita')
+            ->join('users', 'berita.id_dibuat_oleh', '=', 'users.id')
+            ->where('berita.is_deleted', 0)
+            ->select('berita.*', 'users.name as nama_pembuat')
+            ->limit(5)
+            ->get();
+
         return view(
             'masyarakat.apbdes.detail', [
                 'apbdes' => $results,
+                'daftarBerita' => $daftarBerita,
             ]
     );
     }

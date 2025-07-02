@@ -11,15 +11,11 @@ class LaporanIndukPendudukController extends Controller
 {
     public function displayB1()
     {
-        // $indukPendudukData = DB::table('penduduk')
-        // ->where('is_deleted', 0)
-        // ->orderBy('id_penduduk', 'desc')
-        // ->get();
-
         $indukPendudukData = DB::table('penduduk')
         ->join('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
         ->select('penduduk.*', 'kartu_keluarga.nomor_kartu_keluarga')
         ->where('penduduk.is_deleted', 0)
+        ->where('penduduk.is_mutated', 0)
         ->orderBy('penduduk.id_kartu_keluarga', 'desc')
         ->get();
 

@@ -1,4 +1,4 @@
-@extends('Components.layouts.laporan')
+@extends('components.layouts.laporan')
 
 
 @section('content')
@@ -38,32 +38,59 @@
         </thead>
         <tbody>
             @php
-            $rowCount = max(count($inventarisDesa), count($inventarisDesaDihapus));
+            $countActive = count($inventarisDesa);
+            $countDeleted = count($inventarisDesaDihapus);
+            $rowCount = max($countActive, $countDeleted);
             @endphp
 
-            @foreach (range(0, $rowCount - 1) as $i)
-            <tr>
+            @for ($i = 0; $i < $rowCount; $i++) <tr>
                 <td class="border px-4 text-center">{{ $i + 1 }}</td>
-                <td class="border px-4">{{ $inventarisDesa[$i]->jenis_inventaris }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->oleh_desa }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->oleh_pemerintah }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->oleh_provinsi }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->oleh_kabupaten }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->oleh_sumbangan }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->awal_baik }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->awal_rusak }}</td>
-                <td class="border px-4">{{$inventarisDesa[$i]->keterangan }}</td>
 
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jenis_inventaris }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_rusak }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_dijual }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_disumbangkan }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->tanggal_penghapusan }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_baik }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_rusak }}</td>
-                <td class="border px-4">{{ $inventarisDesaDihapus[$i]->keterangan }}</td>
-            </tr>
-            @endforeach
+                {{-- Active Inventory Columns --}}
+                @if($i < $countActive) <td class="border px-4">{{ $inventarisDesa[$i]->jenis_inventaris }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->oleh_desa }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->oleh_pemerintah }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->oleh_provinsi }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->oleh_kabupaten }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->oleh_sumbangan }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->awal_baik }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->awal_rusak }}</td>
+                    <td class="border px-4">{{ $inventarisDesa[$i]->keterangan }}</td>
+                    @else
+                    {{-- Empty cells if no active item exists --}}
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    <td class="border px-4"></td>
+                    @endif
+
+                    {{-- Deleted Inventory Columns --}}
+                    @if($i < $countDeleted) <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jenis_inventaris }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_rusak }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_dijual }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_disumbangkan }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->tanggal_penghapusan }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_baik }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->jumlah_rusak }}</td>
+                        <td class="border px-4">{{ $inventarisDesaDihapus[$i]->keterangan }}</td>
+                        @else
+                        {{-- Empty cells if no deleted item exists --}}
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        <td class="border px-4"></td>
+                        @endif
+                        </tr>
+                        @endfor
         </tbody>
     </table>
 

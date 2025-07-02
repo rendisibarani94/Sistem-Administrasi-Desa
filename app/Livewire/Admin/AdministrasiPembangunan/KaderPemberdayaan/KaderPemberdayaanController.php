@@ -49,6 +49,13 @@ class KaderPemberdayaanController extends Component
                 'kaderPemberdayaanData' => DB::table('kader_pemberdayaan')
                 ->join('bidang_keahlian', 'kader_pemberdayaan.bidang_keahlian', '=', 'bidang_keahlian.id_bidang_keahlian') // Adjust FK if needed
                 ->select('kader_pemberdayaan.*', 'bidang_keahlian.bidang_keahlian') // Select required fields
+                ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('kader_pemberdayaan.nama_lengkap', 'like', '%' . $this->search . '%')
+                                ->orWhere('kader_pemberdayaan.jenis_kelamin', 'like', '%' . $this->search . '%')
+                                ->orWhere('bidang_keahlian.bidang_keahlian', 'like', '%' . $this->search . '%');
+                        });
+                    })
                 ->where('kader_pemberdayaan.is_deleted', 0)
                 ->orderBy('kader_pemberdayaan.id_kader_pemberdayaan', 'desc')
                 ->paginate(10),

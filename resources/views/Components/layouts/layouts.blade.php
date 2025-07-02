@@ -32,6 +32,10 @@
 
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 shadow-sm shadow-black">
             <ul class="space-y-2 font-medium mb-10">
+                <a href="{{ route('beranda.admin') }}" class="flex flex-col items-center justify-center mb-4">
+                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-10 rounded-sm mb-2 border border-gray-500" alt="Flowbite Logo" />
+                    <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] }}</span>
+                </a>
                 <h5 class="text-xs font-semibold text-black pl-3">Administrasi Desa</h5>
                 @php
                 $masterIcon = '
@@ -175,9 +179,16 @@
                 @endphp
                 <x-nav-plus-link title="Informasi Masyarakat" :icon="$masyarakatIcon" :childLinks="$childIMLinks" id="informasi-masyarakat-dropdown" />
 
+                <x-nav-link href="{{ route('beranda') }}" :active="request()->routeIs('beranda')" path='<path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>' customClass="my-custom-class" viewBox="0 0 24 24">
+                    Halaman Masyarakat
+                </x-nav-link>
+
                 @auth
                 <x-nav-form-button method="POST" action="{{ route('logout') }}" icon='<path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm5.03 4.72a.75.75 0 010 1.06l-1.72 1.72h10.94a.75.75 0 010 1.5H10.81l1.72 1.72a.75.75 0 11-1.06 1.06l-3-3a.75.75 0 010-1.06l3-3a.75.75 0 011.06 0z" clip-rule="evenodd" />' text="Logout" />
                 @endauth
+
+
+
             </ul>
         </div>
     </aside>

@@ -29,7 +29,7 @@ class PeraturanDesaController extends Component
 
     public function delete()
     {
-        DB::table('peraturan_Desa')
+        DB::table('peraturan_desa')
             ->where('id_peraturan_desa', $this->deleteId)
             ->update(['is_deleted' => 1]);
 

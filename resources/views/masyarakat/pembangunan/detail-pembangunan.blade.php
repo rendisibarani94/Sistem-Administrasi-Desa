@@ -83,7 +83,7 @@
                 <h1 class="text-teal-700 font-bold text-xl sm:text-2xl md:text-3xl flex items-center space-x-2 mb-4 sm:mb-8">
                     Dokumentasi Kegiatan
                 </h1>
-                <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" alt="Upacara HUT" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
+                <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" alt="Pembangunan Desa" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
             </div>
 
             <div class="keterangan mb-8">
@@ -101,21 +101,24 @@
                 <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                     Pembangunan Lainnya
                 </h3>
+                @foreach ($daftarPembangunan as $pembangunans)
                 <div class="container">
                     <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
                         <div class="w-full sm:w-1/3">
-                            <img src="{{ asset('images/masyarakat/berita.png') }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
+                            <img src="{{ asset('storage/' . $pembangunans->dokumentasi) }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
                         </div>
                         <div class="flex flex-col justify-between flex-1 h-full">
                             <h4 class="text-xs font-semibold mb-2">
-                                Berita desa pada hari senin
+                                {{ $pembangunans->nama_kegiatan }}
                             </h4>
-                            <a href="#" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
+                            <a href="{{ route('pembangunan.detail',$pembangunans->id_pembangunan) }}" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
                                 Baca Selengkapnya
                             </a>
                         </div>
                     </div>
                 </div>
+                @endforeach
+
             </section>
         </div>
     </div>

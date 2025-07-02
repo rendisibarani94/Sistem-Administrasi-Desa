@@ -47,6 +47,12 @@ class AgendaSuratDesaController extends Component
             'admin.umum.agenda-surat.index',
             [
                 'agendaSuratData' => DB::table('agenda_surat')
+                    ->when($this->search, function ($query) {
+                        return $query->where(function ($subQuery) {
+                            $subQuery->where('jenis_surat', 'like', '%' . $this->search . '%')
+                                ->orWhere('pengirim_penerima', 'like', '%' . $this->search . '%');
+                        });
+                    })
                     ->where('is_deleted', 0)
                     ->orderBy('id_agenda_surat', 'desc')
                     ->paginate(10),

@@ -1,4 +1,4 @@
-@extends('Components.layouts.laporan')
+@extends('components.layouts.laporan')
 
 @push('styles')
 <link rel="stylesheet" href="{{ asset('build/assets/app-DnvfNtza.css') }}">
@@ -35,26 +35,29 @@
             </tr>
         </thead>
         <tbody>
-            {{-- @foreach($indukPendudukData as $index => $item) --}}
+            @foreach($indukPendudukData as $index => $item)
             <tr>
-                {{-- <td class="border px-4 text-center">{{ $index + 1 }}</td>
+                <td class="border px-4 text-center">{{ $index + 1 }}</td>
+                <td class="border px-4">{{ $item->nomor_kartu_keluarga }}</td>
                 <td class="border px-4">{{ $item->nama_lengkap }}</td>
+                <td class="border px-4">{{ $item->nik }}</td>
                 <td class="border px-4">{{ $item->jenis_kelamin }}</td>
-                <td class="border px-4">{{ $item->status_perkawinan }}</td>
-                <td class="border px-4">{{ $item->tempat_lahir }}</td>
-                <td class="border px-4"> {{ \Carbon\Carbon::parse($item->tanggal_lahir)->locale('id')->translatedFormat('d F Y') }}</td>
+                <td class="border px-4">{{ $item->tempat_lahir }} , {{ \Carbon\Carbon::parse($item->tanggal_lahir)->locale('id')->translatedFormat('d F Y') }}</td>
+                <td class="border px-4">{{ $item->golongan_darah }}</td>
                 <td class="border px-4">{{ $item->agama }}</td>
                 <td class="border px-4">{{ $item->pendidikan_terakhir }}</td>
                 <td class="border px-4">{{ $item->pekerjaan }}</td>
-                <td class="border px-4">{{ $item->baca_huruf }}</td>
-                <td class="border px-4">{{ $item->kewarganegaraan ?? '-' }}</td>
                 <td class="border px-4">{{ $item->alamat }}</td>
+                <td class="border px-4">{{ $item->status_perkawinan }}</td>
+                <td class="border px-4">{{ $item->tanggal_keluar_ktp ?? '-' }}</td>
                 <td class="border px-4">{{ $item->kedudukan_keluarga }}</td>
-                <td class="border px-4">{{ $item->nik }}</td>
-                <td class="border px-4">{{ $item->nomor_kartu_keluarga }}</td>
-                <td class="border px-4">{{ $item->keterangan ?? '-' }}</td> --}}
+                <td class="border px-4">{{ $item->kewarganegaraan }}</td>
+                <td class="border px-4">{{ $item->nama_ayah }}</td>
+                <td class="border px-4">{{ $item->nama_ibu }}</td>
+                <td class="border px-4">{{ $item->tanggal_penambahan }}</td>
+                <td class="border px-4">{{ $item->keterangan ?? '-' }}</td>
             </tr>
-            {{-- @endforeach --}}
+            @endforeach
         </tbody>
     </table>
 

@@ -13,7 +13,7 @@
             <nav class="flex mr-30" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
-                        <a href="#" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
+                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
                             <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                             </svg>
@@ -137,7 +137,6 @@
                             </a>
 
                             <!-- Edit Button -->
-                            {{-- href="{{ route('indukPenduduk.mutasi', $item->id_penduduk) }}" --}}
                             <a wire:click="mutasi({{ $item->id_penduduk }})" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg class="w-6 h-6 text-orange-500 hover:text-orange-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-6 pt-1">
                                     <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />

@@ -81,7 +81,7 @@ class IndukPendudukController extends Component
     public function render()
     {
         return view(
-            'admin.kependudukan.Induk-Penduduk.index',
+            'admin.kependudukan.induk-penduduk.index',
             [
                 'pendudukData' => DB::table('penduduk')
                     ->when($this->search, function ($query) {

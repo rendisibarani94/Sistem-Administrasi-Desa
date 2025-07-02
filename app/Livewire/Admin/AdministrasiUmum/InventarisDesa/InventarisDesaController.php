@@ -20,6 +20,10 @@ class InventarisDesaController extends Component
             'admin.umum.inventaris-desa.index',
             [
                 'inventarisDesaData' => DB::table('inventaris_desa')
+                    ->when($this->search, function ($query) {
+                        return $query
+                        ->where('jenis_inventaris', 'like', '%' . $this->search . '%');
+                    })
                 ->where('is_deleted', 0)
                 ->orderBy('id_inventaris_desa', 'desc')
                 ->paginate(10),

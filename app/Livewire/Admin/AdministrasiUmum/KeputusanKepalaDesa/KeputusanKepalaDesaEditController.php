@@ -41,6 +41,7 @@ class KeputusanKepalaDesaEditController extends Component
         $this->tanggal_keputusan = $kkd->tanggal_keputusan;
         $this->tentang = $kkd->tentang;
         $this->uraian = $kkd->uraian;
+        $this->tujuan_dilaporkan = $kkd->tujuan_dilaporkan;
         $this->tanggal_dilaporkan = $kkd->tanggal_dilaporkan;
         $this->keterangan = $kkd->keterangan;
     }
@@ -53,6 +54,7 @@ class KeputusanKepalaDesaEditController extends Component
         $data = [
             'tanggal_keputusan' => $this->tanggal_keputusan,
             'tentang' => $this->tentang,
+            'tujuan_dilaporkan' => $this->tujuan_dilaporkan,
             'uraian' => $this->uraian,
             'tanggal_dilaporkan' => $this->tanggal_dilaporkan,
             'keterangan' => $this->keterangan,

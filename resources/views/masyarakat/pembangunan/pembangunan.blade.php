@@ -16,7 +16,7 @@
             @foreach ( $pembangunan as $item )
             <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3">
                 <div class="image w-full sm:w-1/3 md:w-1/4">
-                    <img src="{{ asset('storage/'.$item->dokumentasi) }}" alt="Upacara HUT" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
+                    <img src="{{ asset('storage/'.$item->dokumentasi) }}" alt="Pembangunan Desa" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
                 </div>
 
                 <div class="desc w-full sm:w-2/3 md:w-3/4 self-start p-2 sm:p-5">

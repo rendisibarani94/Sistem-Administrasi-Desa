@@ -35,6 +35,7 @@ class InventarisDesaCreateController extends Component
     #[Rule('required', message: 'Jika Kosong, Diisi 0')]
     public $jumlah_rusak = 0;
 
+
     #[Rule('max:255', message: 'Kolom Keterangan Terlalu Panjang!')]
     public $keterangan;
 
@@ -135,7 +136,7 @@ class InventarisDesaCreateController extends Component
     {
         $validated = $this->validate();
         $validated['awal_baik'] = $this->jumlah_baik;
-        $validated['awal_buruk'] = $this->jumlah_buruk;
+        $validated['awal_rusak'] = $this->jumlah_rusak;
 
         // Then run the custom totals validation
         $this->validateTotals();
