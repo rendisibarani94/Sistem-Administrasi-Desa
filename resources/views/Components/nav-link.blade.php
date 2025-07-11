@@ -5,10 +5,10 @@
     $baseClasses = 'flex text-sm items-center p-1.5 transition duration-150 rounded-lg group cursor-pointer';
 
     // Classes for inactive (default) state
-    $inactiveClasses = 'dark:text-zinc-950 hover:text-white dark:hover:bg-teal-700';
+    $inactiveClasses = 'dark:text-zinc-950 hover:text-white dark:hover:bg-sky-700';
 
     // Classes for the active state (mimicking the hover state)
-    $activeClasses = 'text-white dark:bg-teal-700';
+    $activeClasses = 'text-white dark:bg-sky-700';
 
     // Combine the base with either the active or inactive classes
     $aClasses = $baseClasses . ' ' . ($active ? $activeClasses : $inactiveClasses);

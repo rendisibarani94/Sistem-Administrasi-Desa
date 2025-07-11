@@ -10,7 +10,7 @@ use Livewire\Attributes\Rule;
 class KaderPemberdayaanCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Nama Kader Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Nama Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Input nama maksimal 100 digit')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
@@ -26,7 +26,7 @@ class KaderPemberdayaanCreateController extends Component
     public $bidang_keahlian;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Alamat Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
     public $alamat;
 
     #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]

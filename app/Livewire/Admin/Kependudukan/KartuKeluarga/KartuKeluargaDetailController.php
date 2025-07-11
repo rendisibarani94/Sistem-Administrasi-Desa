@@ -32,14 +32,10 @@ class KartuKeluargaDetailController extends Component
             ->first();
 
         $anggotaKeluarga = DB::table('penduduk')
-            ->select('penduduk.*', 'pekerjaan.pekerjaan as nama_pekerjaan')
-            ->leftJoin('pekerjaan', function ($join) {
-                $join->on('penduduk.pekerjaan', '=', 'pekerjaan.id_pekerjaan');
-            })
-            ->where('penduduk.is_deleted', 0)
-            ->where('penduduk.is_mutated', 0)
-            ->where('penduduk.id_kartu_keluarga', $this->id_kartu_keluarga)
-            ->orderBy('penduduk.kedudukan_keluarga','asc')
+            ->where('is_deleted', 0)
+            ->where('is_mutated', 0)
+            ->where('id_kartu_keluarga', $this->id_kartu_keluarga)
+            ->orderBy('kedudukan_keluarga','asc')
             ->get();
 
         return view(

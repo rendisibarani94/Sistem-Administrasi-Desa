@@ -24,7 +24,7 @@
 <body>
 
     <aside id="sidebar-multi-level-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform duration-700 -translate-x-full sm:translate-x-0 " aria-label="Sidebar">
-        <div class="longbar h-14 bg-teal-700 flex justify-center items-center text-center">
+        <div class="longbar h-14 bg-sky-700 flex justify-center items-center text-center">
             <span class="p-4 text-xl text-white font-medium">
                 Administrasi Desa
             </span>
@@ -33,7 +33,7 @@
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 shadow-sm shadow-black">
             <ul class="space-y-2 font-medium mb-10">
                 <a href="{{ route('beranda.admin') }}" class="flex flex-col items-center justify-center mb-4">
-                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-10 rounded-sm mb-2 border border-gray-500" alt="Flowbite Logo" />
+                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-15 mb-2 " alt="Flowbite Logo" />
                     <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] }}</span>
                 </a>
                 <h5 class="text-xs font-semibold text-black pl-3">Administrasi Desa</h5>
@@ -186,15 +186,12 @@
                 @auth
                 <x-nav-form-button method="POST" action="{{ route('logout') }}" icon='<path fill-rule="evenodd" d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.75 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9A.75.75 0 0115 9V5.25a1.5 1.5 0 00-1.5-1.5h-6zm5.03 4.72a.75.75 0 010 1.06l-1.72 1.72h10.94a.75.75 0 010 1.5H10.81l1.72 1.72a.75.75 0 11-1.06 1.06l-3-3a.75.75 0 010-1.06l3-3a.75.75 0 011.06 0z" clip-rule="evenodd" />' text="Logout" />
                 @endauth
-
-
-
             </ul>
         </div>
     </aside>
 
     <!-- Fixed Header (Longbar) -->
-    <div class="longbar fixed top-0 left-0 w-full h-14 bg-teal-700 z-50">
+    <div class="longbar fixed top-0 left-0 w-full h-14 bg-sky-700 z-50">
         <button data-drawer-target="sidebar-multi-level-sidebar" data-drawer-toggle="sidebar-multi-level-sidebar" aria-controls="sidebar-multi-level-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
             <span class="sr-only">Open sidebar</span>
             <svg class="w-7 h-7 text-white" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

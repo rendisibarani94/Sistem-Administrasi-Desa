@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="mx-5">
-    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU PENDUDUK SEMENTARA {{ $settings['nama_desa'] }} TAHUN 2025</h1>
+    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU PENDUDUK SEMENTARA {{ $settings['nama_desa'] }} TAHUN {{ $year }}</h1>
     <table class="table-auto mx-auto border mb-4 text-xs">
         <thead>
             <tr>

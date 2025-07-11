@@ -3,23 +3,23 @@
         Edit APBDesa
     </x-slot:judul>
 
-    <div class="bg-teal-700 mt-4 mb-1 mx-6 rounded-sm p-2">
+    <div class="bg-sky-600 mt-4 mb-1 mx-6 rounded-sm p-2">
         <h5 class="text-xl text-white font-semibold text-center">Formulir Edit APBDesa</h5>
     </div>
 
     <div x-data="{ activeTab: 'apbdes' }" class="w-full mx-auto pt-2">
         <!-- Tab Navigation -->
         <div class="flex flex-wrap justify-evenly border-b border-gray-200">
-            <button @click="activeTab = 'apbdes'" :class="{ 'border-teal-600 text-slate-950': activeTab === 'apbdes', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'apbdes' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
+            <button @click="activeTab = 'apbdes'" :class="{ 'border-sky-600 text-slate-950': activeTab === 'apbdes', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'apbdes' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
                 APBDesa
             </button>
-            <button @click="activeTab = 'pendapatan_desa'" :class="{ 'border-teal-600 text-slate-950': activeTab === 'pendapatan_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-300': activeTab !== 'pendapatan_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
+            <button @click="activeTab = 'pendapatan_desa'" :class="{ 'border-sky-600 text-slate-950': activeTab === 'pendapatan_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-300': activeTab !== 'pendapatan_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
                 Pendapatan
             </button>
-            <button @click="activeTab = 'belanja_desa'" :class="{ 'border-teal-600 text-slate-950': activeTab === 'belanja_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'belanja_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
+            <button @click="activeTab = 'belanja_desa'" :class="{ 'border-sky-600 text-slate-950': activeTab === 'belanja_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'belanja_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
                 Belanja Desa
             </button>
-            <button @click="activeTab = 'pembiayaan_desa'" :class="{ 'border-teal-600 text-slate-950': activeTab === 'pembiayaan_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'pembiayaan_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
+            <button @click="activeTab = 'pembiayaan_desa'" :class="{ 'border-sky-600 text-slate-950': activeTab === 'pembiayaan_desa', 'border-transparent text-slate-950 hover:text-gray-600 hover:border-gray-400': activeTab !== 'pembiayaan_desa' }" class="py-4 px-6 border-b-2 font-medium text-sm cursor-pointer">
                 Pembiayaan
             </button>
 
@@ -41,7 +41,7 @@
                     <div class="grid gap-6 mb-6 md:grid-cols-2">
                         <div class="input-component">
                             <label for="tahun_anggaran" class="block mb-2 text-sm font-semibold text-gray-950">Tahun Anggaran</label>
-                            <input type="number" id="tahun_anggaran" min="1901" max="2155" wire:model.live.live="tahun_anggaran" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tahun_anggaran') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Cth 2021.." autocomplete="off" />
+                            <input type="number" id="tahun_anggaran" min="1901" max="2155" wire:model.live.live="tahun_anggaran" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tahun_anggaran') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Cth 2021.." autocomplete="off" />
                             <div class="h-0.25">
                                 @error('tahun_anggaran') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                             </div>
@@ -236,9 +236,9 @@
                 </div>
 
                     <div class="flex justify-between mt-6">
-                        <a href="{{ route('admin.apbdes') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
+                        <a href="{{ route('admin.apbdes') }}" class="text-white text-center bg-gray-500 hover:bg-gray-500 focus:ring-2 focus:outline-none focus:ring-gray-500 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
 
-                        <button type="submit" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:outline-none focus:ring-blue-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Edit APBDesa Desa</button>
+                        <button type="submit" class="text-white bg-green-700 hover:bg-green-800 focus:ring-2 focus:outline-none focus:ring-green-300 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 text-center cursor-pointer">Edit APBDesa Desa</button>
                     </div>
             </div>
         </form>

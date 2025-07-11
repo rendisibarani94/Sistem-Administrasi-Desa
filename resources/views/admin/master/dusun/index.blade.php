@@ -12,7 +12,7 @@
             <nav class="flex mr-30" aria-label="Breadcrumb">
                 <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                     <li class="inline-flex items-center">
-                        <a href="#" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
+                        <a href="#" class="inline-flex items-center text-sm font-base text-black hover:text-sky-700 ">
                             <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                             </svg>
@@ -34,7 +34,7 @@
         {{-- Create Modals Button & Table Search --}}
         <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-between">
             <!-- Button -->
-            <button type="button" data-modal-target="store-modal" data-modal-toggle="store-modal" class="cursor-pointer bg-teal-700 text-white font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+            <button type="button" data-modal-target="store-modal" data-modal-toggle="store-modal" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 0 0 .75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 0 0-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0 1 12 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 0 1-.673-.38m0 0A2.18 2.18 0 0 1 3 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 0 1 3.413-.387m7.5 0V5.25A2.25 2.25 0 0 0 13.5 3h-3a2.25 2.25 0 0 0-2.25 2.25v.894m7.5 0a48.667 48.667 0 0 0-7.5 0M12 12.75h.008v.008H12v-.008Z" />
                 </svg>
@@ -48,7 +48,7 @@
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                 </div>
-                <input type="search" type="search" wire:model.live="search" autocomplete="off" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500" placeholder="Cari Dusun" required />
+                <input type="search" type="search" wire:model.live="search" autocomplete="off" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari Dusun" required />
             </div>
         </div>
 
@@ -80,7 +80,7 @@
                         <td class="px-6 py-4 font-semibold flex space-x-4 justify-center">
 
                             <!-- Edit Button -->
-                            <button wire:click="loadDusun({{ $item->id_dusun }})" class="text-blue-600 hover:text-blue-800 hover:font-bold font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
+                            <button wire:click="loadDusun({{ $item->id_dusun }})" class="text-green-600 hover:text-green-800 hover:font-bold font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-6 pt-1">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
                                 </svg>
@@ -128,10 +128,10 @@
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
                             <label for="dusun" class="block mb-2 text-sm font-medium text-gray-900">Dusun</label>
-                            <input type="text" wire:model="dusun" id="dusun" autocomplete="off" class="bg-gray-50 border-2 border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Nama Dusun" required>
+                            <input type="text" wire:model="dusun" id="dusun" autocomplete="off" class="bg-gray-50 border-2 border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5" placeholder="Nama Dusun" required>
                         </div>
                     </div>
-                    <button type="submit" class="font-semibold text-white inline-flex items-center bg-teal-700 hover:bg-teal-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg ml-auto text-sm px-5 py-2.5 text-center cursor-pointer">
+                    <button type="submit" class="font-semibold text-white inline-flex items-center bg-sky-700 hover:bg-sky-800 focus:ring-4 focus:outline-none focus:ring-sky-300 rounded-lg ml-auto text-sm px-5 py-2.5 text-center cursor-pointer">
                         Tambahkan Dusun
                     </button>
                 </form>
@@ -163,11 +163,11 @@
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
                             <label for="dusun" class="block mb-2 text-sm font-medium text-gray-900">Dusun</label>
-                            <input type="text" wire:model="dusun" id="dusun" autocomplete="off" class="bg-gray-50 border-2 border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5" placeholder="Nama Dusun" required>
+                            <input type="text" wire:model="dusun" id="dusun" autocomplete="off" class="bg-gray-50 border-2 border-gray-400 text-gray-900 text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 block w-full p-2.5" placeholder="Nama Dusun" required>
                             @error('dusun') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
                         </div>
                     </div>
-                    <button type="submit" class="font-semibold text-white inline-flex items-center bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg ml-auto text-sm px-5 py-2.5 text-center cursor-pointer">
+                    <button type="submit" class="font-semibold text-white inline-flex items-center bg-green-600 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300 rounded-lg ml-auto text-sm px-5 py-2.5 text-center cursor-pointer">
                         Ubah Data
                     </button>
                 </form>

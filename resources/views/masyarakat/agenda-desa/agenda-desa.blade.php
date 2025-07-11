@@ -7,8 +7,8 @@
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 py-5 px-5">
         <section class="pengumuman md:col-span-3 p-5 rounded-lg">
             <div class="judul_pengumuman">
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center space-x-2 mb-6 md:mb-8">
-                    <svg class="w-9 h-9 text-teal-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center space-x-2 mb-6 md:mb-8">
+                    <svg class="w-9 h-9 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
                         <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                         <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
                     </svg>
@@ -21,16 +21,17 @@
                 <div class="container">
                     @foreach ($agendaData as $item)
 
-                    <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-teal-700 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
+                    <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-gray-400 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
                         <div class="desc w-full md:w-4/5 self-start p-3 md:p-5">
-                            <div class="agenda_desc mb-2 flex items-center space-x-2">
-                                <svg class="w-6 h-6 md:w-7 md:h-7 text-teal-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
+                            <div class="agenda_desc mb-2 flex items-center space-x-3 sm:space-x-2">
+                                <svg class="w-7 h-7 sm:w-6 sm:h-6 md:w-7 md:h-7 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                    <!-- Changed to square viewBox -->
                                     <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                                     <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
                                 </svg>
-                                <h4 class="text-lg md:text-xl font-semibold">{{ $item->judul }}</h4>
+                                <h4 class="text-base sm:text-lg md:text-xl font-semibold">{{ $item->judul }}</h4>
                             </div>
-                            <a class="cursor-pointer text-teal-600 text-xs md:text-sm underline hover:text-teal-800 ml-0 md:ml-9" wire:click="showAgenda({{ $item->id_agenda }})">
+                            <a class="cursor-pointer text-blue-600 text-xs md:text-sm underline hover:text-blue-800 ml-0 md:ml-9" wire:click="showAgenda({{ $item->id_agenda }})">
                                 Baca Selengkapnya
                             </a>
                         </div>
@@ -48,7 +49,7 @@
         </section>
 
         <div class="list_berita-wrapper">
-            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-teal-600 shadow-md shadow-teal-700">
+            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-sky-700 shadow-sm shadow-sky-700">
 
                 <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                     Berita Desa
@@ -67,7 +68,7 @@
                             <h4 class="text-xs font-semibold mb-2">
                                 {{ $beritas->judul }}
                             </h4>
-                            <a href="{{ route('detail.berita', $beritas->id_berita) }}" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
+                            <a href="{{ route('detail.berita', $beritas->id_berita) }}" class="mt-auto text-sky-600 text-xs underline hover:text-sky-800">
                                 Baca Selengkapnya
                             </a>
                         </div>
@@ -88,7 +89,7 @@
             <div class="relative bg-white rounded-lg shadow-sm">
                 <!-- header -->
                 <div class="flex items-center justify-between p-4 md:p-5 border-b border-gray-200 rounded-t">
-                    <h3 class="text-sm font-semibold text-teal-700">Agenda Desa</h3>
+                    <h3 class="text-sm font-semibold text-sky-700">Agenda Desa</h3>
 
                     <button type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 inline-flex items-center justify-center cursor-pointer" wire:click="closeModal">
                         <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
@@ -101,43 +102,45 @@
                 {{-- Heading --}}
                 @if($selectedAgenda)
                 <div class="heading px-5 mb-4">
-                    <h3 class="text-xl font-semibold text-teal-700">{{ $selectedAgenda->judul }}</h3>
+                    <h3 class="text-xl font-semibold text-black">{{ $selectedAgenda->judul }}</h3>
                 </div>
 
                 <div class="flex space-x-4">
                     <div class="date flex items-center px-8 space-x-2 mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-blue-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 text-sky-700">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
-                        <span class="text-sm text-blue-700">{{ \Carbon\Carbon::parse($selectedAgenda->tanggal_agenda)->locale('id')->translatedFormat('d F Y') }}</span>
+                        <span class="text-sm text-sky-700">{{ \Carbon\Carbon::parse($selectedAgenda->tanggal_agenda)->locale('id')->translatedFormat('d F Y') }}</span>
                     </div>
                     <div class="flex items-center space-x-2 text-gray-600 mb-4">
-                        <svg class="w-6 h-6 text-blue-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-6 h-6 text-sky-700 " aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 7.796 1.263l-2.533 2.534A4 4 0 0 1 5 8Zm4.06 5H7a4 4 0 0 0-4 4v1a2 2 0 0 0 2 2h2.172a2.999 2.999 0 0 1-.114-1.588l.674-3.372a3 3 0 0 1 .82-1.533L9.06 13Zm9.032-5a2.907 2.907 0 0 0-2.056.852L9.967 14.92a1 1 0 0 0-.273.51l-.675 3.373a1 1 0 0 0 1.177 1.177l3.372-.675a1 1 0 0 0 .511-.273l6.07-6.07a2.91 2.91 0 0 0-.944-4.742A2.907 2.907 0 0 0 18.092 8Z" clip-rule="evenodd" />
                         </svg>
-                        <span class="text-sm md:text-base text-blue-700">{{$selectedAgenda->nama_pembuat}}</span>
+                        <span class="text-sm md:text-base text-sky-700">{{$selectedAgenda->nama_pembuat}}</span>
                     </div>
                 </div>
 
                 <div class="tujuan px-5">
-                    <h3 class="text-xl font-semibold text-teal-700 mb-2">Tujuan Kegiatan:</h3>
+                    <h3 class="text-xl font-semibold text-sky-700 mb-2">Tujuan Kegiatan:</h3>
                     <h3 class="text-md text-black">{{ $selectedAgenda->tujuan_agenda }}</h3>
                 </div>
 
                 <!-- body -->
                 <div class="p-4 md:p-5 space-y-4">
-                    <h3 class="text-xl font-semibold text-teal-700 mb-2">Deskripsi:</h3>
+                    <h3 class="text-xl font-semibold text-sky-700 mb-2">Deskripsi:</h3>
                     <p class="text-base leading-relaxed text-black">
                         {!! App\Helpers\HtmlSanitizer::cleanList($selectedAgenda->deskripsi_agenda) !!}
                     </p>
                 </div>
 
                 <div class="heading-3">
-                    <h3 class="text-xl leading-8 font-semibold text-teal-700 px-5 ">Dokumentasi Kegiatan:</h3>
+                    <h3 class="text-xl leading-8 font-semibold text-sky-700 px-5 ">Dokumentasi Kegiatan:</h3>
                 </div>
 
-                <div class="image p-5 flex justify-center">
-                    <img src="{{ asset('storage/' . $selectedAgenda->gambar) }}" alt="{{ $selectedAgenda->judul }}" class="w-1/2 h-auto object-cover" />
+                <div class="image px-5 pb-5">
+                    <div class="flex justify-center">
+                        <img src="{{ asset('storage/' . $selectedAgenda->gambar) }}" alt="{{ $selectedAgenda->judul }}" class="w-full max-w-md sm:max-w-lg h-auto object-cover rounded-lg shadow-sm" />
+                    </div>
                 </div>
                 @endif
             </div>

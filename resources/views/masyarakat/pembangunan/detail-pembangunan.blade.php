@@ -1,17 +1,20 @@
-<div>
+<x-slot:judul>
+    Detail Pembangunan Desa
+</x-slot:judul>
 
+<div>
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5  px-5">
         <section class="pembangunan md:col-span-3 p-5 rounded-lg">
             <div class="judul_pembangunan mb-8">
-                <h5 class="text-teal-700 font-bold text-base md:text-lg mb-2 md:mb-4">
+                <h5 class="text-sky-700 font-bold text-base md:text-lg mb-2 md:mb-4">
                     Pembangunan {{ $pembangunan->sifat_proyek }}
                 </h5>
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center space-x-2  mb-4">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center space-x-2  mb-4">
                     {{ $pembangunan->nama_kegiatan }}
                 </h1>
 
                 <div class="pembangunan_locate mb-6 sm:mb-4 flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-teal-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
                     </svg>
@@ -19,7 +22,7 @@
                 </div>
 
                 <div class="pembangunan_date sm:mb-10 flex items-center space-x-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-teal-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                     </svg>
                     <span class="text-sm sm:text-md">{{ \Carbon\Carbon::parse($pembangunan->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }} - {{ \Carbon\Carbon::parse($pembangunan->tanggal_selesai)->locale('id')->translatedFormat('d F Y') }}</span>
@@ -27,7 +30,7 @@
             </div>
 
             <div class="tujuan mb-8">
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center mb-4">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center mb-4">
                     Tujuan Kegiatan
                 </h1>
                 <p class="text-black text-lg leading-relaxed text-justify w-9/10">
@@ -36,19 +39,19 @@
             </div>
 
             <div class="sumber_dana mb-8">
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center mb-6">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center mb-6">
                     Sumber Dana
                 </h1>
 
                 <div class="tabel_dana relative overflow-x-auto flex justify-center">
                     <table class="w-4/5 text-sm text-left text-gray-700">
-                        <thead class="text-xs text-white uppercase bg-teal-600 border border-teal-600">
+                        <thead class="text-xs text-white uppercase bg-sky-700 border border-sky-700">
                             <tr>
                                 <th scope="col" class="px-6 py-3">SUMBER DANA/BESARAN BIAYA</th>
                                 <th scope="col" class="px-6 py-3">Rencana Anggaran</th>
                             </tr>
                         </thead>
-                        <tbody class="border border-teal-600">
+                        <tbody class="border border-blue-600">
                             <tr class="bg-white">
                                 <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
                                     Pemerintah
@@ -80,14 +83,14 @@
             </div>
 
             <div class="dokumentasi mb-8 px-4 sm:px-6">
-                <h1 class="text-teal-700 font-bold text-xl sm:text-2xl md:text-3xl flex items-center space-x-2 mb-4 sm:mb-8">
+                <h1 class="text-sky-700 font-bold text-xl sm:text-2xl md:text-3xl flex items-center space-x-2 mb-4 sm:mb-8">
                     Dokumentasi Kegiatan
                 </h1>
                 <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" alt="Pembangunan Desa" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
             </div>
 
             <div class="keterangan mb-8">
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center mb-4">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center mb-4">
                     Keterangan
                 </h1>
                 <p class="text-black text-lg leading-relaxed text-justify w-9/10">
@@ -111,7 +114,7 @@
                             <h4 class="text-xs font-semibold mb-2">
                                 {{ $pembangunans->nama_kegiatan }}
                             </h4>
-                            <a href="{{ route('pembangunan.detail',$pembangunans->id_pembangunan) }}" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
+                            <a href="{{ route('pembangunan.detail',$pembangunans->id_pembangunan) }}" class="mt-auto text-sky-700 text-xs underline hover:text-sky-800">
                                 Baca Selengkapnya
                             </a>
                         </div>

@@ -22,7 +22,7 @@ class KartuKeluargaEditController extends Component
     public $tanggal_keluar;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Alamat Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
     public $alamat_kk;
 
     #[Rule('required', message: 'Kolom RT Harus Diisi!')]

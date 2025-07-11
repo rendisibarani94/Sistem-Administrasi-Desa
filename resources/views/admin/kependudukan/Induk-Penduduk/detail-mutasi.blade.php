@@ -3,7 +3,7 @@
         Penduduk Pindah / Mutasi
     </x-slot:judul>
 
-    <div class="bg-teal-700 mt-4 mb-6 mx-6 rounded-sm p-2 ">
+    <div class="bg-sky-600 mt-4 mb-6 mx-6 rounded-sm p-2 ">
         <h5 class="text-xl text-white font-semibold text-center">Detail Penduduk Mutasi</h5>
     </div>
 
@@ -67,7 +67,7 @@
     </div>
 
                 <div class="flex justify-between mt-6">
-                <a href="{{ route('indukPenduduk.pindah') }}" class="text-white text-center bg-teal-700 hover:bg-teal-800 focus:ring-2 focus:outline-none focus:ring-teal-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
+                <a href="{{ route('indukPenduduk.pindah') }}" class="text-white text-center bg-gray-500 hover:bg-gray-500 focus:ring-2 focus:outline-none focus:ring-gray-600 font-medium rounded-sm text-sm w-full sm:w-auto px-5 py-2.5 cursor-pointer">Kembali</a>
             </div>
 
 </div>

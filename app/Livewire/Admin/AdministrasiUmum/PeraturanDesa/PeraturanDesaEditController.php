@@ -12,7 +12,7 @@ class PeraturanDesaEditController extends Component
     public $id_peraturan_desa;
 
     #[Rule('required', message: 'Kolom Perihal Peraturan Desa Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Perihal Peraturan Desa Terlalu Panjang!')]
+    #[Rule('max:200', message: 'Input Perihal Peraturan Desa maksimal 200 digit karakter')]
     public $tentang;
 
     #[Rule('required', message: 'Kolom Jenis Peraturan Desa Harus Diisi!')]
@@ -22,7 +22,7 @@ class PeraturanDesaEditController extends Component
     public $tanggal_dilaporkan;
 
     #[Rule('required', message: 'Kolom Tujuan Dilaporkan Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Tujuan Dilaporkan Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Input Tujuan Dilaporkan maksimal 100 digit karakter')]
     public $tujuan_dilaporkan;
 
     #[Rule('required', message: 'Kolom Tanggal Ditetapkan Harus Diisi!')]
@@ -35,10 +35,10 @@ class PeraturanDesaEditController extends Component
     public $tanggal_diundangkan_berita_desa;
 
     #[Rule('required', message: 'Kolom Uraian Singkat Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Uraian Singkat Terlalu Panjang!')]
+    #[Rule('max:200', message: 'Input Uraian Singkat maksimal 200 digit karakter')]
     public $uraian_singkat;
 
-    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
+    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter')]
     public $keterangan;
 
     public function mount($id_peraturan_desa)

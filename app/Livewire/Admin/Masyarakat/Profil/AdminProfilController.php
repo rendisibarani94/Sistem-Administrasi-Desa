@@ -59,7 +59,7 @@ class AdminProfilController extends Component
         $this->saveProfil('sejarah_desa', $this->sejarah_desa);
         $this->saveProfil('link_iframe_maps', $this->link_iframe_maps);
 
-        return redirect()->route('admin.profil')->with('success', 'Informasi Beranda berhasil disimpan!');
+        return redirect()->route('admin.profil')->with('success', 'Informasi Profil berhasil disimpan!');
     }
 
     #[Layout('components.layouts.layouts')]

@@ -55,6 +55,7 @@ class KegiatanPembangunanController extends Component
                             ->orWhere('status_pengerjaan', 'like', '%' . $this->search . '%');
                     });
                 })
+                ->where('status_pengerjaan', '!=' , 'Selesai')
                 ->where('is_deleted', 0)
                 ->orderBy('id_pembangunan', 'desc')
                 ->paginate(10),

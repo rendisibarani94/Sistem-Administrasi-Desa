@@ -17,7 +17,7 @@ class AparaturPemerintahDesaEditController extends Component
     public $id_aparatur;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:150', message: 'Kolom Nama Lengkap Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Kolom Nama Lengkap Terlalu Panjang!')]
     public $nama_lengkap;
 
     #[Rule(
@@ -42,7 +42,7 @@ class AparaturPemerintahDesaEditController extends Component
     public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi')]
-    #[Rule('max:255', message: 'Input Tempat Lahir Terlalu Panjang')]
+    #[Rule('max:150', message: 'Input Tempat Lahir Terlalu Panjang')]
     public $tempat_lahir;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi')]

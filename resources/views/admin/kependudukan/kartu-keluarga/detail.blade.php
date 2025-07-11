@@ -92,7 +92,7 @@
                     <td class="py-3 px-4 whitespace-nowrap border border-gray-500">{{ $item->tanggal_lahir }}</td>
                     <td class="py-3 px-4 border border-gray-500">{{ $item->agama }}</td>
                     <td class="py-3 px-4 border border-gray-500">{{ $item->pendidikan_terakhir }}</td>
-                    <td class="py-3 px-4 border border-gray-500">{{ $item->nama_pekerjaan }}</td>
+                    <td class="py-3 px-4 border border-gray-500">{{ $item->pekerjaan }}</td>
                 </tr>
                 @endforeach
             </tbody>
@@ -100,7 +100,7 @@
     </div>
 
     <div class="flex justify-between mt-8">
-        <a href="{{ route('kartuKeluarga') }}" type="button" class="bg-teal-700 text-white px-4 py-2 font-semibold border border-gray-300 rounded cursor-pointer">
+        <a href="{{ route('kartuKeluarga') }}" type="button" class="bg-gray-500 text-white px-4 py-2 font-semibold border border-gray-300 rounded cursor-pointer">
             Kembali
         </a>
     </div>

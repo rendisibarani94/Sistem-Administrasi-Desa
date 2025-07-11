@@ -20,7 +20,7 @@
 
     // Classes for the button
     $buttonBaseClasses = 'flex text-sm items-center transition duration-150 w-full p-1 text-base rounded-lg group cursor-pointer';
-    $buttonInactiveClasses = 'text-gray-950 hover:text-white hover:bg-teal-700';
+    $buttonInactiveClasses = 'text-gray-950 hover:text-white hover:bg-sky-700';
     $buttonActiveClasses = '';
     $buttonClasses = $buttonBaseClasses . ' ' . $buttonInactiveClasses;
 

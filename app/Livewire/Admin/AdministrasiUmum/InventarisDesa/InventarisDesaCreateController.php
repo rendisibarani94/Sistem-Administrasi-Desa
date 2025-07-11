@@ -11,7 +11,7 @@ use Livewire\Attributes\Rule;
 class InventarisDesaCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Jenis Barang Harus Diisi!')]
-    #[Rule('max:150', message: 'Kolom Jenis Barang Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Kolom Jenis Barang Terlalu Panjang!')]
     public $jenis_inventaris;
 
     #[Rule('required', message: 'Jika Kosong, Diisi 0')]

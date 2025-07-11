@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="rounded-sm">
-    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU RENCANA KERJA PEMBANGUNAN TAHUN {{ $settings['nama_desa'] }} 2025</h1>
+    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU INVENTARIS HASIL-HASIL PEMBANGUNAN {{ $settings['nama_desa'] }}</h1>
     <table class="table-auto mx-auto border mb-4">
         <thead>
             <tr>

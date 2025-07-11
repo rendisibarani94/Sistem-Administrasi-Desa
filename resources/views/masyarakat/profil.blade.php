@@ -1,10 +1,12 @@
-
+    <x-slot:judul>
+        Profil Desa
+    </x-slot:judul>
 <div>
     <section class="terkait px-4 md:px-8 lg:px-36 py-8 md:py-12 bg-white grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-center mb-10">
         <!-- teks + button -->
         <div class="space-y-4 md:space-y-6">
-            <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl">PROFIL DESA</h3>
-            <div class="text-gray-700 text-base  md:text-md leading-relaxed w-full text-justify">
+            <h3 class="text-sky-700 font-extrabold text-2xl md:text-3xl">PROFIL DESA</h3>
+            <div class="text-gray-700 text-lg md:text-md leading-relaxed w-full text-justify">
                 @if(isset($profil['profil_desa']))
                     {!! App\Helpers\HtmlSanitizer::cleanList($profil['profil_desa']) !!}
 
@@ -17,7 +19,6 @@
 
         </div>
 
-        {{-- <iframe src="" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe> --}}
         <!-- gambar -->
         <div class="w-full h-full mt-4 md:mt-0">
             @if(isset($profil['link_iframe_maps']))
@@ -39,11 +40,11 @@
         </div>
     </section>
 
-    <section class="visi_misi bg-cyan-200">
+    <section class="visi_misi bg-sky-100">
         <div class="py-10 md:py-20 px-4 md:px-8 lg:px-30">
             <div class="visi mb-15">
-                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">VISI {{ $settings['nama_desa'] }}</h3>
-                <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                <h3 class="text-sky-700 font-extrabold text-2xl md:text-3xl mb-4">VISI {{ $settings['nama_desa'] }}</h3>
+                <div class="text-gray-700 font-semibold text-lg md:text-md leading-relaxed w-full text-justify">
                     @if(isset($profil['visi_desa']))
                     {!! App\Helpers\HtmlSanitizer::cleanList($profil['visi_desa']) !!}
 
@@ -57,8 +58,8 @@
             </div>
 
             <div class="misi">
-                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">MISI {{ $settings['nama_desa'] }}</h3>
-                <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                <h3 class="text-sky-700 font-extrabold text-2xl md:text-3xl mb-4">MISI {{ $settings['nama_desa'] }}</h3>
+                <div class="text-gray-700 font-semibold text-lg md:text-md leading-relaxed w-full text-justify">
                     @if(isset($profil['misi_desa']))
                     {!! App\Helpers\HtmlSanitizer::cleanList($profil['misi_desa']) !!}
                     @else
@@ -74,8 +75,8 @@
 
     <section class="py-10 md:py-20 px-4 md:px-8 lg:px-30">
         <div class="sejarah">
-            <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">SEJARAH {{ $settings['nama_desa'] }}</h3>
-            <div class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+            <h3 class="text-sky-700 font-extrabold text-2xl md:text-3xl mb-4">SEJARAH {{ $settings['nama_desa'] }}</h3>
+            <div class="text-gray-700 font-semibold text-lg md:text-md leading-relaxed w-full text-justify">
                 @if(isset($profil['sejarah_desa']))
                     {!! App\Helpers\HtmlSanitizer::cleanList($profil['sejarah_desa']) !!}
                 @else

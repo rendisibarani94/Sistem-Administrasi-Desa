@@ -18,7 +18,7 @@ class AdminPengumumanController extends Component
 
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
-            'text' => 'Data Berita ini akan dihapus.',
+            'text' => 'Data Pengumuman ini akan dihapus.',
             'icon' => 'warning',
             'confirmButtonText' => 'Ya, hapus!',
             'cancelButtonText' => 'Batal',
@@ -34,7 +34,7 @@ class AdminPengumumanController extends Component
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
-            'text' => 'Data Berita Sementara berhasil dihapus.',
+            'text' => 'Data Pengumuman Sementara berhasil dihapus.',
         ]);
     }
 

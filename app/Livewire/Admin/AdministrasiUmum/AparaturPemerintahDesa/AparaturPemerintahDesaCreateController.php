@@ -14,7 +14,7 @@ class AparaturPemerintahDesaCreateController extends Component
     use WithFileUploads;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:150', message: 'Kolom Nama Lengkap Harus Diisi!')]
+    #[Rule('max:100', message: 'Kolom Nama Lengkap Harus Diisi!')]
     public $nama_lengkap;
 
     #[Rule(
@@ -39,7 +39,7 @@ class AparaturPemerintahDesaCreateController extends Component
     public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi')]
-    #[Rule('max:255', message: 'Input Tempat Lahir Terlalu Panjang')]
+    #[Rule('max:150', message: 'Input Tempat Lahir Terlalu Panjang')]
     public $tempat_lahir;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi')]
@@ -48,7 +48,12 @@ class AparaturPemerintahDesaCreateController extends Component
     #[Rule('required', message: 'Kolom Agama Harus Diisi')]
     public $agama;
 
-    #[Rule('required', message: 'Kolom Golongan Harus Diisi')]
+    #[Rule(
+        ['required_without:nipd', 'nullable'],
+        message: [
+            'required_without' => 'Golongan Harus Diisi Untuk Aparatur PNS',
+        ]
+    )]
     public $golongan;
 
     #[Rule('required', message: 'Kolom Jabatan Harus Diisi')]

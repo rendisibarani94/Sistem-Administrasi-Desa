@@ -60,28 +60,6 @@ class AdminAgendaCreateController extends Component
         }
         $validated['gambar'] = $imagePath ?? null;
 
-
-        // if ($this->gambar) {
-        //     // Get file info
-        //     $file = $this->gambar;
-        //     $filename = time() . '_' . $file->getClientOriginalName();
-
-        //     // Ensure directory exists
-        //     $uploadPath = storage_path('app/public/images/agenda');
-        //     if (!file_exists($uploadPath)) {
-        //         mkdir($uploadPath, 755, true);
-        //     }
-
-        //     // Move file directly
-        //     if ($file->storeAs('images/agenda', $filename, 'public')) {
-        //         $imagePath = 'images/agenda/' . $filename;
-        //     } else {
-        //         $this->addError('gambar', 'Failed to upload image');
-        //         return;
-        //     }
-        // }
-
-
         $validated['id_dibuat_oleh'] = auth()->id();
         DB::table('agenda')->insert($validated);
 

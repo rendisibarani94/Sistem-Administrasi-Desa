@@ -40,7 +40,6 @@ class KegiatanEditPembangunanController extends Component
     public $lokasi;
 
     #[Rule('required', message: 'Kolom Manfaat Kegiatan Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Manfaat Kegiatan Maksimal 255 Karakter!')]
     public $manfaat;
 
     #[Rule('required', message: 'Kolom Tanggal Mulai Kegiatan Harus Diisi!')]

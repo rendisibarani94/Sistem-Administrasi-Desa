@@ -20,7 +20,7 @@ class AgendaSuratDesaController extends Component
 
         $this->dispatch('swal:confirm', [
             'title' => 'Apakah Anda yakin?',
-            'text' => 'Data Surat Keluar ini akan dihapus.',
+            'text' => 'Data Agenda Surat ini akan dihapus.',
             'icon' => 'warning',
             'confirmButtonText' => 'Ya, hapus!',
             'cancelButtonText' => 'Batal',
@@ -36,7 +36,7 @@ class AgendaSuratDesaController extends Component
         // Show success message
         $this->dispatch('swal:success', [
             'title' => 'Berhasil!',
-            'text' => 'Data Surat Keluar berhasil dihapus.',
+            'text' => 'Data Agenda Surat berhasil dihapus.',
         ]);
     }
 

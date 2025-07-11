@@ -1,19 +1,22 @@
-<div>
+<x-slot:judul>
+    Organisasi Desa
+</x-slot:judul>
 
+<div>
     <section class="organisasi">
         <div class="py-5 md:py-10 px-4 md:px-8 lg:px-30">
             <div class="organisasi_desc mb-15">
-                <h3 class="text-teal-700 font-extrabold text-2xl md:text-3xl mb-4">ORGANISASI DESA</h3>
-                <p class="text-gray-700 font-semibold text-md md:text-md leading-relaxed w-full text-justify">
+                <h3 class="text-sky-700 font-extrabold text-2xl md:text-3xl mb-4">ORGANISASI DESA</h3>
+                <p class="text-gray-700 text-lg md:text-md leading-relaxed w-full text-justify">
                     Organisasi desa adalah kelompok atau lembaga yang dibentuk di tingkat desa untuk membantu menjalankan pemerintahan, pembangunan, dan pemberdayaan masyarakat. Organisasi ini berperan dalam berbagai aspek kehidupan desa, seperti administrasi, ekonomi, sosial, budaya, dan keamanan.
                 </P>
             </div>
         </div>
     </section>
 
-    <div class="wrapper bg-teal-200">
+    <div class="wrapper bg-sky-200">
         <section class="card carousel mx-auto max-w-7xl px-4 sm:px-6 py-4 sm:py-6 lg:px-8 mb-15" x-data="carousel()">
-            <h1 class="text-3xl font-bold text-teal-700 text-center mb-10">DAFTAR ORGANISASI</h1>
+            <h1 class="text-3xl font-bold text-sky-700 text-center mb-10">DAFTAR ORGANISASI</h1>
             <div class="flex items-center justify-center mt-4">
                 <!-- Left Arrow -->
                 <div class="arrow-left">
@@ -31,7 +34,7 @@
                         @foreach($organisasiDesa as $item)
                         <div class="flex-shrink-0 px-2 sm:px-4 w-full sm:w-1/2 md:w-1/3">
                             <a href="{{ route('organisasi.desa.detail', $item->id_organisasi) }}" class="block h-full">
-                                <div class="card border border-teal-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
+                                <div class="card border border-sky-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
                                     <div class="card-header mb-4">
                                         <img src="{{ asset('storage/'.$item->logo_organisasi) }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->nama_organisasi ?? 'Perangkat Desa' }}">
                                     </div>
@@ -46,12 +49,12 @@
                         @else
                         <!-- Empty State -->
                         <div class="flex-shrink-0 px-2 sm:px-4 w-full">
-                            <div class="card border border-teal-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
+                            <div class="card border border-sky-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
                                 <div class="card-header mb-4">
                                     <img src="{{ asset('images/masyarakat/beranda.png') }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="Default Image">
                                 </div>
                                 <div class="card-text">
-                                    <h4 class="text-teal-700 font-bold text-center text-lg sm:text-xl">Data Organisasi Belum Tersedia</h4>
+                                    <h4 class="text-sky-700 font-bold text-center text-lg sm:text-xl">Data Organisasi Belum Tersedia</h4>
                                 </div>
                             </div>
                         </div>
@@ -72,7 +75,7 @@
             <!-- Dots Navigation -->
             <div class="flex justify-center mt-6 space-x-2">
                 <template x-for="(_, index) in totalPages" :key="index">
-                    <button @click="goToPage(index)" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-300" :class="{'bg-teal-700': Math.floor(currentIndex / itemsPerView) === index, 'bg-gray-300 hover:bg-gray-400': Math.floor(currentIndex / itemsPerView) !== index}">
+                    <button @click="goToPage(index)" class="w-2 h-2 sm:w-3 sm:h-3 rounded-full transition-colors duration-300" :class="{'bg-sky-700': Math.floor(currentIndex / itemsPerView) === index, 'bg-gray-300 hover:bg-gray-400': Math.floor(currentIndex / itemsPerView) !== index}">
                     </button>
                 </template>
             </div>

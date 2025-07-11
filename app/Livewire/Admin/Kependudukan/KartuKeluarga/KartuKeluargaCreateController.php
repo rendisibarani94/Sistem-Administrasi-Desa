@@ -15,13 +15,14 @@ class KartuKeluargaCreateController extends Component
     // first form step
     #[Rule('required', message: 'Kolom Nomor Kartu Keluarga Harus Diisi!')]
     #[Rule('size:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
+    #[Rule('unique:kartu_keluarga,nomor_kartu_keluarga', message: 'Kartu Keluarga sudah terdaftar!')]
     public $nomor_kartu_keluarga;
 
     #[Rule('required', message: 'Kolom Tanggal Keluar Kartu Keluarga Harus Diisi!')]
     public $tanggal_keluar;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Alamat Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
     public $alamat_kk;
 
     #[Rule('required', message: 'Kolom RT Harus Diisi!')]
@@ -55,6 +56,7 @@ class KartuKeluargaCreateController extends Component
     // second form step
     #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
     #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
+    #[Rule('unique:penduduk,nik', message: 'NIK sudah terdaftar!')]
     public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]

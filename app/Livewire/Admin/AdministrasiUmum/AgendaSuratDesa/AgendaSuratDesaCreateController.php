@@ -20,7 +20,6 @@ class AgendaSuratDesaCreateController extends Component
     public $pengirim_penerima;
     public $isi_singkat;
     public $keterangan;
-    // public $bukti_diterima;
 
     protected function rules()
     {
@@ -28,9 +27,9 @@ class AgendaSuratDesaCreateController extends Component
             'jenis_surat' => 'required|in:Surat Keluar,Surat Ekspedisi,Surat Masuk',
             'tanggal_pengiriman_penerimaan' => 'required|date',
             'tanggal_surat' => 'required|date',
-            'kode_surat' => 'required|string|max:10',
+            'kode_surat' => 'required|string|max:25',
             'pengirim_penerima' => 'required|string|max:150',
-            'isi_singkat' => 'required|string|max:255',
+            'isi_singkat' => 'required|string|max:150',
             'keterangan' => 'nullable|string|max:255',
         ];
 
@@ -42,28 +41,25 @@ class AgendaSuratDesaCreateController extends Component
         'tanggal_pengiriman_penerimaan.required' => 'Tanggal pengiriman harus diisi',
         'tanggal_surat.required' => 'Tanggal surat harus diisi',
         'kode_surat.required' => 'Kode surat harus diisi',
+        'kode_surat.max' => 'Kode surat maksimal berisi 25 digit',
+        'kode_surat.required' => 'Kode surat harus diisi',
         'pengirim_penerima.required' => 'Pengirim / Penerima surat harus diisi',
+        'pengirim_penerima.max' => 'Pengirim / Penerima maksimal 150 digit',
         'isi_singkat.required' => 'Isi singkat surat harus diisi',
+        'isi_singkat.max' => 'Isi singkat surat maksimal 150 digit',
+        'keterangan.max' => 'Isi keterangan maksimal 255 digit',
     ];
 
     public function store()
     {
         $validated = $this->validate();
 
-        // Handle file upload
-        // if ($request->bukti_diterima) {
-        //     $imageName = time() . '.' . $request->bukti_diterima->extension();
-        //     $request->bukti_diterima->move(public_path('images/administrasi-umum/surat-keluar'), $imageName);
-        //     $validated['bukti_diterima'] = $imageName;
-        // }
-
         DB::table('agenda_surat')->insert($validated);
 
         // Proper reset
         $this->reset();
-        $this->jenis_surat = 'Surat Keluar';
 
-        return redirect()->route('AgendaSuratDesa')->with('success', 'Data Surat Keluar berhasil disimpan!');
+        return redirect()->route('AgendaSuratDesa')->with('success', 'Data Agenda Surat berhasil disimpan!');
     }
 
     #[Layout('components.layouts.layouts')]

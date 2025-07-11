@@ -9,7 +9,7 @@
         <nav class="flex " aria-label="Breadcrumb">
             <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
                 <li class="inline-flex items-center">
-                    <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-blue-600 ">
+                    <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-700 ">
                         <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                             <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                         </svg>
@@ -50,7 +50,7 @@
                     @endif
 
                     <!-- File Input -->
-                    <input id="logo" wire:model="logo" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer bg-gray-50 focus:outline-none file:cursor-pointer file:bg-blue-600 file:border-0 file:me-4 file:py-2 file:px-4 file:text-sm file:text-white file:font-semibold @error('logo') border-red-500 @enderror" type="file">
+                    <input id="logo" wire:model="logo" accept="image/*" class="block w-full text-sm text-gray-900 border border-gray-300 rounded-sm cursor-pointer bg-gray-50 focus:outline-none file:cursor-pointer file:bg-sky-600 file:border-0 file:me-4 file:py-2 file:px-4 file:text-sm file:text-white file:font-semibold @error('logo') border-red-500 @enderror" type="file">
                     <div class="h-0.25">
                         @error('logo')
                         <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span>
@@ -66,7 +66,7 @@
                     <!-- Nama Desa -->
                     <div>
                         <label for="nama_desa" class="block mb-2 text-sm font-semibold text-gray-950">Nama Desa</label>
-                        <input type="text" id="nama_desa" wire:model.live="nama_desa" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nama_desa') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="Masukkan Nama Desa" autocomplete="off" />
+                        <input type="text" id="nama_desa" wire:model.live="nama_desa" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nama_desa') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukkan Nama Desa" autocomplete="off" />
                         <div class="h-0.25">
                             @error('nama_desa') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -100,7 +100,7 @@
                     <!-- Facebook -->
                     <div>
                         <label for="link_fb" class="block mb-2 text-sm font-semibold text-gray-950">Facebook</label>
-                        <input type="text" id="link_fb" wire:model.live="link_fb" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_fb') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="https://facebook.com/..." autocomplete="off" />
+                        <input type="text" id="link_fb" wire:model.live="link_fb" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_fb') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="https://facebook.com/..." autocomplete="off" />
                         <div class="h-0.25">
                             @error('link_fb') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -109,7 +109,7 @@
                     <!-- Instagram -->
                     <div>
                         <label for="link_ig" class="block mb-2 text-sm font-semibold text-gray-950">Instagram</label>
-                        <input type="text" id="link_ig" wire:model.live="link_ig" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_ig') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="https://instagram.com/..." autocomplete="off" />
+                        <input type="text" id="link_ig" wire:model.live="link_ig" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_ig') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="https://instagram.com/..." autocomplete="off" />
                         <div class="h-0.25">
                             @error('link_ig') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -118,7 +118,7 @@
                     <!-- Twitter -->
                     <div>
                         <label for="link_twt" class="block mb-2 text-sm font-semibold text-gray-950">Twitter</label>
-                        <input type="text" id="link_twt" wire:model.live="link_twt" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_twt') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="https://twitter.com/..." autocomplete="off" />
+                        <input type="text" id="link_twt" wire:model.live="link_twt" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_twt') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="https://twitter.com/..." autocomplete="off" />
                         <div class="h-0.25">
                             @error('link_twt') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -127,7 +127,7 @@
                     <!-- WhatsApp -->
                     <div>
                         <label for="link_wa" class="block mb-2 text-sm font-semibold text-gray-950">WhatsApp</label>
-                        <input type="text" id="link_wa" wire:model.live="link_wa" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_wa') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="https://wa.me/..." autocomplete="off" />
+                        <input type="text" id="link_wa" wire:model.live="link_wa" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_wa') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="https://wa.me/..." autocomplete="off" />
                         <div class="h-0.25">
                             @error('link_wa') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -136,7 +136,7 @@
                     <!-- YouTube -->
                     <div>
                         <label for="link_yt" class="block mb-2 text-sm font-semibold text-gray-950">YouTube</label>
-                        <input type="text" id="link_yt" wire:model.live="link_yt" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_yt') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="https://youtube.com/..." autocomplete="off" />
+                        <input type="text" id="link_yt" wire:model.live="link_yt" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('link_yt') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="https://youtube.com/..." autocomplete="off" />
                         <div class="h-0.25">
                             @error('link_yt') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -152,7 +152,7 @@
                     <!-- Phone -->
                     <div>
                         <label for="nomor_telp" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Telepon</label>
-                        <input type="text" id="nomor_telp" wire:model.live="nomor_telp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_telp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="+62 ... .... ...." autocomplete="off" />
+                        <input type="text" id="nomor_telp" wire:model.live="nomor_telp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_telp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="+62 ... .... ...." autocomplete="off" />
                         <div class="h-0.25">
                             @error('nomor_telp') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -161,7 +161,7 @@
                     <!-- Mobile -->
                     <div>
                         <label for="nomor_hp" class="block mb-2 text-sm font-semibold text-gray-950">Nomor HP</label>
-                        <input type="text" id="nomor_hp" wire:model.live="nomor_hp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_hp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="+62 ... .... ...." autocomplete="off" />
+                        <input type="text" id="nomor_hp" wire:model.live="nomor_hp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_hp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="+62 ... .... ...." autocomplete="off" />
                         <div class="h-0.25">
                             @error('nomor_hp') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -170,7 +170,7 @@
                     <!-- Email -->
                     <div class="col-span-full">
                         <label for="email" class="block mb-2 text-sm font-semibold text-gray-950">Email</label>
-                        <input type="text" id="email" wire:model.live="email" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('email') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-blue-500 focus:border-blue-500 @enderror" placeholder="contact@desa.id" autocomplete="off" />
+                        <input type="text" id="email" wire:model.live="email" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('email') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="contact@desa.id" autocomplete="off" />
                         <div class="h-0.25">
                             @error('email') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -180,8 +180,8 @@
 
             <!-- Submit Button -->
             <div class="flex justify-between gap-3">
-                <a href="/admin" class="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300">Back</a>
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition-colors cursor-pointer">
+                <a href="/admin" class="bg-gray-200 text-black px-4 py-2 rounded-md hover:bg-gray-300">Kembali</a>
+                <button type="submit" class="bg-sky-700 text-white px-6 py-2 rounded-sm hover:bg-sky-800 transition-colors cursor-pointer">
                     Simpan
                 </button>
             </div>

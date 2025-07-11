@@ -13,7 +13,6 @@ class AgendaSuratDesaEditController extends Component
 
     use WithFileUploads;
 
-
     public $id_agenda_surat;
     public $jenis_surat;
     public $tanggal_pengiriman_penerimaan;
@@ -22,9 +21,9 @@ class AgendaSuratDesaEditController extends Component
     public $pengirim_penerima;
     public $isi_singkat;
     public $keterangan;
-    // public $bukti_diterima;
 
-    public function mount($id_agenda_surat){
+    public function mount($id_agenda_surat)
+    {
         $this->id_agenda_surat = $id_agenda_surat;
         $this->loadEditData();
     }
@@ -35,9 +34,9 @@ class AgendaSuratDesaEditController extends Component
             'jenis_surat' => 'required|in:Surat Keluar,Surat Ekspedisi,Surat Masuk',
             'tanggal_pengiriman_penerimaan' => 'required|date',
             'tanggal_surat' => 'required|date',
-            'kode_surat' => 'required|string|max:10',
+            'kode_surat' => 'required|string|max:25',
             'pengirim_penerima' => 'required|string|max:150',
-            'isi_singkat' => 'required|string|max:255',
+            'isi_singkat' => 'required|string|max:150',
             'keterangan' => 'nullable|string|max:255',
         ];
 
@@ -49,20 +48,26 @@ class AgendaSuratDesaEditController extends Component
         'tanggal_pengiriman_penerimaan.required' => 'Tanggal pengiriman harus diisi',
         'tanggal_surat.required' => 'Tanggal surat harus diisi',
         'kode_surat.required' => 'Kode surat harus diisi',
+        'kode_surat.max' => 'Kode surat maksimal berisi 25 digit',
+        'kode_surat.required' => 'Kode surat harus diisi',
         'pengirim_penerima.required' => 'Pengirim / Penerima surat harus diisi',
+        'pengirim_penerima.max' => 'Pengirim / Penerima maksimal 150 digit',
         'isi_singkat.required' => 'Isi singkat surat harus diisi',
+        'isi_singkat.max' => 'Isi singkat surat maksimal 150 digit',
+        'keterangan.max' => 'Isi keterangan maksimal 255 digit',
     ];
 
-    public function loadEditData(){
+    public function loadEditData()
+    {
         $sk = DB::table('agenda_surat')->where('id_agenda_surat', $this->id_agenda_surat)->first();
 
-         $this->jenis_surat = $sk->jenis_surat;
-         $this->tanggal_pengiriman_penerimaan = $sk->tanggal_pengiriman_penerimaan;
-         $this->tanggal_surat = $sk->tanggal_surat;
-         $this->kode_surat = $sk->kode_surat;
-         $this->pengirim_penerima = $sk->pengirim_penerima;
-         $this->isi_singkat = $sk->isi_singkat;
-         $this->keterangan = $sk->keterangan;
+        $this->jenis_surat = $sk->jenis_surat;
+        $this->tanggal_pengiriman_penerimaan = $sk->tanggal_pengiriman_penerimaan;
+        $this->tanggal_surat = $sk->tanggal_surat;
+        $this->kode_surat = $sk->kode_surat;
+        $this->pengirim_penerima = $sk->pengirim_penerima;
+        $this->isi_singkat = $sk->isi_singkat;
+        $this->keterangan = $sk->keterangan;
     }
 
 

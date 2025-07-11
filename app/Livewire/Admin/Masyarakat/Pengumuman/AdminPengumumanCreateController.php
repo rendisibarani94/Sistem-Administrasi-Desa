@@ -25,7 +25,6 @@ class AdminPengumumanCreateController extends Component
     public $judul;
 
     #[Rule('required', message: 'Kolom Deksripsi Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Deksripsi maksimal 255 karakter!')]
     public $deskripsi;
 
     public $oldGambar;

@@ -67,7 +67,7 @@ class TanahKasDesaCreateController extends Component
     public $tanpa_papan_nama = 0;
 
     #[Rule('required', message: 'Kolom Lokasi Tanah Kas Desa Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Lokasi Terlalu Panjang')]
+    #[Rule('max:150', message: 'Kolom Lokasi maksimal 150 digit karakter')]
     public $lokasi;
 
     #[Rule('required', message: 'Kolom Peruntukan Tanah Kas Desa Harus Diisi!')]

@@ -5,10 +5,10 @@
 <div>
 
     <div class="grid grid-cols-1 md:grid-cols-4 gap-5 py-5 px-5">
-        <section class="pengumuman md:col-span-3 p-5 rounded-lg">
-            <div class="judul_pengumuman">
-                <h1 class="text-teal-700 font-bold text-2xl md:text-3xl flex items-center space-x-2 mb-6 md:mb-8">
-                    <svg class="w-9 h-9 text-teal-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
+        <section class="apbdes md:col-span-3 p-5 rounded-lg">
+            <div class="judul_apbdes">
+                <h1 class="text-sky-700 font-bold text-2xl md:text-3xl flex items-center space-x-2 mb-6 md:mb-8">
+                    <svg class="w-9 h-9 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
                         <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                         <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
                     </svg>
@@ -17,21 +17,21 @@
                 </h1>
             </div>
 
-            <div class="list_pengumuman md:col-span-1 p-3 ">
+            <div class="list_apbdes md:col-span-1 p-3 ">
                 <div class="container">
                     @foreach ( $apbdesData as $item)
 
-                    <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-teal-700 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
+                    <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-gray-500 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
                         <div class="desc w-full md:w-4/5 self-start p-3 md:p-5">
                             <div class="agenda_desc mb-2 flex items-center space-x-2">
-                                <svg class="w-6 h-6 md:w-7 md:h-7 text-teal-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
+                                <svg class="w-6 h-6 md:w-7 md:h-7 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 22">
                                     <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
                                     <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
                                 </svg>
                                 <h4 class="text-lg md:text-xl font-semibold">Anggaran APBDesa Tahun {{ $item->tahun_anggaran }}</h4>
                             </div>
 
-                            <a href="{{ route('apbdes.detail', $item->id_apbdes) }}" class="cursor-pointer text-teal-600 text-xs md:text-sm underline hover:text-teal-800 ml-0 md:ml-9" data-modal-target="default-modal" data-modal-toggle="default-modal">
+                            <a href="{{ route('apbdes.detail', $item->id_apbdes) }}" class="cursor-pointer text-blue-700 text-xs md:text-sm underline hover:text-sky-800 ml-0 md:ml-9" data-modal-target="default-modal" data-modal-toggle="default-modal">
                                 Baca Selengkapnya
                             </a>
                         </div>
@@ -48,7 +48,7 @@
         </section>
 
         <div class="list_berita-wrapper">
-            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-teal-600 shadow-md shadow-teal-700">
+            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-sky-600 shadow-md shadow-sky-700">
 
                 <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                     Berita Desa
@@ -66,7 +66,7 @@
                                 <h4 class="text-xs font-semibold mb-2">
                                     {{ $beritas->judul }}
                                 </h4>
-                                <a href="#" class="mt-auto text-teal-600 text-xs underline hover:text-teal-800">
+                                <a href="{{ route('detail.berita', $beritas->id_berita) }}" class="mt-auto text-blue-700 text-xs underline hover:text-blue-800">
                                     Baca Selengkapnya
                                 </a>
 

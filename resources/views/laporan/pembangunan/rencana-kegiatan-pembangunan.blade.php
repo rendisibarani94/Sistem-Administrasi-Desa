@@ -6,7 +6,7 @@
 
 @section('content')
 <div class="m-20">
-    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">Buku Rencana Kegiatan Pembangunan {{ $settings['nama_desa'] }}</h1>
+    <h1 class="font-semibold text-slate-700 text-xl text-center mb-10">BUKU RENCANA KERJA PEMBANGUNAN {{ $settings['nama_desa'] }} TAHUN {{ $year }}</h1>
     <table class="table-auto mx-auto border mb-4 text-xs">
         <thead>
             <tr>
