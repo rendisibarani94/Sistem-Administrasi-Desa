@@ -77,6 +77,20 @@ class KartuKeluargaCreateController extends Component
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
     public $tanggal_lahir;
 
+    #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
+    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 karakter!')]
+    public $kewarganegaraan;
+
+    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 Karakter!')]
+    public $nomor_akta_lahir;
+
+    #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal')]
+    public $tanggal_keluar_ktp;
+
+    #[Rule('required', message: 'Kolom Keturunan Harus Diisi!')]
+    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 karakter!')]
+    public $keturunan;
+
     #[Rule('required', message: 'Kolom Golongan Darah Harus Diisi!')]
     public $golongan_darah;
 
@@ -90,6 +104,7 @@ class KartuKeluargaCreateController extends Component
     public $pendidikan_terakhir;
 
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
+    #[Rule('max:100', message: 'Input Pekerjaan maksimal 100 digit karakter!')]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Baca Huruf Harus Diisi!')]
@@ -116,6 +131,9 @@ class KartuKeluargaCreateController extends Component
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
 
+    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 karakter')]
+    public $keterangan;
+
     public function nextStep()
     {
         if ($this->currentStep == 1) {
@@ -139,8 +157,12 @@ class KartuKeluargaCreateController extends Component
             $this->validateOnly('kedudukan_keluarga');
             $this->validateOnly('tempat_lahir');
             $this->validateOnly('tanggal_lahir');
+            $this->validateOnly('kewarganegaraan');
+            $this->validateOnly('nomor_akta_lahir');
             $this->validateOnly('golongan_darah');
             $this->validateOnly('agama');
+            $this->validateOnly('tanggal_keluar_ktp');
+            $this->validateOnly('keturunan');
             $this->validateOnly('status_perkawinan');
             $this->validateOnly('pendidikan_terakhir');
             $this->validateOnly('pekerjaan');
@@ -148,6 +170,8 @@ class KartuKeluargaCreateController extends Component
             $this->validateOnly('dusun');
             $this->validateOnly('asal_penduduk');
             $this->validateOnly('tanggal_penambahan');
+            $this->validateOnly('keterangan');
+
         }
 
         $this->currentStep++;
@@ -206,36 +230,7 @@ class KartuKeluargaCreateController extends Component
             DB::commit();
 
             // Reset the form fields
-            $this->reset([
-                'nomor_kartu_keluarga',
-                'tanggal_keluar',
-                'alamat_kk',
-                'rt',
-                'rw',
-                'desa_kelurahan',
-                'kecamatan',
-                'kode_pos',
-                'kabupaten_kota',
-                'provinsi',
-                'nik',
-                'jenis_kelamin',
-                'nama_lengkap',
-                'alamat',
-                'tempat_lahir',
-                'tanggal_lahir',
-                'golongan_darah',
-                'agama',
-                'status_perkawinan',
-                'pendidikan_terakhir',
-                'pekerjaan',
-                'baca_huruf',
-                'nama_ayah',
-                'nama_ibu',
-                'kedudukan_keluarga',
-                'dusun',
-                'asal_penduduk',
-                'tanggal_penambahan',
-            ]);
+            $this->reset();
             // Redirect to index page
             return redirect()->route('kartuKeluarga')->with('success', 'Data kartu keluarga berhasil disimpan!');
     }
@@ -247,7 +242,6 @@ class KartuKeluargaCreateController extends Component
         return view(
             'admin.kependudukan.kartu-keluarga.create',
             [
-                'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
                 'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
                 'kkData' => DB::table('kartu_keluarga')->where('is_deleted', 0)->get(),
             ]

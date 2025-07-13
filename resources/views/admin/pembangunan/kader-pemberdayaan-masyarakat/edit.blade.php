@@ -61,14 +61,9 @@
                         @error('pendidikan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
                 </div>
-                <div class="input-component">
+               <div class="input-component">
                     <label for="bidang_keahlian" class="block mb-2 text-sm font-semibold text-gray-950">Bidang Keahlian</label>
-                    <select id="bidang_keahlian" wire:model.live="bidang_keahlian" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('bidang_keahlian') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                        <option selected>Pilih Bidang Keahlian</option>
-                        @foreach ($bidangKeahlianData as $data)
-                        <option value="{{ $data->id_bidang_keahlian }}">{{ $data->bidang_keahlian }}</option>
-                        @endforeach
-                    </select>
+                    <input type="text" id="bidang_keahlian" wire:model.live="bidang_keahlian" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('bidang_keahlian') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Bidang Keahlian " autocomplete="off" />
                     <div class="h-0.25">
                         @error('bidang_keahlian') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>

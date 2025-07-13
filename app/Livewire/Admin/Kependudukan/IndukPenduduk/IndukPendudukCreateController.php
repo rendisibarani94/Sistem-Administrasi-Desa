@@ -25,6 +25,7 @@ class IndukPendudukCreateController extends Component
 
     #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
     #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
+    #[Rule('unique:penduduk,nik', message: 'NIK sudah terdaftar!')]
     public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
@@ -133,7 +134,6 @@ class IndukPendudukCreateController extends Component
         return view(
             'admin.kependudukan.induk-penduduk.create',
             [
-                'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
                 'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
                 'kkData' => $kkData,
             ]

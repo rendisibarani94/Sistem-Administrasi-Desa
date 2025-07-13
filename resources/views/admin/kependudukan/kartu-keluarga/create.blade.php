@@ -209,6 +209,24 @@
                 </div>
                 <div class="grid gap-6 mb-10 md:grid-cols-2">
                     <div class="input-component">
+                        <label for="kewarganegaraan" class="block mb-2 text-sm font-semibold text-gray-950">Kewarganegaraan</label>
+                        <select id="kewarganegaraan" wire:model.live="kewarganegaraan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('kewarganegaraan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
+                            <option selected>Pilih Kewarganegaraan</option>
+                            <option value="WNI">Warga Negara Indonesia</option>
+                            <option value="WNA">Warga Negara Asing</option>
+                        </select>
+                        <div class="h-0.25">
+                            @error('kewarganegaraan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
+                        <label for="nomor_akta_lahir" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Akte Kelahiran <span class="text-gray-500">*Jika Ada</span></label>
+                        <input type="text" id="nomor_akta_lahir" wire:model.live="nomor_akta_lahir" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_akta_lahir') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Nomor Akte Kelahiran" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('nomor_akta_lahir') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
                         <label for="golongan_darah" class="block mb-2 text-sm font-semibold text-gray-950">Golongan Darah</label>
                         <select id="golongan_darah" wire:model.live="golongan_darah" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('golongan_darah') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
                             <option selected>Pilih Golongan Darah</option>
@@ -246,6 +264,20 @@
                         </div>
                     </div>
                     <div class="input-component">
+                        <label for="tanggal_keluar_ktp" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Keluar E-KTP <span class="text-gray-500 font-light">*Jika Ada</span></label>
+                        <input type="date" id="tanggal_keluar_ktp" wire:model.live="tanggal_keluar_ktp" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tanggal_keluar_ktp') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Tanggal Keluar E-KTP <sup>*</sup>jika ada<sup>*</sup> " autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('tanggal_keluar_ktp') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
+                        <label for="keturunan" class="block mb-2 text-sm font-semibold text-gray-950">Negara Keturunan <span class="text-gray-500 font-light">*Jika Ada</span></label>
+                        <input type="text" id="keturunan" wire:model.live="keturunan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('keturunan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Negara Asal Keturunan (WNI untuk Indonesia)" autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('keturunan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
                         <label for="status_perkawinan" class="block mb-2 text-sm font-semibold text-gray-950">Status Perkawinan</label>
                         <select id="status_perkawinan" wire:model.live="status_perkawinan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('status_perkawinan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
                             <option selected>Pilih Status Pernikahan</option>
@@ -280,12 +312,7 @@
                     </div>
                     <div class="input-component">
                         <label for="pekerjaan" class="block mb-2 text-sm font-semibold text-gray-950">Pekerjaan</label>
-                        <select id="pekerjaan" wire:model.live="pekerjaan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('pekerjaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                            <option selected>Pilih Pekerjaan</option>
-                            @foreach ($pekerjaanData as $pekerjaan)
-                            <option value="{{ $pekerjaan->id_pekerjaan }}">{{ $pekerjaan->pekerjaan }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" id="pekerjaan" wire:model.live="pekerjaan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('pekerjaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Pekerjaan " autocomplete="off" />
                         <div class="h-0.25">
                             @error('pekerjaan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -323,13 +350,22 @@
                         </div>
                     </div>
                     <div class="input-component">
+                        <label for="keterangan" class="block mb-2 text-sm font-semibold text-gray-950">Keterangan</label>
+                        <textarea id="keterangan" wire:model.live="keterangan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full h-26 p-2.5 placeholder:text-slate-600 @error('keterangan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Keterangan Tambahan" autocomplete="off"></textarea>
+                        <div class="h-0.25">
+                            @error('keterangan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
+                    </div>
+                    <div class="input-component">
                         <label for="tanggal_penambahan" class="block mb-2 text-sm font-semibold text-gray-950">Tanggal Penambahan Penduduk</label>
                         <input type="date" id="tanggal_penambahan" wire:model.live="tanggal_penambahan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('tanggal_penambahan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Tanggal Penambahan Penduduk " autocomplete="off" />
                         <div class="h-0.25">
                             @error('tanggal_penambahan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
+
                 </div>
+
                 <div class="flex justify-between mt-8">
                     <button type="button" wire:click="previousStep" class="bg-gray-200 text-gray-700 px-4 py-2 border border-gray-300 rounded cursor-pointer">
                         Data Kartu Keluarga
@@ -339,30 +375,5 @@
                     </button>
                 </div>
             </div>
-
-            <!-- Navigation Buttons -->
-            {{-- <div class="flex justify-between mt-8">
-                <div>
-                    @if($currentStep > 1)
-                    <button type="button" wire:click="previousStep" class="bg-gray-200 text-gray-700 px-4 py-2 border border-gray-300 rounded cursor-pointer">
-                        Previous
-                    </button>
-                    @else
-                    <!-- Empty div to maintain the space when Previous button is not shown -->
-                    <div></div>
-                    @endif
-                </div>
-
-                <div>
-                    @if($currentStep < 2) <button type="button" wire:click="nextStep" class="bg-sky-700 text-white px-4 py-2 rounded hover:bg-sky-800 cursor-pointer">
-                        Next
-                        </button>
-                        @else
-                        <button type="submit" class="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 cursor-pointer">
-                            Submit
-                        </button>
-                        @endif
-                </div>
-            </div> --}}
         </form>
     </div>

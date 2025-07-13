@@ -53,18 +53,13 @@
                 </div>
             </div>
             <div class="grid gap-6 mb-6 md:grid-cols-2">
-                <div class="input-component">
-                    <label for="pekerjaan" class="block mb-2 text-sm font-semibold text-gray-950">Pekerjaan</label>
-                    <select id="pekerjaan" wire:model.live="pekerjaan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('pekerjaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                        <option selected>Pilih Pekerjaan</option>
-                        @foreach ($pekerjaanData as $pekerjaan)
-                        <option value="{{ $pekerjaan->id_pekerjaan }}">{{ $pekerjaan->pekerjaan }}</option>
-                        @endforeach
-                    </select>
-                    <div class="h-0.25">
-                        @error('pekerjaan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    <div class="input-component">
+                        <label for="pekerjaan" class="block mb-2 text-sm font-semibold text-gray-950">Pekerjaan</label>
+                        <input type="text" id="pekerjaan" wire:model.live="pekerjaan" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('pekerjaan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Pekerjaan " autocomplete="off" />
+                        <div class="h-0.25">
+                            @error('pekerjaan') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                        </div>
                     </div>
-                </div>
                 <div class="input-component">
                     <label for="kewarganegaraan" class="block mb-2 text-sm font-semibold text-gray-950">Kewarganegaraan</label>
                     <select id="kewarganegaraan" wire:model.live="kewarganegaraan" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('kewarganegaraan') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">

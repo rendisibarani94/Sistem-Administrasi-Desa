@@ -167,9 +167,19 @@ class IndukPendudukEditController extends Component
             ])
             ->get();
 
+        $selectedKKText = 'Pilih Keluarga';
+        if ($this->id_kartu_keluarga) {
+            $selectedKK = $kkData->firstWhere('id_kartu_keluarga', $this->id_kartu_keluarga);
+            if ($selectedKK) {
+                $selectedKKText = $selectedKK->nomor_kartu_keluarga .
+                    ($selectedKK->nama_lengkap ? " - " . $selectedKK->nama_lengkap : "");
+            }
+        }
+
         return view('admin.kependudukan.induk-penduduk.edit', [
             'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
             'kkData' => $kkData,
+            'selectedKKText' => $selectedKKText,
         ]);
     }
 }

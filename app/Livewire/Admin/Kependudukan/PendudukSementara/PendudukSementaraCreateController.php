@@ -30,6 +30,7 @@ class PendudukSementaraCreateController extends Component
     public $tanggal_lahir;
 
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
+    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 Karakter')]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
@@ -95,10 +96,7 @@ class PendudukSementaraCreateController extends Component
     public function render()
     {
         return view(
-            'admin.kependudukan.penduduk-sementara.create',
-            [
-                'pekerjaanData' => DB::table('pekerjaan')->where('is_deleted', 0)->get(),
-            ]
+            'admin.kependudukan.penduduk-sementara.create'
         );
     }
 }

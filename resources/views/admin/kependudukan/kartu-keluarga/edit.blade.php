@@ -29,7 +29,19 @@
             </div>
 
             <div class="grid gap-6 mb-6 md:grid-cols-4">
-                <div class="md:col-span-2">
+                <div class="md:col-span-1">
+                    <label for="id_kepala_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Kepala Keluarga</label>
+                    <select id="id_kepala_keluarga" wire:model.live="id_kepala_keluarga" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('id_kepala_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
+                        <option selected>Pilih Kepala Keluarga</option>
+                        @foreach ($kepalaKeluargaData as $kepalaKeluarga)
+                        <option value="{{ $kepalaKeluarga->id_penduduk }}">{{ $kepalaKeluarga->nama_lengkap }} - {{ $kepalaKeluarga->nik }}</option>
+                        @endforeach
+                    </select>
+                    <div class="h-0.25">
+                        @error('id_kepala_keluarga') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
+                </div>
+                <div class="md:col-span-1">
                     <label for="alamat_kk" class="block mb-2 text-sm font-semibold text-gray-950">Alamat</label>
                     <input type="text" id="alamat_kk" wire:model.live.debounce.500ms="alamat_kk" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('alamat_kk') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Alamat " autocomplete="off" />
                     <div class="h-0.25">

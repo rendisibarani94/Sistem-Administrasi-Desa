@@ -9,11 +9,11 @@ use Livewire\Attributes\Rule;
 
 class KartuKeluargaEditController extends Component
 {
-
     public $id_kartu_keluarga;
 
-    // first form step
+    public $id_kepala_keluarga;
 
+    // first form step
     #[Rule('required', message: 'Kolom Nomor Kartu Keluarga Harus Diisi!')]
     #[Rule('size:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
     public $nomor_kartu_keluarga;
@@ -57,6 +57,12 @@ class KartuKeluargaEditController extends Component
     {
         $this->id_kartu_keluarga = $id_kartu_keluarga;
         $this->loadKK();
+
+        $this->id_kepala_keluarga = DB::table('penduduk')
+            ->where('id_kartu_keluarga', $this->id_kartu_keluarga)
+            ->where('is_deleted', 0)
+            ->where('is_mutated', 0)
+            ->value('id_penduduk');
     }
 
     public function loadKK()
@@ -95,6 +101,10 @@ class KartuKeluargaEditController extends Component
         ];
 
         DB::table('kartu_keluarga')->where('id_kartu_keluarga', $this->id_kartu_keluarga)->update($data);
+        DB::table('penduduk')->where('id_penduduk', $this->id_kepala_keluarga)->update([
+            'id_kartu_keluarga' => $this->id_kartu_keluarga,
+            'updated_at' => now()
+        ]);
 
         return redirect()->route('kartuKeluarga')->with('success', 'Data Kartu Keluarga Berhasil Diubah');
     }
@@ -102,7 +112,16 @@ class KartuKeluargaEditController extends Component
     #[Layout('components.layouts.layouts')]
     public function render()
     {
-        return view('admin.kependudukan.kartu-keluarga.edit');
+        return view(
+            'admin.kependudukan.kartu-keluarga.edit', [
+                'kepalaKeluargaData' => DB::table('penduduk')
+                    ->where('is_deleted', 0)
+                    ->where('is_mutated', 0)
+                    ->get(),
+            ]
+        );
+
+
     }
 
 }

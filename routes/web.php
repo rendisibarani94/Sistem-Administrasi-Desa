@@ -100,6 +100,7 @@ use App\Livewire\Masyarakat\Pengumuman\PengumumanController;
 use App\Livewire\Masyarakat\ProfilController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Livewire\Admin\BerandaAdminController;
+use App\Livewire\Admin\Kependudukan\IndukPenduduk\FilterIndukPendudukController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateExcelController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukKkMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaDetailController;
@@ -132,6 +133,8 @@ Route::get('/induk-penduduk/{id}/mutasi', IndukPendudukMutasiController::class)-
 Route::get('/induk-penduduk/{id}/mutasi/kepala-keluarga', IndukPendudukKkMutasiController::class)->name('indukPenduduk.mutasi.kepala-keluarga');
 Route::get('/induk-penduduk/{id}/mutasi/edit', IndukPendudukEditMutasiController::class)->name('indukPenduduk.mutasi.edit');
 Route::get('/induk-penduduk/{id}/mutasi/detail', IndukPendudukDetailMutasiController::class)->name('indukPenduduk.mutasi.detail');
+
+Route::get('/filter-penduduk', FilterIndukPendudukController::class)->name('filter.indukPenduduk');
 
 Route::get('/kartu-keluarga', KartuKeluargaController::class)->name('kartuKeluarga');
 Route::get('/kartu-keluarga/{id_kartu_keluarga}/detail', KartuKeluargaDetailController::class)->name('kartuKeluarga.detail');

@@ -28,6 +28,7 @@ class PendudukSementaraEditController extends Component
     public $tanggal_lahir;
 
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
+    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 Karakter')]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
