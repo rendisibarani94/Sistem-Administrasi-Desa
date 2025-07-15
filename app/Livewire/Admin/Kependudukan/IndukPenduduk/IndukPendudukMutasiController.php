@@ -45,18 +45,18 @@ class IndukPendudukMutasiController extends Component
 
         $this->pindahId = $id;
 
-// 1. Check if he is a non-deleted Head
-$isHead = DB::table('penduduk')
-    ->where('id_penduduk', $id)
-    ->where('is_deleted', 0)
-    ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
-    ->exists();
+    // 1. Check if he is a non-deleted Head
+    $isHead = DB::table('penduduk')
+        ->where('id_penduduk', $id)
+        ->where('is_deleted', 0)
+        ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+        ->exists();
 
-// 2. Check if he is the only one in his family
-$isOnlyMember = DB::table('penduduk')
-    ->where('id_kartu_keluarga', $this->pendudukPindahIdKk) // Get this from the first query if needed
-    ->where('is_deleted', 0)
-    ->count() == 1; // Only 1 member left?
+    // 2. Check if he is the only one in his family
+    $isOnlyMember = DB::table('penduduk')
+        ->where('id_kartu_keluarga', $this->pendudukPindahIdKk) // Get this from the first query if needed
+        ->where('is_deleted', 0)
+        ->count() == 1; // Only 1 member left?
 
     $this->isLoneHead = $isHead && $isOnlyMember;
     }
@@ -64,12 +64,13 @@ $isOnlyMember = DB::table('penduduk')
     public function pindah()
     {
         if ($this->isLoneHead){
+        // If he is a lone head, we need to delete the kartu keluarga
         $validated = $this->validate();
         $validated['updated_at'] = now();
         $validated['is_mutated'] = 1;
         $validated['is_deleted'] = 1;
-        $validated['id_kartu_keluarga'] = null;
 
+        // Error
         DB::table('penduduk')->where('id_penduduk', $this->pindahId)->update($validated);
 
         DB::table('kartu_keluarga')
@@ -80,8 +81,8 @@ $isOnlyMember = DB::table('penduduk')
             ]);
 
         return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Diubah');
-        }
-
+    } else {
+        // If not a lone head, just update the pindah data
         $validated = $this->validate();
         $validated['updated_at'] = now();
         $validated['is_mutated'] = 1;
@@ -89,6 +90,7 @@ $isOnlyMember = DB::table('penduduk')
         DB::table('penduduk')->where('id_penduduk', $this->pindahId)->update($validated);
 
         return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk Berhasil Diubah');
+    }
     }
 
     #[Layout('components.layouts.layouts')]

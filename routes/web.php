@@ -99,6 +99,7 @@ use App\Livewire\Masyarakat\Pengumuman\DetailPengumumanController;
 use App\Livewire\Masyarakat\Pengumuman\PengumumanController;
 use App\Livewire\Masyarakat\ProfilController;
 use App\Http\Controllers\Auth\AuthController;
+use App\Livewire\Admin\DatabaseBackup\DatabaseBackupController;
 use App\Livewire\Admin\BerandaAdminController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\FilterIndukPendudukController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateExcelController;
@@ -111,11 +112,11 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware('auth')->prefix('admin')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
     // Your protected routes here
-    Route::get('/admin', BerandaAdminController::class)->name('beranda.admin');
+    Route::get('/', BerandaAdminController::class)->name('beranda.admin');
 
 Route::get('/pekerjaan', PekerjaanController::class)->name('pekerjaan');
 Route::get('/dusun', DusunController::class)->name('dusun');
@@ -135,6 +136,8 @@ Route::get('/induk-penduduk/{id}/mutasi/edit', IndukPendudukEditMutasiController
 Route::get('/induk-penduduk/{id}/mutasi/detail', IndukPendudukDetailMutasiController::class)->name('indukPenduduk.mutasi.detail');
 
 Route::get('/filter-penduduk', FilterIndukPendudukController::class)->name('filter.indukPenduduk');
+
+Route::get('/database-backup', DatabaseBackupController::class)->name('admin.database-backup');
 
 Route::get('/kartu-keluarga', KartuKeluargaController::class)->name('kartuKeluarga');
 Route::get('/kartu-keluarga/{id_kartu_keluarga}/detail', KartuKeluargaDetailController::class)->name('kartuKeluarga.detail');
@@ -185,33 +188,33 @@ Route::get('/kegiatan-pembangunan', KegiatanPembangunanController::class)->name(
 Route::get('/kegiatan-pembangunan/create', KegiatanCreatePembangunanController::class)->name('Pembangunan.create');
 Route::get('/kegiatan-pembangunan/{id_pembangunan}/edit', KegiatanEditPembangunanController::class)->name('Pembangunan.edit');
 
-Route::get('/admin/inventaris-hasil-pembangunan', InventarisHasilPembangunanController::class)->name('HasilPembangunan');
+Route::get('/inventaris-hasil-pembangunan', InventarisHasilPembangunanController::class)->name('HasilPembangunan');
 
 // Admin Informasi Masyarakat
-Route::get('/admin/settings', SettingsSettingsController::class)->name('settings');
+Route::get('/settings', SettingsSettingsController::class)->name('settings');
 
-Route::get('/admin/beranda', AdminBerandaController::class)->name('admin.beranda');
-Route::get('/admin/profil', AdminProfilController::class)->name('admin.profil');
+Route::get('/beranda', AdminBerandaController::class)->name('admin.beranda');
+Route::get('/profil', AdminProfilController::class)->name('admin.profil');
 
-Route::get('/admin/berita', AdminBeritaController::class)->name('admin.berita');
-Route::get('/admin/berita/create', AdminBeritaCreateController::class)->name('admin.berita.create');
-Route::get('/admin/berita/{id_berita}/edit', AdminBeritaEditController::class)->name('admin.berita.edit');
+Route::get('/berita', AdminBeritaController::class)->name('admin.berita');
+Route::get('/berita/create', AdminBeritaCreateController::class)->name('admin.berita.create');
+Route::get('/berita/{id_berita}/edit', AdminBeritaEditController::class)->name('admin.berita.edit');
 
-Route::get('/admin/pengumuman', AdminPengumumanController::class)->name('admin.pengumuman');
-Route::get('/admin/pengumuman/create', AdminPengumumanCreateController::class)->name('admin.pengumuman.create');
-Route::get('/admin/pengumuman/{id_pengumuman}/edit/', AdminPengumumanEditController::class)->name('admin.pengumuman.edit');
+Route::get('/pengumuman', AdminPengumumanController::class)->name('admin.pengumuman');
+Route::get('/pengumuman/create', AdminPengumumanCreateController::class)->name('admin.pengumuman.create');
+Route::get('/pengumuman/{id_pengumuman}/edit/', AdminPengumumanEditController::class)->name('admin.pengumuman.edit');
 
-Route::get('/admin/agenda', AdminAgendaController::class)->name('admin.agenda');
-Route::get('/admin/agenda/create', AdminAgendaCreateController::class)->name('admin.agenda.create');
-Route::get('/admin/agenda/{id_agenda}/edit', AdminAgendaEditController::class)->name('admin.agenda.edit');
+Route::get('/agenda', AdminAgendaController::class)->name('admin.agenda');
+Route::get('/agenda/create', AdminAgendaCreateController::class)->name('admin.agenda.create');
+Route::get('/agenda/{id_agenda}/edit', AdminAgendaEditController::class)->name('admin.agenda.edit');
 
-Route::get('/admin/organisasi', AdminOrganisasiController::class)->name('admin.organisasi');
-Route::get('/admin/organisasi/create', AdminOrganisasiCreateController::class)->name('admin.organisasi.create');
-Route::get('/admin/organisasi/{id_organisasi}/edit', AdminOrganisasiEditController::class)->name('admin.organisasi.edit');
+Route::get('/organisasi', AdminOrganisasiController::class)->name('admin.organisasi');
+Route::get('/organisasi/create', AdminOrganisasiCreateController::class)->name('admin.organisasi.create');
+Route::get('/organisasi/{id_organisasi}/edit', AdminOrganisasiEditController::class)->name('admin.organisasi.edit');
 
-Route::get('/admin/apbdes', AdminApbdesController::class)->name('admin.apbdes');
-Route::get('/admin/apbdes/create', AdminApbdesCreateController::class)->name('admin.apbdes.create');
-Route::get('/admin/apbdes/{id_apbdes}/edit', AdminApbdesEditController::class)->name('admin.apbdes.edit');
+Route::get('/apbdes', AdminApbdesController::class)->name('admin.apbdes');
+Route::get('/apbdes/create', AdminApbdesCreateController::class)->name('admin.apbdes.create');
+Route::get('/apbdes/{id_apbdes}/edit', AdminApbdesEditController::class)->name('admin.apbdes.edit');
 
 });
 
