@@ -12,6 +12,7 @@
                         <span>Berita Desa</span>
                     </h1>
                 </div>
+                @if(!$beritaData->isEmpty())
                 <div class="cards_berita grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 lg:gap-10">
                     @foreach ($beritaData as $berita)
                     <!-- Card 1 -->
@@ -41,6 +42,9 @@
                     </div>
                     @endforeach
                 </div>
+                @else
+                    <x-placeholder title="Konten Berita Desa Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+                @endif
                 <div class="mt-8">
                     {{ $beritaData->links('vendor.pagination.tailwind') }}
                 </div>

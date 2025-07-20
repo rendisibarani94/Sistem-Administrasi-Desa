@@ -17,6 +17,7 @@
 
             <div class="list_pengumuman md:col-span-1 p-3 ">
                 <div class="container">
+                    @if(!$pengumumanData->isEmpty())
                     @foreach ( $pengumumanData as $item)
                     {{-- Item --}}
                     <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3 sm:gap-4 mb-4 border-2 border-gray-300 p-3 sm:p-4 rounded-sm shadow-sm shadow-slate-400">
@@ -48,7 +49,9 @@
                         </div>
                     </div>
                     @endforeach
-
+                    @else
+                    <x-placeholder title="Konten Pengumuman Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+                    @endif
                 </div>
             </div>
 
@@ -62,6 +65,7 @@
                     Berita Desa
                 </h3>
 
+                @if(!$daftarBerita->isEmpty())
                 @foreach ($daftarBerita as $beritas)
                 <div class="container space-y-2">
                     <!-- Berita item -->
@@ -83,6 +87,11 @@
                     </div>
                 </div>
                 @endforeach
+                @else
+                <x-placeholder title="Konten Berita Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+
+                @endif
+
 
             </section>
         </div>

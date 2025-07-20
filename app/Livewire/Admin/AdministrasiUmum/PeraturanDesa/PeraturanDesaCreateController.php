@@ -10,7 +10,7 @@ use Livewire\Attributes\Rule;
 class PeraturanDesaCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Perihal Peraturan Desa Harus Diisi!')]
-    #[Rule('max:200', message: 'Input Perihal Peraturan Desa maksimal 200 digit karakter')]
+    #[Rule('max:200', message: 'Input Perihal Peraturan Desa maksimal 200 digit karakter!')]
     public $tentang;
 
     #[Rule('required', message: 'Kolom Jenis Peraturan Desa Harus Diisi!')]
@@ -20,7 +20,7 @@ class PeraturanDesaCreateController extends Component
     public $tanggal_dilaporkan;
 
     #[Rule('required', message: 'Kolom Tujuan Dilaporkan Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Tujuan Dilaporkan maksimal 100 digit karakter')]
+    #[Rule('max:100', message: 'Input Tujuan Dilaporkan maksimal 100 digit karakter!')]
     public $tujuan_dilaporkan;
 
     #[Rule('required', message: 'Kolom Tanggal Ditetapkan Harus Diisi!')]
@@ -33,10 +33,10 @@ class PeraturanDesaCreateController extends Component
     public $tanggal_diundangkan_berita_desa;
 
     #[Rule('required', message: 'Kolom Uraian Singkat Harus Diisi!')]
-    #[Rule('max:200', message: 'Input Uraian Singkat maksimal 200 digit karakter')]
+    #[Rule('max:200', message: 'Input Uraian Singkat maksimal 200 digit karakter!')]
     public $uraian_singkat;
 
-    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter')]
+    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function store()

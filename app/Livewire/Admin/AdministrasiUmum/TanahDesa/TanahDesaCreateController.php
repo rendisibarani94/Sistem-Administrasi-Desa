@@ -10,7 +10,7 @@ use Livewire\Attributes\Rule;
 class TanahDesaCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Nama Pemegang Hak Tanah Harus Diisi')]
-    #[Rule('max:150', message: 'Batas Pengisian Kolom 150 karakter')]
+    #[Rule('max:150', message: 'Kolom Nama Pemegang Hak Tanah Maksimal 150 digit karakter!')]
     public $nama_pemegang_hak_tanah;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
@@ -76,10 +76,10 @@ class TanahDesaCreateController extends Component
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $luas_tanah_lain = 0;
 
-    #[Rule('max:255', message: 'Kolom Mutasi Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Mutasi Maksimal 255 digit karakter!')]
     public $mutasi;
 
-    #[Rule('max:255', message: 'Kolom Keterngan Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
 

@@ -28,7 +28,7 @@ class InventarisDesaPenghapusanEditController extends Component
     #[Rule('required', message: 'Kolom Tanggal Penghapusan Harus Diisi!')]
     public $tanggal_penghapusan;
 
-    #[Rule('max:255', message: 'Kolom Keterangan Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function mount($id_inventaris_desa)

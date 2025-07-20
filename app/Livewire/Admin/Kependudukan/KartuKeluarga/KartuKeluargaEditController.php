@@ -22,35 +22,35 @@ class KartuKeluargaEditController extends Component
     public $tanggal_keluar;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit karakter!')]
     public $alamat_kk;
 
     #[Rule('required', message: 'Kolom RT Harus Diisi!')]
-    #[Rule('max:10', message: 'Input RT Terlalu Panjang!')]
+    #[Rule('max:10', message: 'Input RT Maksimal 10 digit karakter!')]
     public $rt;
 
     #[Rule('required', message: 'Kolom RW Harus Diisi!')]
-    #[Rule('max:10', message: 'Input RW Terlalu Panjang!')]
+    #[Rule('max:10', message: 'Input RW Maksimal 10 digit karakter!')]
     public $rw;
 
     #[Rule('required', message: 'Kolom Desa/Kelurahan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Desa/Kelurahan Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Desa/Kelurahan Maksimal 50 digit karakter!')]
     public $desa_kelurahan;
 
     #[Rule('required', message: 'Kolom kecamatan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input kecamatan Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input kecamatan Maksimal 50 digit karakter!')]
     public $kecamatan;
 
     #[Rule('required', message: 'Kolom Kode Pos Harus Diisi!')]
-    #[Rule('max:5', message: 'Input Kode Pos Terlalu Panjang!')]
+    #[Rule('max:5', message: 'Input Kode Pos Maksimal 5 digit karakter!')]
     public $kode_pos;
 
     #[Rule('required', message: 'Kolom Kabupaten/Kota Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Kabupaten/Kota Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Kabupaten/Kota Maksimal 50 digit karakter!')]
     public $kabupaten_kota;
 
     #[Rule('required', message: 'Kolom Provinsi Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Provinsi Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Provinsi Maksimal 50 digit karakter!')]
     public $provinsi;
 
     public function mount($id_kartu_keluarga)

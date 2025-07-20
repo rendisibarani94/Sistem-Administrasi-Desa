@@ -24,7 +24,7 @@
             <div class="flex items-center space-x-2 rtl:space-x-reverse w-full md:w-auto">
                 <!-- Logo and Brand Name -->
                 <a href="{{ route('beranda') }}" class="flex items-center">
-                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-10 rounded-sm" alt="Flowbite Logo" />
+                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-10 rounded-sm" alt="Logo Desa" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">{{ $settings['nama_desa'] }}</span>
                 </a>
 
@@ -128,7 +128,12 @@
                             {{ $settings['nama_desa'] ?? 'Belum Ada Nama Desa' }}
                         </h1>
                         <p class="text-white text-justify md:text-left text-sm md:text-base">
+                            @if(isset($settings['deskripsi_footer']))
                             {{ strip_tags($settings['deskripsi_footer']) ?? 'Belum Ada Deskripsi' }}
+                            @else
+                            <span>Deskripsi Footer Desa Sedang Dipersiapkan.</span>
+                            @endif
+
                         </p>
                     </div>
                     <div class="flex justify-center md:justify-start gap-4 text-white">
@@ -178,8 +183,11 @@
                                 <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M11 4a1 1 0 0 0-1 1v10h10.459l.522-3H16a1 1 0 1 1 0-2h5.33l.174-1H16a1 1 0 1 1 0-2h5.852l.117-.67v-.003A1.983 1.983 0 0 0 20.06 4H11ZM9 18c0-.35.06-.687.17-1h11.66c.11.313.17.65.17 1v1a1 1 0 0 1-1 1H10a1 1 0 0 1-1-1v-1Zm-6.991-7a17.8 17.8 0 0 0 .953 6.1c.198.54 1.61.9 2.237.9h1.34c.17 0 .339-.032.495-.095a1.24 1.24 0 0 0 .41-.27c.114-.114.2-.25.254-.396a1.01 1.01 0 0 0 .055-.456l-.242-2.185a1.073 1.073 0 0 0-.395-.71 1.292 1.292 0 0 0-.819-.286H5.291c-.12-.863-.17-1.732-.145-2.602-.024-.87.024-1.74.145-2.602H6.54c.302 0 .594-.102.818-.286a1.07 1.07 0 0 0 .396-.71l.24-2.185a1.01 1.01 0 0 0-.054-.456 1.088 1.088 0 0 0-.254-.397 1.223 1.223 0 0 0-.41-.269A1.328 1.328 0 0 0 6.78 4H4.307c-.3-.001-.592.082-.838.238a1.335 1.335 0 0 0-.531.634A17.127 17.127 0 0 0 2.008 11Z" clip-rule="evenodd" />
                                 </svg>
-
-                                <span>Telepon/Fax : {{ $settings['nomor_telp'] }}</span>
+                                @if(isset($settings['nomor_telp']))
+                                    <span>Telepon/Fax : {{ $settings['nomor_telp'] }}</span>
+                                @else
+                                    <span>Telepon/Fax : Belum Tersedia</span>
+                                @endif
                             </a>
                         </li>
                         <li>
@@ -187,8 +195,11 @@
                                 <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M7.978 4a2.553 2.553 0 0 0-1.926.877C4.233 6.7 3.699 8.751 4.153 10.814c.44 1.995 1.778 3.893 3.456 5.572 1.68 1.679 3.577 3.018 5.57 3.459 2.062.456 4.115-.073 5.94-1.885a2.556 2.556 0 0 0 .001-3.861l-1.21-1.21a2.689 2.689 0 0 0-3.802 0l-.617.618a.806.806 0 0 1-1.14 0l-1.854-1.855a.807.807 0 0 1 0-1.14l.618-.62a2.692 2.692 0 0 0 0-3.803l-1.21-1.211A2.555 2.555 0 0 0 7.978 4Z" />
                                 </svg>
-
-                                <span>No. HP : {{ $settings['nomor_hp'] }}</span>
+                                @if(isset($settings['nomor_hp']))
+                                    <span>No. HP : {{ $settings['nomor_hp'] }}</span>
+                                @else
+                                    <span>No. HP : Belum Tersedia</span>
+                                @endif
                             </a>
                         </li>
                         <li>
@@ -196,8 +207,11 @@
                                 <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                     <path stroke="currentColor" stroke-linecap="round" stroke-width="2" d="m3.5 5.5 7.893 6.036a1 1 0 0 0 1.214 0L20.5 5.5M4 19h16a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Z" />
                                 </svg>
-
-                                <span>Email : {{ $settings['email'] }}</span>
+                                @if(isset($settings['email']))
+                                    <span>email : {{ $settings['email'] }}</span>
+                                @else
+                                    <span>Email : Belum Tersedia</span>
+                                @endif
                             </a>
                         </li>
                     </ul>
@@ -208,7 +222,11 @@
             <div class="text-center w-full py-3 mt-4 border-t border-white">
                 <p class="text-sm text-white px-4">
                     Copyright © 2025
-                    <a href="https://material-tailwind.com/" class="hover:opacity-80">Desa Hutabulu Mejan</a>.
+                    @if(isset($settings['nama_desa']))
+                    <span class="hover:opacity-80">{{ $settings['nama_desa'] }}</span>.
+                    @else
+                    <span class="hover:opacity-80">Nama Desa</span>.
+                    @endif
                     All Rights Reserved.
                 </p>
             </div>

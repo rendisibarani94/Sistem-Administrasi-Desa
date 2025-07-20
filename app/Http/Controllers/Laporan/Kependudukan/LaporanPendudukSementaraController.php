@@ -13,10 +13,8 @@ class LaporanPendudukSementaraController extends Controller
     {
 
         $pendudukSementaraData = DB::table('penduduk_sementara')
-        ->join('pekerjaan', 'penduduk_sementara.pekerjaan', '=', 'pekerjaan.id_pekerjaan')
-        ->select('penduduk_sementara.*', 'pekerjaan.pekerjaan as nama_pekerjaan')
-        ->where('penduduk_sementara.is_deleted', 0)
-        ->orderBy('penduduk_sementara.id_penduduk', 'desc')
+        ->where('is_deleted', 0)
+        ->orderBy('id_penduduk', 'desc')
         ->get();
 
 

@@ -11,14 +11,14 @@ use Livewire\Attributes\Rule;
 class PendudukSementaraCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Lengkap maksimal 100 digit karakter')]
+    #[Rule('max:100', message: 'Input Nama Lengkap maksimal 100 digit karakter!')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
     public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Nomor Pengenal Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Nomor Pengenal maksimal 50 digit karakter')]
+    #[Rule('max:50', message: 'Input Nomor Pengenal maksimal 50 digit karakter!')]
     #[Rule('unique:penduduk_sementara,nomor_pengenal', message: 'Nomor Pengenal sudah digunakan!')]
     public $nomor_pengenal;
 
@@ -30,7 +30,7 @@ class PendudukSementaraCreateController extends Component
     public $tanggal_lahir;
 
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 Karakter')]
+    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 karakter!')]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
@@ -41,19 +41,19 @@ class PendudukSementaraCreateController extends Component
     public $keturunan;
 
     #[Rule('required', message: 'Kolom Asal Kedatangan Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Asal Kedatangan maksimal 150 digit karakter')]
+    #[Rule('max:150', message: 'Input Asal Kedatangan maksimal 150 digit karakter!')]
     public $asal;
 
     #[Rule('required', message: 'Kolom Maksud Kedatangan Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Maksud Kedatangan maksimal 255 digit karakter')]
+    #[Rule('max:255', message: 'Input Maksud Kedatangan maksimal 255 digit karakter!')]
     public $maksud_kedatangan;
 
     #[Rule('required', message: 'Kolom Tokoh Tujuan Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Tokoh Tujuan maksimal 100 digit karakter')]
+    #[Rule('max:100', message: 'Input Tokoh Tujuan maksimal 100 digit karakter!')]
     public $tokoh_tujuan;
 
     #[Rule('required', message: 'Kolom Alamat Tujuan Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Alamat Tujuan maksimal 150 digit karakter')]
+    #[Rule('max:150', message: 'Input Alamat Tujuan maksimal 150 digit karakter!')]
     public $alamat_tujuan;
 
     #[Rule('required', message: 'Kolom Tanggal Kedatangan Harus Diisi!')]
@@ -63,7 +63,7 @@ class PendudukSementaraCreateController extends Component
     public $tanggal_kepulangan;
 
     #[Rule('required', message: 'Kolom Keterangan Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter')]
+    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function store(){

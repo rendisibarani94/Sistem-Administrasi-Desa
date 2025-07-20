@@ -12,11 +12,11 @@ class IndukPendudukEditController extends Component
     public $id_penduduk;
 
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 karakter!')]
+    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 digit karakter!')]
     public $kewarganegaraan;
 
     #[Rule('required', message: 'Kolom Keturunan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 karakter!')]
+    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 digit karakter!')]
     public $keturunan;
 
     #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal')]
@@ -30,18 +30,18 @@ class IndukPendudukEditController extends Component
     public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Lengkap Maksimal 100 karakter')]
+    #[Rule('max:100', message: 'Input Nama Lengkap Maksimal 100 digit karakter!')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Alamat Maksimal 150 karakter')]
+    #[Rule('max:150', message: 'Input Alamat Maksimal 150 digit karakter!')]
     public $alamat;
 
     #[Rule('required', message: 'Input Kartu Keluarga Harus Diisi!')]
     public $id_kartu_keluarga;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Tempat Lahir Maksimal 150 Karakter!')]
+    #[Rule('max:150', message: 'Input Tempat Lahir Maksimal 150 digit karakter!')]
     public $tempat_lahir;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
@@ -60,18 +60,18 @@ class IndukPendudukEditController extends Component
     public $pendidikan_terakhir;
 
     #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 Karakter')]
+    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 digit karakter!')]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Baca Huruf Harus Diisi!')]
     public $baca_huruf;
 
     #[Rule('required', message: 'Kolom Nama Ayah Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Ayah Maksimal 100 Karakter!')]
+    #[Rule('max:100', message: 'Input Nama Ayah Maksimal 100 digit karakter!')]
     public $nama_ayah;
 
     #[Rule('required', message: 'Kolom Nama Ibu Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Ibu Maksimal 100 Karakter!')]
+    #[Rule('max:100', message: 'Input Nama Ibu Maksimal 100 digit karakter!')]
     public $nama_ibu;
 
     #[Rule('required', message: 'Kolom Kedudukan Keluarga Harus Diisi!')]
@@ -81,19 +81,19 @@ class IndukPendudukEditController extends Component
     public $dusun;
 
     #[Rule('required', message: 'Kolom Asal Penduduk Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Asal Penduduk Maksimal 150 Karakter!')]
+    #[Rule('max:150', message: 'Input Asal Penduduk Maksimal 150 digit karakter!')]
     public $asal_penduduk;
 
-    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 Karakter!')]
+    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 digit karakter!')]
     public $nomor_akta_lahir;
 
-    #[Rule('nullable|max:50', message: 'Input Asal Penduduk Maksimal 50 Karakter!')]
+    #[Rule('nullable|max:50', message: 'Input Asal Penduduk Maksimal 50 digit karakter!')]
     public $suku;
 
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
 
-    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 karakter')]
+    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function mount($id)

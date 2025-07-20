@@ -12,7 +12,7 @@ class KaderPemberdayaanEditController extends Component
     public $id_kader_pemberdayaan;
 
     #[Rule('required', message: 'Kolom Nama Kader Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Input Nama Lengkap Maksimal 100 digit karakter!')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
@@ -25,13 +25,14 @@ class KaderPemberdayaanEditController extends Component
     public $pendidikan;
 
     #[Rule('required', message: 'Kolom Bidang Keahlian Harus Diisi!')]
+    #[Rule('max:50', message: 'Input Bidang Keahlian Maksimal 50 digit karakter!')]
     public $bidang_keahlian;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Alamat Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Alamat Maksimal 150 digit karakter!')]
     public $alamat;
 
-    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
+    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
 
@@ -83,13 +84,7 @@ class KaderPemberdayaanEditController extends Component
     public function render()
     {
         return view(
-            'admin.pembangunan.kader-pemberdayaan-masyarakat.edit',
-            [
-                'bidangKeahlianData' => DB::table('bidang_keahlian')
-                    ->where('is_deleted', 0)
-                    ->orderBy('id_bidang_keahlian', 'desc')
-                    ->paginate(10),
-            ]
+            'admin.pembangunan.kader-pemberdayaan-masyarakat.edit'
         );
     }
 

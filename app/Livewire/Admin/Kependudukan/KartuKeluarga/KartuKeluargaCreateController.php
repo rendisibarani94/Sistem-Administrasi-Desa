@@ -22,35 +22,35 @@ class KartuKeluargaCreateController extends Component
     public $tanggal_keluar;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit karakter!')]
     public $alamat_kk;
 
     #[Rule('required', message: 'Kolom RT Harus Diisi!')]
-    #[Rule('max:10', message: 'Input RT Terlalu Panjang!')]
+    #[Rule('max:10', message: 'Input RT Maksimal 10 digit karakter!')]
     public $rt;
 
     #[Rule('required', message: 'Kolom RW Harus Diisi!')]
-    #[Rule('max:10', message: 'Input RW Terlalu Panjang!')]
+    #[Rule('max:10', message: 'Input RW Maksimal 10 digit karakter!')]
     public $rw;
 
     #[Rule('required', message: 'Kolom Desa/Kelurahan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Desa/Kelurahan Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Desa/Kelurahan Maksimal 50 digit karakter!')]
     public $desa_kelurahan;
 
     #[Rule('required', message: 'Kolom kecamatan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input kecamatan Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input kecamatan Maksimal 50 digit karakter!')]
     public $kecamatan;
 
     #[Rule('required', message: 'Kolom Kode Pos Harus Diisi!')]
-    #[Rule('max:5', message: 'Input Kode Pos Terlalu Panjang!')]
+    #[Rule('max:5', message: 'Input Kode Pos Maksimal 5 digit karakter!')]
     public $kode_pos;
 
     #[Rule('required', message: 'Kolom Kabupaten/Kota Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Kabupaten/Kota Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Kabupaten/Kota Maksimal 50 digit karakter!')]
     public $kabupaten_kota;
 
     #[Rule('required', message: 'Kolom Provinsi Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Provinsi Terlalu Panjang!')]
+    #[Rule('max:50', message: 'Input Provinsi Maksimal 50 digit karakter!')]
     public $provinsi;
 
     // second form step
@@ -63,32 +63,32 @@ class KartuKeluargaCreateController extends Component
     public $jenis_kelamin;
 
     #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Nama Lengkap Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Nama Lengkap Maksimal 150 digit karakter!')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Alamat terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Alamat Maksimal 150 digit karakter!')]
     public $alamat;
 
     #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Tempat Lahir terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Tempat Lahir Maksimal 150 digit karakter!')]
     public $tempat_lahir;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
     public $tanggal_lahir;
 
     #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 karakter!')]
+    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 digit karakter!')]
     public $kewarganegaraan;
 
-    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 Karakter!')]
+    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 digit karakter!')]
     public $nomor_akta_lahir;
 
     #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal')]
     public $tanggal_keluar_ktp;
 
     #[Rule('required', message: 'Kolom Keturunan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 karakter!')]
+    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 digit karakter!')]
     public $keturunan;
 
     #[Rule('required', message: 'Kolom Golongan Darah Harus Diisi!')]
@@ -111,11 +111,11 @@ class KartuKeluargaCreateController extends Component
     public $baca_huruf;
 
     #[Rule('required', message: 'Kolom Nama Ayah Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Nama Ayah Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Nama Ayah Maksimal 150 digit karakter!')]
     public $nama_ayah;
 
     #[Rule('required', message: 'Kolom Nama Ibu Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Nama Ibu Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Nama Ibu Maksimal 150 digit karakter!')]
     public $nama_ibu;
 
     #[Rule('required', message: 'Kolom Kedudukan Keluarga Harus Diisi!')]
@@ -125,13 +125,13 @@ class KartuKeluargaCreateController extends Component
     public $dusun;
 
     #[Rule('required', message: 'Kolom Asal Penduduk Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Asal Penduduk Terlalu Panjang!')]
+    #[Rule('max:150', message: 'Input Asal Penduduk Maksimal 150 digit karakter!')]
     public $asal_penduduk;
 
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
 
-    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 karakter')]
+    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function nextStep()

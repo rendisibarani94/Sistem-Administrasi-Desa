@@ -19,43 +19,48 @@
 
             <div class="list_pengumuman md:col-span-1 p-3 ">
                 <div class="container">
+                    @if(!$agendaData->isEmpty())
                     @foreach ($agendaData as $item)
-
-                    <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-gray-400 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
-                        <div class="desc w-full md:w-4/5 self-start p-3 md:p-5">
-                            <div class="agenda_desc mb-2 flex items-center space-x-3 sm:space-x-2">
-                                <svg class="w-7 h-7 sm:w-6 sm:h-6 md:w-7 md:h-7 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-                                    <!-- Changed to square viewBox -->
-                                    <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
-                                    <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
-                                </svg>
-                                <h4 class="text-base sm:text-lg md:text-xl font-semibold">{{ $item->judul }}</h4>
+                        <div class="agenda-item flex flex-col md:flex-row gap-4 md:gap-3 mb-4 border-2 border-gray-400 p-3 md:p-2 rounded-sm shadow-sm shadow-slate-400">
+                            <div class="desc w-full md:w-4/5 self-start p-3 md:p-5">
+                                <div class="agenda_desc mb-2 flex items-center space-x-3 sm:space-x-2">
+                                    <svg class="w-7 h-7 sm:w-6 sm:h-6 md:w-7 md:h-7 text-sky-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
+                                        <!-- Changed to square viewBox -->
+                                        <path fill-rule="evenodd" d="M20 10H4v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8ZM9 13v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1Z" clip-rule="evenodd" />
+                                        <path d="M2 6a2 2 0 0 1 2-2h16a2 2 0 1 1 0 4H4a2 2 0 0 1-2-2Z" />
+                                    </svg>
+                                    <h4 class="text-base sm:text-lg md:text-xl font-semibold">{{ $item->judul }}</h4>
+                                </div>
+                                <a class="cursor-pointer text-blue-600 text-xs md:text-sm underline hover:text-blue-800 ml-0 md:ml-9" wire:click="showAgenda({{ $item->id_agenda }})">
+                                    Baca Selengkapnya
+                                </a>
                             </div>
-                            <a class="cursor-pointer text-blue-600 text-xs md:text-sm underline hover:text-blue-800 ml-0 md:ml-9" wire:click="showAgenda({{ $item->id_agenda }})">
-                                Baca Selengkapnya
-                            </a>
+                            <div class="date flex justify-start md:justify-end space-x-2 pt-3 md:pt-5 w-full md:w-auto pl-2">
+                                <svg class="w-5 h-5 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z" />
+                                </svg>
+                                <p class="text-sm md:text-sm">{{ \Carbon\Carbon::parse($item->created_at)->locale('id')->translatedFormat('d F Y') }}</p>
+                            </div>
                         </div>
-                        <div class="date flex justify-start md:justify-end space-x-2 pt-3 md:pt-5 w-full md:w-auto pl-2">
-                            <svg class="w-5 h-5 text-black" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 10h16m-8-3V4M7 7V4m10 3V4M5 20h14a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1Zm3-7h.01v.01H8V13Zm4 0h.01v.01H12V13Zm4 0h.01v.01H16V13Zm-8 4h.01v.01H8V17Zm4 0h.01v.01H12V17Zm4 0h.01v.01H16V17Z" />
-                            </svg>
-                            <p class="text-sm md:text-sm">{{ \Carbon\Carbon::parse($item->created_at)->locale('id')->translatedFormat('d F Y') }}</p>
-                        </div>
-                    </div>
-
                     @endforeach
+                    @else
+                    <x-placeholder title="Konten Agenda Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+                    @endif
+
                 </div>
             </div>
         </section>
 
         <div class="list_berita-wrapper">
-            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-sky-700 shadow-sm shadow-sky-700">
+            <section class="list_berita md:col-span-1 p-5 md:mt-10 border border-gray-300 shadow-sm shadow-gray-300">
 
                 <h3 class="text-black font-extrabold text-lg md:text-xl mb-6">
                     Berita Desa
                 </h3>
 
+
                 <div class="container space-y-2">
+                @if(!$daftarBerita->isEmpty())
                     @foreach ($daftarBerita as $beritas)
                     <!-- Berita item -->
                     <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
@@ -74,6 +79,9 @@
                         </div>
                     </div>
                     @endforeach
+                @else
+                    <x-placeholder title="Konten Berita Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+                @endif
                 </div>
             </section>
         </div>

@@ -59,9 +59,9 @@
                 </div>
                 <!-- Special 4-column grid for the last row with custom spans -->
                 <div class="grid gap-6 mb-6 md:grid-cols-4">
-                    <div class="md:col-span-2">
+                    
+                    <div class="input-component md:col-span-2">
                         <label for="id_kartu_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Kepala Keluarga</label>
-
                         <div x-data="{
                             open: false,
                             search: '',
@@ -124,6 +124,7 @@
                             @error('id_kartu_keluarga') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
+
                     <div class="md:col-span-1">
                         <label for="tempat_lahir" class="block mb-2 text-sm font-semibold text-gray-950">Tempat Lahir</label>
                         <input type="text" id="tempat_lahir" wire:model.live="tempat_lahir" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('tempat_lahir') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Tempat Lahir " autocomplete="off" />

@@ -358,7 +358,8 @@
             </table>
 
             <div class="mt-4">
-                {{ $pendudukData->links('vendor.pagination.tailwind') }}
+                {{-- {{ $pendudukData->links(data: ['scrollTo' => false]) }} --}}
+                {{ $pendudukData->links('vendor.pagination.tailwind-custom') }}
             </div>
         </div>
     </div>

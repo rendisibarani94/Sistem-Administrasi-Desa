@@ -20,18 +20,18 @@ class AdminAgendaEditController extends Component
     public $gambar;
 
     #[Rule('required', message: 'Kolom Judul Agenda Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Judul Agenda maksimal 255 karakter!')]
+    #[Rule('max:150', message: 'Input Judul Agenda maksimal 150 karakter!')]
     public $judul;
 
     #[Rule('required', message: 'Deskripsi agenda harus diisi!')]
     public $deskripsi_agenda;
 
     #[Rule('required', message: 'Kolom Tempat Agenda Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Tempat Agenda maksimal 255 karakter!')]
+    #[Rule('max:200', message: 'Input Tempat Agenda maksimal 200 karakter!')]
     public $tempat_agenda;
 
-    #[Rule('required', message: 'Kolom Judul Agenda  Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Judul Agenda maksimal 255 karakter!')]
+    #[Rule('required', message: 'Kolom Tujuan Agenda  Harus Diisi!')]
+    #[Rule('max:255', message: 'Input Tujuan Agenda maksimal 255 karakter!')]
     public $tujuan_agenda;
 
     #[Rule('required', message: 'Kolom Tanggal Agenda Harus Diisi!')]

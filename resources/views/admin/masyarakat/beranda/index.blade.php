@@ -28,10 +28,9 @@
         </nav>
 
         <form wire:submit.prevent="save" enctype="multipart/form-data" class="space-y-6">
-            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4">
                 <!-- Image Upload Section -->
-                <div class="mb-6">
+                <div class="input-component">
                     <label for="gambar_landing_page" class="block mb-2 text-sm font-semibold text-gray-950">Gambar Landing Page</label>
 
                     <!-- Show existing image if available -->
@@ -64,13 +63,13 @@
                     </div>
                 </div>
 
-            <div>
-                <label for="deskripsi_beranda" class="block mb-2 text-sm font-medium text-semibold-950">Caption Gambar Landing Page</label>
-                <input type="text" id="deskripsi_beranda" wire:model.live="deskripsi_beranda" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('deskripsi_beranda') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Link Iframe Maps " autocomplete="off" />
-                <div class="h-0.25">
-                    @error('deskripsi_beranda') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                <div class="input-component">
+                    <label for="deskripsi_beranda" class="block mb-2 text-sm font-semibold">Caption Gambar Landing Page</label>
+                    <input type="text" id="deskripsi_beranda" wire:model.live="deskripsi_beranda" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('deskripsi_beranda') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Link Iframe Maps " autocomplete="off" />
+                    <div class="h-0.25">
+                        @error('deskripsi_beranda') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
+                    </div>
                 </div>
-            </div>
 
                 <div class="input-component">
                     <label for="deskripsi-singkat-desa-container" class="block mb-2 text-sm font-semibold text-gray-950">Deskripsi Singkat Desa</label>
@@ -197,6 +196,3 @@
 
 </script>
 @endpush
-
-
-

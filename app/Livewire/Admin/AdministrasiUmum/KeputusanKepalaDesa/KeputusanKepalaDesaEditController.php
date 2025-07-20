@@ -15,19 +15,19 @@ class KeputusanKepalaDesaEditController extends Component
     public $tanggal_keputusan;
 
     #[Rule('required', message: 'Kolom Perihal Keputusan Kepala Desa Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Perihal Keputusan Kepala Desa maksimal 100 digit karakter')]
+    #[Rule('max:100', message: 'Input Perihal Keputusan Kepala Desa maksimal 100 digit karakter!')]
     public $tentang;
 
     #[Rule('required', message: 'Kolom Uraian Harus Diisi!')]
-    #[Rule('max:200', message: 'Input uraian maksimal 200 digit karakter')]
+    #[Rule('max:200', message: 'Input uraian maksimal 200 digit karakter!')]
     public $uraian;
 
     public $tanggal_dilaporkan;
 
-    #[Rule('max:100', message: 'Input Tujuan Pelaporan maksimal 100 digit karakter')]
+    #[Rule('max:100', message: 'Input Tujuan Pelaporan maksimal 100 digit karakter!')]
     public $tujuan_dilaporkan;
 
-    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter')]
+    #[Rule('max:255', message: 'Input Keterangan maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function mount($id_keputusan_kepala_desa)

@@ -14,47 +14,47 @@
     </div>
 
     <section class="pembangunan_list px-4 sm:px-6 md:px-15">
-
-
-
+        @if(!$pembangunan->isEmpty())
         @foreach ( $pembangunan as $item )
-
-        <div class="pengumuman-item-wrapper mb-4 md:mb-6 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
-            <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3">
-                <div class="image w-full sm:w-1/3 md:w-1/4">
-                    <img src="{{ asset('storage/'.$item->dokumentasi) }}" alt="Pembangunan Desa" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
-                </div>
-
-                <div class="description w-full sm:w-2/3 md:w-3/4 self-start p-2 sm:p-5">
-                    <h4 class="text-lg sm:text-xl font-semibold mb-2">
-                        {{ $item->nama_kegiatan }}
-                    </h4>
-                    <div class="pengumuman_locate sm:mb-4 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                        </svg>
-                        <span class="text-sm sm:text-md">{{ $item->lokasi }}</span>
+            <div class="pengumuman-item-wrapper mb-4 md:mb-6 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
+                <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3">
+                    <div class="image w-full sm:w-1/3 md:w-1/4">
+                        <img src="{{ asset('storage/'.$item->dokumentasi) }}" alt="Pembangunan Desa" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
                     </div>
-                    <div class="pengumuman_date mb-2 flex items-center space-x-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
-                        </svg>
-                        <span class="text-sm sm:text-md">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}</span>
-                    </div>
-                    <div class="desc space-y-1">
-                        <p class="text-sm sm:text-md text-justify">
-                            {{ Str::limit(strip_tags($item->manfaat), 320, '...') }}
-                        </p>
-                        <a href="{{ route('pembangunan.detail',$item->id_pembangunan) }}" class="cursor-pointer text-blue-700 text-xs sm:text-sm underline hover:text-blue-900" data-modal-target="default-modal" data-modal-toggle="default-modal">
-                            Lihat Detail Pembangunan
-                        </a>
+
+                    <div class="description w-full sm:w-2/3 md:w-3/4 self-start p-2 sm:p-5">
+                        <h4 class="text-lg sm:text-xl font-semibold mb-2">
+                            {{ $item->nama_kegiatan }}
+                        </h4>
+                        <div class="pengumuman_locate sm:mb-4 flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                            </svg>
+                            <span class="text-sm sm:text-md">{{ $item->lokasi }}</span>
+                        </div>
+                        <div class="pengumuman_date mb-2 flex items-center space-x-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4 sm:size-5 text-sky-700">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
+                            </svg>
+                            <span class="text-sm sm:text-md">{{ \Carbon\Carbon::parse($item->tanggal_mulai)->locale('id')->translatedFormat('d F Y') }}</span>
+                        </div>
+                        <div class="desc space-y-1">
+                            <p class="text-sm sm:text-md text-justify">
+                                {{ Str::limit(strip_tags($item->manfaat), 320, '...') }}
+                            </p>
+                            <a href="{{ route('pembangunan.detail',$item->id_pembangunan) }}" class="cursor-pointer text-blue-700 text-xs sm:text-sm underline hover:text-blue-900" data-modal-target="default-modal" data-modal-toggle="default-modal">
+                                Lihat Detail Pembangunan
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
         @endforeach
+        @else
+        <x-placeholder title="Konten Pembangunan Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
+        @endif
+
 
 
     </section>

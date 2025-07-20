@@ -36,7 +36,7 @@
                 <td class="border px-4">{{ $item->jenis_kelamin == 'Perempuan' ? 'P' : '-' }}</td>
                 <td class="border px-4">{{ $item->nomor_pengenal }}</td>
                 <td class="border px-4">{{ $item->tempat_lahir.', '. $item->tanggal_lahir }}</td>
-                <td class="border px-4">{{ $item->nama_pekerjaan }}</td>
+                <td class="border px-4">{{ $item->pekerjaan }}</td>
                 <td class="border px-4">{{ $item->kewarganegaraan }}</td>
                 <td class="border px-4">{{ $item->keturunan }}</td>
                 <td class="border px-4">{{ $item->asal }}</td>

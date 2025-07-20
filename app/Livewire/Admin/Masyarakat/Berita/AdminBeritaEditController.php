@@ -20,7 +20,7 @@ class AdminBeritaEditController extends Component
     public $gambar;
 
     #[Rule('required', message: 'Kolom Judul Harus Diisi!')]
-    #[Rule('max:255', message: 'Input Judul maksimal 255 karakter!')]
+    #[Rule('max:150', message: 'Input Judul maksimal 150 digit karakter!')]
     public $judul;
 
     #[Rule('required', message: 'Kolom Deksripsi Harus Diisi!')]

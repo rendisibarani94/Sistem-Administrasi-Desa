@@ -11,7 +11,7 @@ use Livewire\Attributes\Rule;
 class InventarisDesaCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Jenis Barang Harus Diisi!')]
-    #[Rule('max:100', message: 'Kolom Jenis Barang Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Kolom Jenis Barang Maksimal 100 digit karakter!')]
     public $jenis_inventaris;
 
     #[Rule('required', message: 'Jika Kosong, Diisi 0')]
@@ -36,7 +36,7 @@ class InventarisDesaCreateController extends Component
     public $jumlah_rusak = 0;
 
 
-    #[Rule('max:255', message: 'Kolom Keterangan Terlalu Panjang!')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
     // Instead of using prepareForValidation, use boot or mount to initialize values

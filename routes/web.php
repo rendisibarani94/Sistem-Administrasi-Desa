@@ -64,9 +64,6 @@ use App\Livewire\Admin\AdministrasiUmum\TanahKasDesa\TanahKasDesaEditController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukEditMutasiController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukDetailMutasiController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukPindahController;
-use App\Livewire\Admin\Kependudukan\StatistikKependudukan\StatistikKependudukanController;
-use App\Livewire\Admin\Master\BidangKeahlianController;
-use App\Livewire\Admin\Master\JenisInventarisController;
 use App\Livewire\Admin\Masyarakat\Agenda\AdminAgendaController;
 use App\Livewire\Admin\Masyarakat\Agenda\AdminAgendaCreateController;
 use App\Livewire\Admin\Masyarakat\Agenda\AdminAgendaEditController;
@@ -118,12 +115,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     // Your protected routes here
     Route::get('/', BerandaAdminController::class)->name('beranda.admin');
 
-Route::get('/pekerjaan', PekerjaanController::class)->name('pekerjaan');
 Route::get('/dusun', DusunController::class)->name('dusun');
-Route::get('/bidang-keahlian', BidangKeahlianController::class)->name('bidangKeahlian');
-
-// Administrasi Kependudukan
-Route::get('/statistik-kependudukan', StatistikKependudukanController::class)->name('statistikKependudukan');
 
 Route::get('/induk-penduduk', IndukPendudukController::class)->name('indukPenduduk');
 Route::get('/induk-penduduk/pindah', IndukPendudukPindahController::class)->name('indukPenduduk.pindah');

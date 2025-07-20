@@ -12,7 +12,7 @@ class TanahDesaEditController extends Component
     public $id_tanah_desa;
 
     #[Rule('required', message: 'Kolom Nama Pemegang Hak Tanah Harus Diisi')]
-    #[Rule('max:150', message: 'Batas Pengisian Kolom 150 karakter')]
+    #[Rule('max:150', message: 'Kolom Nama Pemegang Hak Tanah Maksimal 150 digit karakter!')]
     public $nama_pemegang_hak_tanah;
 
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
@@ -78,10 +78,10 @@ class TanahDesaEditController extends Component
     #[Rule('required', message: 'Jika Tidak Ada, Isi Dengan 0')]
     public $luas_tanah_lain = 0;
 
-    #[Rule('max:255', message: 'Kolom Mutasi Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Mutasi Maksimal 255 digit karakter!')]
     public $mutasi;
 
-    #[Rule('max:255', message: 'Kolom Keterngan Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
     public function mount($id_tanah_desa)

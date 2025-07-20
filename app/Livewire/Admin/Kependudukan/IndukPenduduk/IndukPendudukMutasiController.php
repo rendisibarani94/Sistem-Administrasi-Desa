@@ -16,7 +16,7 @@ class IndukPendudukMutasiController extends Component
         ['required_without:tempat_meninggal', 'nullable', 'max:255'],
         message: [
             'required_without' => 'Mohon isi salah satu field: Tujuan Pindah atau Tempat Meninggal',
-            'max' => 'Input Tujuan Pindah Maksimal 255 Karakter!'
+            'max' => 'Input Tujuan Pindah Maksimal 255 digit karakter!'
         ]
     )]
     public $tujuan_pindah;
@@ -25,7 +25,7 @@ class IndukPendudukMutasiController extends Component
         ['required_without:tujuan_pindah', 'nullable', 'max:255'],
         message: [
             'required_without' => 'Mohon isi salah satu field: Tujuan Pindah atau Tempat Meninggal',
-            'max' => 'Input Tempat Menninggal Maksimal 255 Karakter!'
+            'max' => 'Input Tempat Menninggal Maksimal 255 digit karakter!'
         ]
     )]
     public $tempat_meninggal;

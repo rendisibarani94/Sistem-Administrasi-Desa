@@ -13,11 +13,11 @@ class KegiatanCreatePembangunanController extends Component
     use WithFileUploads;
 
     #[Rule('required', message: 'Kolom Nama Kegiatan Harus Diisi!')]
-    #[Rule('max:150', message: 'Kolom Nama Kegiatan Maksimal 150 Karakter')]
+    #[Rule('max:150', message: 'Kolom Nama Kegiatan Maksimal 150 digit karakter !')]
     public $nama_kegiatan;
 
     #[Rule('required', message: 'Kolom Nama Pelaksana Harus Diisi!')]
-    #[Rule('max:100', message: 'Kolom Nama Pelaksana Maksimal 100 Karakter')]
+    #[Rule('max:100', message: 'Kolom Nama Pelaksana Maksimal 100 digit karakter !')]
     public $pelaksana;
 
     #[Rule('required', message: 'Jika Sumber Dana Pemerintah Harus Diisi!')]
@@ -33,7 +33,7 @@ class KegiatanCreatePembangunanController extends Component
     public $biaya_swadaya = 0;
 
     #[Rule('required', message: 'Kolom Lokasi Kegiatan Harus Diisi!')]
-    #[Rule('max:150', message: 'Kolom Lokasi Kegiatan Maksimal 150 Karakter')]
+    #[Rule('max:150', message: 'Kolom Lokasi Kegiatan Maksimal 150 digit karakter !')]
     public $lokasi;
 
     #[Rule('required', message: 'Kolom Manfaat Kegiatan Harus Diisi!')]
@@ -51,7 +51,7 @@ class KegiatanCreatePembangunanController extends Component
     #[Rule('required', message: 'Kolom Status Pengerjaan Kegiatan Harus Diisi!')]
     public $status_pengerjaan;
 
-    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 Karakter!')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter !')]
     public $keterangan;
 
     #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]

@@ -11,15 +11,15 @@ class TanahKasDesaEditController extends Component
     public $id_tkd;
 
     #[Rule('required', message: 'Kolom Asal Tanah Kas Desa Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Asal Tanah Kas Desa Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Asal Tanah Kas Desa Maksimal 255 digit karakter!')]
     public $asal_tkd;
 
     #[Rule('required', message: 'Kolom Nomor Letter C Harus Diisi!')]
-    #[Rule('max:10', message: 'Kolom Nomor Letter C Terlalu Panjang')]
+    #[Rule('max:10', message: 'Kolom Nomor Letter C Maksimal 10 digit karakter!')]
     public $letter_c;
 
     #[Rule('required', message: 'Kolom Nomor Persil Harus Diisi!')]
-    #[Rule('max:10', message: 'Kolom Nomor Persil Terlalu Panjang')]
+    #[Rule('max:10', message: 'Kolom Nomor Persil Maksimal 10 digit karakter!')]
     public $persil;
 
 
@@ -69,14 +69,14 @@ class TanahKasDesaEditController extends Component
     public $tanpa_papan_nama;
 
     #[Rule('required', message: 'Kolom Lokasi Tanah Kas Desa Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Lokasi Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Lokasi Maksimal 255 digit karakter!')]
     public $lokasi;
 
     #[Rule('required', message: 'Kolom Peruntukan Tanah Kas Desa Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Peruntukan Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Peruntukan Maksimal 255 digit karakter')]
     public $peruntukan;
 
-    #[Rule('max:255', message: 'Kolom Keterngan Terlalu Panjang')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter')]
     public $keterangan;
 
     public function mount($id_tkd)

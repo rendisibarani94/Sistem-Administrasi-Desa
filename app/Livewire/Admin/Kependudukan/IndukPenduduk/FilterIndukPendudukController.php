@@ -210,6 +210,89 @@ public function exportToExcel(): StreamedResponse
     }, $fileName);
 }
 
+    public function resetFilters()
+    {
+        $this->nik = '';
+        $this->nama_lengkap = '';
+        $this->jenis_kelamin = '';
+        $this->alamat = '';
+        $this->nama_ayah = '';
+        $this->nama_ibu = '';
+        $this->tempat_lahir = '';
+        $this->tanggal_lahir_awal = '';
+        $this->tanggal_lahir_akhir = '';
+        $this->kewarganegaraan = '';
+        $this->golongan_darah = '';
+        $this->agama = '';
+        $this->status_perkawinan = '';
+        $this->pendidikan_terakhir = '';
+        $this->pekerjaan = '';
+        $this->baca_huruf = '';
+        $this->kedudukan_keluarga = '';
+        $this->dusun = '';
+        $this->asal_penduduk = '';
+        $this->suku = '';
+        $this->status_penduduk = 'aktif';
+    }
+    public function confirmDelete($id)
+    {
+        $this->deleteId = $id;
+
+        $this->dispatch('swal:confirm', [
+            'title' => 'Apakah Anda yakin?',
+            'text' => 'Data penduduk ini akan dihapus.',
+            'icon' => 'warning',
+            'confirmButtonText' => 'Ya, hapus!',
+            'cancelButtonText' => 'Batal',
+        ]);
+    }
+    public function delete()
+    {
+        DB::table('penduduk')
+            ->where('id_penduduk', $this->deleteId)
+            ->update(['is_deleted' => 1, 'updated_at' => now()]);
+
+        // Show success message
+        $this->dispatch('swal:success', [
+            'title' => 'Berhasil!',
+            'text' => 'Data penduduk berhasil dihapus.',
+        ]);
+    }
+    public function mutasi($id_penduduk)
+    {
+        $penduduk = DB::table('penduduk')
+            ->where('is_deleted', 0)
+            ->where('id_penduduk', $id_penduduk)
+            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+            ->first();
+
+        $familyCardId = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->value('id_kartu_keluarga');
+
+        // 1. Check if he is a non-deleted Head
+        $isHead = DB::table('penduduk')
+            ->where('id_penduduk', $id_penduduk)
+            ->where('is_deleted', 0)
+            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
+            ->exists();
+
+        // 2. Check if he is the only one in his family
+        $isOnlyMember = DB::table('penduduk')
+            ->where('id_kartu_keluarga', $familyCardId) // Get this from the first query if needed
+            ->where('is_deleted', 0)
+            ->count() == 1; // Only 1 member left?
+
+        $isLoneHead = $isHead && $isOnlyMember;
+
+        if ($isLoneHead) {
+            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
+        }
+        if ($penduduk) {
+            return $this->redirect(route('indukPenduduk.mutasi.kepala-keluarga', ['id' => $id_penduduk]));
+        } else {
+            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
+        }
+    }
+
     #[Layout('components.layouts.layouts')]
     public function render()
     {
@@ -313,89 +396,5 @@ public function exportToExcel(): StreamedResponse
                     ->get(),
             ]
         );
-    }
-
-
-    public function resetFilters()
-    {
-        $this->nik = '';
-        $this->nama_lengkap = '';
-        $this->jenis_kelamin = '';
-        $this->alamat = '';
-        $this->nama_ayah = '';
-        $this->nama_ibu = '';
-        $this->tempat_lahir = '';
-        $this->tanggal_lahir_awal = '';
-        $this->tanggal_lahir_akhir = '';
-        $this->kewarganegaraan = '';
-        $this->golongan_darah = '';
-        $this->agama = '';
-        $this->status_perkawinan = '';
-        $this->pendidikan_terakhir = '';
-        $this->pekerjaan = '';
-        $this->baca_huruf = '';
-        $this->kedudukan_keluarga = '';
-        $this->dusun = '';
-        $this->asal_penduduk = '';
-        $this->suku = '';
-        $this->status_penduduk = 'aktif';
-    }
-    public function confirmDelete($id)
-    {
-        $this->deleteId = $id;
-
-        $this->dispatch('swal:confirm', [
-            'title' => 'Apakah Anda yakin?',
-            'text' => 'Data penduduk ini akan dihapus.',
-            'icon' => 'warning',
-            'confirmButtonText' => 'Ya, hapus!',
-            'cancelButtonText' => 'Batal',
-        ]);
-    }
-    public function delete()
-    {
-        DB::table('penduduk')
-            ->where('id_penduduk', $this->deleteId)
-            ->update(['is_deleted' => 1, 'updated_at' => now()]);
-
-        // Show success message
-        $this->dispatch('swal:success', [
-            'title' => 'Berhasil!',
-            'text' => 'Data penduduk berhasil dihapus.',
-        ]);
-    }
-    public function mutasi($id_penduduk)
-    {
-        $penduduk = DB::table('penduduk')
-            ->where('is_deleted', 0)
-            ->where('id_penduduk', $id_penduduk)
-            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
-            ->first();
-
-        $familyCardId = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->value('id_kartu_keluarga');
-
-        // 1. Check if he is a non-deleted Head
-        $isHead = DB::table('penduduk')
-            ->where('id_penduduk', $id_penduduk)
-            ->where('is_deleted', 0)
-            ->where('kedudukan_keluarga', 'KEPALA KELUARGA')
-            ->exists();
-
-        // 2. Check if he is the only one in his family
-        $isOnlyMember = DB::table('penduduk')
-            ->where('id_kartu_keluarga', $familyCardId) // Get this from the first query if needed
-            ->where('is_deleted', 0)
-            ->count() == 1; // Only 1 member left?
-
-        $isLoneHead = $isHead && $isOnlyMember;
-
-        if ($isLoneHead) {
-            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
-        }
-        if ($penduduk) {
-            return $this->redirect(route('indukPenduduk.mutasi.kepala-keluarga', ['id' => $id_penduduk]));
-        } else {
-            return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
-        }
     }
 }

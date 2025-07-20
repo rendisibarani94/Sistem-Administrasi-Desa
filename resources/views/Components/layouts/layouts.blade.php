@@ -33,8 +33,8 @@
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 shadow-sm shadow-black">
             <ul class="space-y-2 font-medium mb-10">
                 <a href="{{ route('beranda.admin') }}" class="flex flex-col items-center justify-center mb-4">
-                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-15 mb-2 " alt="Flowbite Logo" />
-                    <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] }}</span>
+                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-15 mb-2 " alt="Logo Desa" />
+                    <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] ?? 'Nama Desa' }}</span>
                 </a>
                 <h5 class="text-xs font-semibold text-black pl-3">Administrasi Desa</h5>
                 @php
@@ -138,15 +138,6 @@
                     Settings
                 </x-nav-link>
 
-                <x-nav-link href="{{ route('admin.beranda') }}" :active="request()->routeIs('admin.beranda')" path='<path d="M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z"/>' viewBox='0 0 24 24' customClass="my-custom-class">
-                    Beranda
-                </x-nav-link>
-
-
-                <x-nav-link href="{{ route('admin.profil') }}" :active="request()->routeIs('admin.profil')" path='<path fill-rule="evenodd" d="M4 4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H4Zm10 5a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm0 3a1 1 0 0 1 1-1h3a1 1 0 1 1 0 2h-3a1 1 0 0 1-1-1Zm-8-5a3 3 0 1 1 6 0 3 3 0 0 1-6 0Zm1.942 4a3 3 0 0 0-2.847 2.051l-.044.133-.004.012c-.042.126-.055.167-.042.195.006.013.02.023.038.039.032.025.08.064.146.155A1 1 0 0 0 6 17h6a1 1 0 0 0 .811-.415.713.713 0 0 1 .146-.155c.019-.016.031-.026.038-.04.014-.027 0-.068-.042-.194l-.004-.012-.044-.133A3 3 0 0 0 10.059 14H7.942Z" clip-rule="evenodd"/>' customClass="my-custom-class" viewBox="0 0 24 24">
-                    Profil
-                </x-nav-link>
-
                 @php
                 $masyarakatIcon = '
                 <path fill-rule="evenodd" d="M4 4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2v14a1 1 0 1 1 0 2H5a1 1 0 1 1 0-2V5a1 1 0 0 1-1-1Zm5 2a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1V7a1 1 0 0 0-1-1h-1Zm-5 4a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1H9Zm5 0a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1h1a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1h-1Zm-3 4a2 2 0 0 0-2 2v3h2v-3h2v3h2v-3a2 2 0 0 0-2-2h-2Z" clip-rule="evenodd" />';
@@ -158,6 +149,10 @@
                 [
                 'route' => 'admin.apbdes',
                 'text' => 'APBDesa',
+                ],
+                 [
+                'route' => 'admin.beranda',
+                'text' => 'Beranda',
                 ],
                 [
                 'route' => 'admin.berita',
@@ -171,9 +166,17 @@
                 'route' => 'admin.pengumuman',
                 'text' => 'Pengumuman Desa',
                 ],
+                [
+                'route' => 'admin.profil',
+                'text' => 'Profil Desa',
+                ],
                 ];
                 @endphp
                 <x-nav-plus-link title="Informasi Masyarakat" :icon="$masyarakatIcon" :childLinks="$childIMLinks" id="informasi-masyarakat-dropdown" />
+
+                <x-nav-link href="{{ route('admin.database-backup') }}" :active="request()->routeIs('admin.database-backup')" path='<path d="M12 7.205c4.418 0 8-1.165 8-2.602C20 3.165 16.418 2 12 2S4 3.165 4 4.603c0 1.437 3.582 2.602 8 2.602ZM12 22c4.963 0 8-1.686 8-2.603v-4.404c-.052.032-.112.06-.165.09a7.75 7.75 0 0 1-.745.387c-.193.088-.394.173-.6.253-.063.024-.124.05-.189.073a18.934 18.934 0 0 1-6.3.998c-2.135.027-4.26-.31-6.3-.998-.065-.024-.126-.05-.189-.073a10.143 10.143 0 0 1-.852-.373 7.75 7.75 0 0 1-.493-.267c-.053-.03-.113-.058-.165-.09v4.404C4 20.315 7.037 22 12 22Zm7.09-13.928a9.91 9.91 0 0 1-.6.253c-.063.025-.124.05-.189.074a18.935 18.935 0 0 1-6.3.998c-2.135.027-4.26-.31-6.3-.998-.065-.024-.126-.05-.189-.074a10.163 10.163 0 0 1-.852-.372 7.816 7.816 0 0 1-.493-.268c-.055-.03-.115-.058-.167-.09V12c0 .917 3.037 2.603 8 2.603s8-1.686 8-2.603V7.596c-.052.031-.112.059-.165.09a7.816 7.816 0 0 1-.745.386Z"/>' customClass="my-custom-class" viewBox="0 0 24 24">
+                    Backup Database
+                </x-nav-link>
 
                 <x-nav-link href="{{ route('beranda') }}" :active="request()->routeIs('beranda')" path='<path fill-rule="evenodd" d="M11.293 3.293a1 1 0 0 1 1.414 0l6 6 2 2a1 1 0 0 1-1.414 1.414L19 12.414V19a2 2 0 0 1-2 2h-3a1 1 0 0 1-1-1v-3h-2v3a1 1 0 0 1-1 1H7a2 2 0 0 1-2-2v-6.586l-.293.293a1 1 0 0 1-1.414-1.414l2-2 6-6Z" clip-rule="evenodd"/>' customClass="my-custom-class" viewBox="0 0 24 24">
                     Halaman Masyarakat

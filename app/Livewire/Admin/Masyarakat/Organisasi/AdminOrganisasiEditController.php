@@ -16,19 +16,19 @@ class AdminOrganisasiEditController extends Component
     public $id_organisasi;
 
     #[Rule('required', message: 'Kolom Nama Organisasi Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Nama Organisasi maksimal 255 karakter!')]
+    #[Rule('max:100', message: 'Kolom Nama Organisasi maksimal 100 digit karakter!')]
     public $nama_organisasi;
 
 
     #[Rule('required', message: 'Kolom Alamat Organisasi Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Alamat Organisasi maksimal 255 karakter!')]
+    #[Rule('max:150', message: 'Kolom Alamat Organisasi maksimal 150 digit karakter!')]
     public $alamat;
 
     #[Rule('required', message: 'Tanggal Organisasi Harus Diisi!')]
     public $tanggal_berdiri;
 
     #[Rule('required', message: 'Kolom Nama Organisasi Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Nama Organisasi maksimal 255 karakter!')]
+    #[Rule('max:100', message: 'Kolom Nama Organisasi maksimal 100 digit karakter!')]
     public $ketua;
 
     #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
@@ -37,7 +37,7 @@ class AdminOrganisasiEditController extends Component
     public $existingFotoKetua;
 
     #[Rule('required', message: 'Kolom Nama Sekretaris Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Nama Sekretaris maksimal 255 karakter!')]
+    #[Rule('max:100', message: 'Kolom Nama Sekretaris maksimal 100 digit karakter!')]
     public $sekretaris;
 
     #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
@@ -46,7 +46,7 @@ class AdminOrganisasiEditController extends Component
     public $existingFotoSekretaris;
 
     #[Rule('required', message: 'Kolom Nama Bendahara Harus Diisi!')]
-    #[Rule('max:255', message: 'Kolom Nama Bendahara maksimal 255 karakter!')]
+    #[Rule('max:100', message: 'Kolom Nama Bendahara maksimal 100 digit karakter!')]
     public $bendahara;
 
     #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]

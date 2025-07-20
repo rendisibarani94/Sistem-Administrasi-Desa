@@ -13,7 +13,7 @@ class InventarisDesaEditController extends Component
     public $id_inventaris_desa;
 
     #[Rule('required', message: 'Kolom Jenis Barang Harus Diisi!')]
-    #[Rule('max:100', message: 'Kolom Jenis Barang Terlalu Panjang!')]
+    #[Rule('max:100', message: 'Kolom Jenis Barang Maksimal 100 digit karakter!')]
     public $jenis_inventaris;
 
     #[Rule('required', message: 'Jika Kosong, Diisi 0')]
@@ -37,7 +37,7 @@ class InventarisDesaEditController extends Component
     #[Rule('required', message: 'Jika Kosong, Diisi 0')]
     public $jumlah_rusak;
 
-    #[Rule('max:255', message: 'Kolom Keterangan Terlalu Panjang!')]
+    #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
 

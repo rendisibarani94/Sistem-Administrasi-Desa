@@ -29,14 +29,78 @@
             </div>
 
             <div class="grid gap-6 mb-6 md:grid-cols-4">
-                <div class="md:col-span-1">
+                <div class="input-component md:col-span-1">
                     <label for="id_kepala_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Kepala Keluarga</label>
-                    <select id="id_kepala_keluarga" wire:model.live="id_kepala_keluarga" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('id_kepala_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                        <option selected>Pilih Kepala Keluarga</option>
-                        @foreach ($kepalaKeluargaData as $kepalaKeluarga)
-                        <option value="{{ $kepalaKeluarga->id_penduduk }}">{{ $kepalaKeluarga->nama_lengkap }} - {{ $kepalaKeluarga->nik }}</option>
-                        @endforeach
-                    </select>
+                    <div x-data="{
+                        open: false,
+                        search: '',
+                        get filteredOptions() {
+                            return this.search === ''
+                                ? this.allOptions
+                                : this.allOptions.filter(option =>
+                                    option.text.toLowerCase().includes(this.search.toLowerCase())
+                                );
+                        },
+                        allOptions: [
+                            @foreach ($kepalaKeluargaData as $kepalaKeluarga)
+                            {
+                                id: '{{ $kepalaKeluarga->id_penduduk }}',
+                                text: '{{ $kepalaKeluarga->nama_lengkap }} - {{ $kepalaKeluarga->nik }}'
+                            },
+                            @endforeach
+                        ],
+                        selectedId: '{{ $id_kepala_keluarga ?? '' }}',
+                        selectedText: '{{ $id_kepala_keluarga ? $kepalaKeluargaData->firstWhere('id_penduduk', $id_kepala_keluarga)?->nama_lengkap . ' - ' . $kepalaKeluargaData->firstWhere('id_penduduk', $id_kepala_keluarga)?->nik : 'Pilih Kepala Keluarga' }}',
+                        select(id, text) {
+                            this.selectedId = id;
+                            this.selectedText = text;
+                            this.open = false;
+                            // Update Livewire model
+                            $wire.set('id_kepala_keluarga', id);
+                        },
+                        init() {
+                            // Watch for changes in Livewire model and update Alpine state
+                            $wire.$watch('id_kepala_keluarga', (value) => {
+                                this.selectedId = value || '';
+                                if (value) {
+                                    const option = this.allOptions.find(opt => opt.id === value);
+                                    this.selectedText = option ? option.text : 'Pilih Kepala Keluarga';
+                                } else {
+                                    this.selectedText = 'Pilih Kepala Keluarga';
+                                }
+                            });
+                        }
+                    }" class="relative" @click.away="open = false">
+                        <!-- Selected option display -->
+                        <button @click="open = !open" type="button" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm w-full p-2.5 flex justify-between items-center @error('id_kepala_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
+                            <span x-text="selectedText"></span>
+                            <svg class="w-4 h-4" :class="{'rotate-180': open}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown -->
+                        <div x-show="open" x-transition class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-sm shadow-lg max-h-60 overflow-y-auto">
+                            <!-- Search input -->
+                            <div class="sticky top-0 bg-white p-2 border-b border-gray-300">
+                                <input x-model="search" @click.stop type="text" placeholder="Cari Kepala Keluarga..." class="w-full p-2 border border-gray-300 rounded-sm text-sm focus:outline-none focus:ring-2 focus:ring-sky-500">
+                            </div>
+
+                            <!-- Options list -->
+                            <template x-for="option in filteredOptions" :key="option.id">
+                                <div @click="select(option.id, option.text)" class="px-4 py-2 cursor-pointer hover:bg-sky-600 hover:text-white focus:outline-none focus:bg-indigo-600 focus:text-white" :class="{'bg-sky-50': selectedId === option.id}" x-text="option.text"></div>
+                            </template>
+
+                            <!-- Empty state when no results -->
+                            <div x-show="filteredOptions.length === 0" class="px-4 py-2 text-sm text-gray-500">
+                                Kepala Keluarga Tidak Ditemukan
+                            </div>
+                        </div>
+
+                        <!-- Hidden input to maintain Livewire binding -->
+                        <input type="hidden" id="id_kepala_keluarga" x-model="selectedId" wire:model.live="id_kepala_keluarga">
+                    </div>
+
                     <div class="h-0.25">
                         @error('id_kepala_keluarga') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>

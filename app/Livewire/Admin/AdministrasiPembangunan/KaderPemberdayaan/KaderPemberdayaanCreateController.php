@@ -10,7 +10,7 @@ use Livewire\Attributes\Rule;
 class KaderPemberdayaanCreateController extends Component
 {
     #[Rule('required', message: 'Kolom Nama Kader Harus Diisi!')]
-    #[Rule('max:100', message: 'Input nama maksimal 100 digit')]
+    #[Rule('max:100', message: 'Input nama maksimal 100 digit karakter!')]
     public $nama_lengkap;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
@@ -23,13 +23,14 @@ class KaderPemberdayaanCreateController extends Component
     public $pendidikan;
 
     #[Rule('required', message: 'Kolom Bidang Keahlian Harus Diisi!')]
+    #[Rule('max:50', message: 'Input Bidang Keahlian Maksimal 50 digit karakter!')]
     public $bidang_keahlian;
 
     #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input alamat maksimal 150 digit')]
+    #[Rule('max:150', message: 'Input alamat maksimal 150 digit karakter!')]
     public $alamat;
 
-    #[Rule('max:255', message: 'Input Keterangan Terlalu Panjang!')]
+    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
 
@@ -50,12 +51,6 @@ class KaderPemberdayaanCreateController extends Component
     {
         return view(
             'admin.pembangunan.kader-pemberdayaan-masyarakat.create',
-            [
-                'bidangKeahlianData' => DB::table('bidang_keahlian')
-                    ->where('is_deleted', 0)
-                    ->orderBy('id_bidang_keahlian', 'desc')
-                    ->paginate(10),
-            ]
         );
     }
 
