@@ -1,6 +1,6 @@
 <div class="p-6 bg-white rounded-lg shadow-md">
     <x-slot:judul>
-        Data Base Backup Penduduk
+        Database Backup
     </x-slot:judul>
     <!-- Backup Section -->
     <div class="mb-8">
@@ -26,11 +26,11 @@
 
         @if($backupStatus === 'success')
             <div class="mb-4 p-3 bg-green-100 text-green-700 rounded">
-                Backup created successfully!
+                {{ $backupStatusMessage ?: 'Aksi Backup Backup Berhasil!' }}
             </div>
         @elseif($backupStatus === 'error')
             <div class="mb-4 p-3 bg-red-100 text-red-700 rounded">
-                Backup failed! Please check server logs.
+                {{ $backupStatusMessage ?: 'Aksi Backup Gagal.' }}
             </div>
         @endif
 
@@ -48,6 +48,12 @@
                                 </div>
                             </div>
                             <button
+                                wire:click="deleteBackup('{{ $backup['name'] }}')"
+                                class="px-3 py-1 bg-red-500 hover:bg-red-600 rounded text-sm text-white cursor-pointer disabled:opacity-50"
+                            >
+                                Hapus
+                            </button>
+                            <button
                                 wire:click="downloadBackup('{{ $backup['name'] }}')"
                                 class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-sm cursor-pointer disabled:opacity-50"
                             >
@@ -58,7 +64,7 @@
                 </div>
             </div>
         @else
-            <p class="text-gray-500">No backups available yet</p>
+            <p class="text-gray-500">Backup belum tersedia</p>
         @endif
     </div>
 
@@ -78,6 +84,7 @@
                         file:cursor-pointer
                         file:text-sm file:font-semibold
                         file:bg-blue-50 file:text-blue-700
+                        cursor-pointer
                         hover:file:bg-blue-100"
                 >
                 @error('sqlFile') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror

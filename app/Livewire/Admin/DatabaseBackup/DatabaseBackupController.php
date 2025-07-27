@@ -15,6 +15,7 @@ class DatabaseBackupController extends Component
 
     public $sqlFile;
     public $backupStatus = '';
+    public $backupStatusMessage = '';
     public $restoreStatus = '';
     public $isRestoring = false;
     public $isBackingUp = false;
@@ -68,6 +69,7 @@ class DatabaseBackupController extends Component
             ]);
         } finally {
             $this->isBackingUp = false;
+            $this->backupStatusMessage = 'Backup Berhasil!';
         }
     }
 
@@ -216,6 +218,20 @@ class DatabaseBackupController extends Component
     private function resetMessages()
     {
         $this->reset(['backupStatus', 'restoreStatus']);
+    }
+
+    public function deleteBackup($filename)
+    {
+        if (!Storage::disk('backups')->exists($filename)) {
+            $this->backupStatus = 'error';
+            $this->backupStatusMessage = 'Backup Gagal Dihapus.';
+            return;
+        }
+
+        Storage::disk('backups')->delete($filename);
+        $this->refreshBackupList();
+        $this->backupStatus = 'success';
+        $this->backupStatusMessage = 'Backup Berhasil Dihapus.';
     }
 
     #[Layout('components.layouts.layouts')]
