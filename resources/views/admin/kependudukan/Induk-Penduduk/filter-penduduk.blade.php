@@ -216,9 +216,9 @@
                     </div>
                 </div>
                 <div class="input-component">
-                    <label for="kedudukan_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Keududukan Keluarga</label>
+                    <label for="kedudukan_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Kedudukan Keluarga</label>
                     <select id="kedudukan_keluarga" wire:model.live.debounce.500ms="kedudukan_keluarga" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('kedudukan_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                        <option value="" selected>Pilih Keududukan Keluarga</option>
+                        <option value="" selected>Pilih Kedudukan Keluarga</option>
                         <option value="KEPALA KELUARGA">KEPALA KELUARGA</option>
                         <option value="ISTRI">ISTRI</option>
                         <option value="ANAK">ANAK</option>
