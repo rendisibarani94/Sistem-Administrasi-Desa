@@ -1,10 +1,9 @@
+<?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\JenisSurat;
-use App\Models\Penduduk;
-use App\Models\User;
 
 class PengajuanSurat extends Model
 {
@@ -12,9 +11,6 @@ class PengajuanSurat extends Model
 
     protected $table = 'pengajuan_surat';
     protected $primaryKey = 'id_pengajuan_surat';
-
-    protected $keyType = 'int';
-    public $incrementing = true;
 
     protected $fillable = [
         'id_penduduk',
@@ -31,8 +27,15 @@ class PengajuanSurat extends Model
         'tanggal_respons' => 'datetime'
     ];
 
-    // RELASI
+    // 🔥 STATUS CONST (WAJIB)
+    const DIAJUKAN = 'DIAJUKAN';
+    const DIVERIFIKASI_ADMIN = 'DIVERIFIKASI_ADMIN';
+    const DITOLAK_ADMIN = 'DITOLAK_ADMIN';
+    const DISETUJUI_KADES = 'DISETUJUI_KADES';
+    const DITOLAK_KADES = 'DITOLAK_KADES';
+    const SELESAI = 'SELESAI';
 
+    // RELASI
     public function jenisSurat()
     {
         return $this->belongsTo(JenisSurat::class, 'id_jenis_surat');

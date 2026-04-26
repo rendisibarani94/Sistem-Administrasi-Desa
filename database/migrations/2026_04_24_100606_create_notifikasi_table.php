@@ -6,22 +6,32 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::create('notifikasi', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('notifikasi')) {
+            Schema::create('notifikasi', function (Blueprint $table) {
+                $table->id();
+
+                $table->unsignedBigInteger('user_id')->nullable();
+                $table->string('judul')->nullable();
+                $table->text('pesan')->nullable();
+                $table->boolean('is_read')->default(false);
+
+                $table->timestamps();
+
+                // optional relasi ke users (lebih baik ditambahkan)
+                $table->foreign('user_id')
+                      ->references('id')
+                      ->on('users')
+                      ->onDelete('cascade');
+            });
+        }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::dropIfExists('notifikasi');
+        if (Schema::hasTable('notifikasi')) {
+            Schema::dropIfExists('notifikasi');
+        }
     }
 };

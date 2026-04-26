@@ -5,18 +5,25 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\PengajuanSurat;
+use App\Models\JenisSurat;
 use Illuminate\Support\Facades\Auth;
 
 class SuratController extends Controller
 {
     // =========================
-    // 1. LIST SURAT
+    // LIST (ROLE BASED)
     // =========================
     public function index()
     {
-        $data = PengajuanSurat::with(['jenisSurat', 'penduduk'])
-            ->latest()
-            ->get();
+        $user = Auth::user();
+
+        if ($user->role == 'admin') {
+            $data = PengajuanSurat::where('status', PengajuanSurat::DIAJUKAN)->get();
+        } elseif ($user->role == 'kepala_desa') {
+            $data = PengajuanSurat::where('status', PengajuanSurat::DIVERIFIKASI_ADMIN)->get();
+        } else {
+            $data = PengajuanSurat::where('id_penduduk', $user->id)->get();
+        }
 
         return response()->json([
             'status' => 'success',
@@ -25,7 +32,17 @@ class SuratController extends Controller
     }
 
     // =========================
-    // 2. AJUKAN SURAT (WARGA)
+    // LIST JENIS SURAT
+    // =========================
+    public function jenisSurat()
+    {
+        return response()->json([
+            'data' => JenisSurat::all()
+        ]);
+    }
+
+    // =========================
+    // AJUKAN SURAT
     // =========================
     public function store(Request $request)
     {
@@ -35,35 +52,31 @@ class SuratController extends Controller
         ]);
 
         $surat = PengajuanSurat::create([
-            'id_penduduk' => Auth::user()->id, // sesuaikan kalau pakai tabel penduduk
+            'id_penduduk' => Auth::user()->id,
             'id_jenis_surat' => $request->id_jenis_surat,
             'data_form' => $request->data_form,
-            'status' => 'diajukan'
+            'status' => PengajuanSurat::DIAJUKAN
         ]);
 
         return response()->json([
-            'status' => 'success',
-            'message' => 'Pengajuan surat berhasil',
+            'message' => 'Pengajuan berhasil',
             'data' => $surat
         ]);
     }
 
     // =========================
-    // 3. DETAIL SURAT
+    // DETAIL
     // =========================
     public function show($id)
     {
         $data = PengajuanSurat::with(['jenisSurat', 'penduduk'])
             ->findOrFail($id);
 
-        return response()->json([
-            'status' => 'success',
-            'data' => $data
-        ]);
+        return response()->json($data);
     }
 
     // =========================
-    // 4. APPROVE ADMIN
+    // APPROVE ADMIN
     // =========================
     public function approveAdmin($id)
     {
@@ -75,50 +88,50 @@ class SuratController extends Controller
 
         $surat = PengajuanSurat::findOrFail($id);
 
+        if ($surat->status !== PengajuanSurat::DIAJUKAN) {
+            return response()->json(['message' => 'Status tidak valid'], 400);
+        }
+
         $surat->update([
-            'status' => 'diverifikasi_admin',
+            'status' => PengajuanSurat::DIVERIFIKASI_ADMIN,
             'id_diproses_oleh' => $user->id,
             'tanggal_respons' => now()
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Surat diverifikasi admin'
-        ]);
+        return response()->json(['message' => 'Diverifikasi admin']);
     }
 
     // =========================
-    // 5. REJECT ADMIN
+    // REJECT ADMIN
     // =========================
     public function rejectAdmin(Request $request, $id)
     {
+        $request->validate(['alasan' => 'required']);
+
         $user = Auth::user();
 
         if ($user->role !== 'admin') {
             return response()->json(['message' => 'Akses ditolak'], 403);
         }
 
-        $request->validate([
-            'alasan' => 'required'
-        ]);
-
         $surat = PengajuanSurat::findOrFail($id);
 
+        if ($surat->status !== PengajuanSurat::DIAJUKAN) {
+            return response()->json(['message' => 'Status tidak valid'], 400);
+        }
+
         $surat->update([
-            'status' => 'ditolak_admin',
+            'status' => PengajuanSurat::DITOLAK_ADMIN,
             'alasan_tolak' => $request->alasan,
             'id_diproses_oleh' => $user->id,
             'tanggal_respons' => now()
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Surat ditolak admin'
-        ]);
+        return response()->json(['message' => 'Ditolak admin']);
     }
 
     // =========================
-    // 6. APPROVE KEPALA DESA
+    // APPROVE KADES
     // =========================
     public function approveKades($id)
     {
@@ -130,50 +143,50 @@ class SuratController extends Controller
 
         $surat = PengajuanSurat::findOrFail($id);
 
+        if ($surat->status !== PengajuanSurat::DIVERIFIKASI_ADMIN) {
+            return response()->json(['message' => 'Status tidak valid'], 400);
+        }
+
         $surat->update([
-            'status' => 'disetujui_kades',
+            'status' => PengajuanSurat::DISETUJUI_KADES,
             'id_diproses_oleh' => $user->id,
             'tanggal_respons' => now()
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Surat disetujui kepala desa'
-        ]);
+        return response()->json(['message' => 'Disetujui kades']);
     }
 
     // =========================
-    // 7. REJECT KEPALA DESA
+    // REJECT KADES
     // =========================
     public function rejectKades(Request $request, $id)
     {
+        $request->validate(['alasan' => 'required']);
+
         $user = Auth::user();
 
         if ($user->role !== 'kepala_desa') {
             return response()->json(['message' => 'Akses ditolak'], 403);
         }
 
-        $request->validate([
-            'alasan' => 'required'
-        ]);
-
         $surat = PengajuanSurat::findOrFail($id);
 
+        if ($surat->status !== PengajuanSurat::DIVERIFIKASI_ADMIN) {
+            return response()->json(['message' => 'Status tidak valid'], 400);
+        }
+
         $surat->update([
-            'status' => 'ditolak_kades',
+            'status' => PengajuanSurat::DITOLAK_KADES,
             'alasan_tolak' => $request->alasan,
             'id_diproses_oleh' => $user->id,
             'tanggal_respons' => now()
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Surat ditolak kepala desa'
-        ]);
+        return response()->json(['message' => 'Ditolak kades']);
     }
 
     // =========================
-    // 8. FINAL (SELESAI + TTD)
+    // SELESAI
     // =========================
     public function selesai($id)
     {
@@ -185,14 +198,15 @@ class SuratController extends Controller
 
         $surat = PengajuanSurat::findOrFail($id);
 
+        if ($surat->status !== PengajuanSurat::DISETUJUI_KADES) {
+            return response()->json(['message' => 'Belum bisa diselesaikan'], 400);
+        }
+
         $surat->update([
-            'status' => 'selesai',
+            'status' => PengajuanSurat::SELESAI,
             'tanggal_respons' => now()
         ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Surat selesai & siap diambil'
-        ]);
+        return response()->json(['message' => 'Selesai']);
     }
 }
