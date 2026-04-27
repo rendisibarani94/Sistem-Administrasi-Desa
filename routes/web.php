@@ -253,3 +253,5 @@ Route::get('/pembangunan', PembangunanController::class)->name('pembangunan');
 Route::get('/pembangunan/{id_pembangunan}/detail', DetailPembangunanController::class)->name('pembangunan.detail');
 Route::get('/apbdes', ApbdesController::class)->name('apbdes');
 Route::get('/apbdes/{id_apbdes}/detail', ApbdesDetailController::class)->name('apbdes.detail');
+
+
