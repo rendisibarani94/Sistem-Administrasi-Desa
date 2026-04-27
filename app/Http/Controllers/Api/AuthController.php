@@ -10,38 +10,55 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        // validasi input
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+            'nik' => 'required',
+            'password' => 'required|min:6'
+    ]);
 
-        // cek login
-        if (!Auth::attempt($request->only('email', 'password'))) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Email atau password salah'
-            ], 401);
-        }
-
-        // ambil user
-        $user = Auth::user();
-
-        // hapus token lama (biar tidak numpuk)
-        $user->tokens()->delete();
-
-        // buat token baru
-        $token = $user->createToken('mobile-token')->plainTextToken;
-
+    if (!Auth::attempt([
+        'nik' => $request->nik,
+        'password' => $request->password
+    ])) {
         return response()->json([
-            'status' => 'success',
-            'message' => 'Login berhasil',
-            'data' => [
-                'token' => $token,
-                'user' => $user
-            ]
-        ]);
+            'status' => 'error',
+            'message' => 'NIK atau password salah'
+        ], 401);
     }
+
+    $user = Auth::user();
+
+    if (!$user->role) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Role belum diset'
+        ], 500);
+    }
+
+    if ($user->role !== 'masyarakat') {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Akses hanya untuk masyarakat'
+        ], 403);
+    }
+
+    $user->tokens()->delete();
+
+    $token = $user->createToken('mobile-token')->plainTextToken;
+
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Login berhasil',
+        'data' => [
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'nik' => $user->nik,
+                'role' => $user->role
+            ]
+        ]
+    ]);
+}
 
     public function me(Request $request)
     {

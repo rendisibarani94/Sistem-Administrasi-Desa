@@ -5,6 +5,10 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PendudukApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SuratController;
+use App\Http\Controllers\Api\PengaduanController;
+use App\Http\Controllers\Api\NotifikasiController;
+use App\Http\Controllers\Api\BeritaController;
+use App\Http\Controllers\Api\PengumumanController;
 
 // =======================
 // PUBLIC ROUTE
@@ -12,41 +16,65 @@ use App\Http\Controllers\Api\SuratController;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 
-Route::get('/test', function () {
-    return response()->json([
-        'message' => 'API berjalan'
-    ]);
-});
+Route::get('/test', fn () => response()->json(['message' => 'API berjalan']));
 
 // =======================
-// PROTECTED ROUTE
+// PROTECTED (ALL LOGIN)
 // =======================
 Route::middleware('auth:sanctum')->group(function () {
 
-    // ================= AUTH =================
-    Route::get('/user', [AuthController::class, 'me']);
+    // AUTH
+    Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    // ================= SURAT =================
-    Route::get('/surat', [SuratController::class, 'index']);
-    Route::post('/surat', [SuratController::class, 'store']);
-    Route::get('/surat/{id}', [SuratController::class, 'show']);
+    // INFORMASI
+    Route::get('/berita', [BeritaController::class, 'index']);
+    Route::get('/pengumuman', [PengumumanController::class, 'index']);
 
-    Route::post('/surat/{id}/approve-admin', [SuratController::class, 'approveAdmin']);
-    Route::post('/surat/{id}/reject-admin', [SuratController::class, 'rejectAdmin']);
+    // NOTIFIKASI
+    Route::get('/notifikasi', [NotifikasiController::class, 'index']);
+    Route::post('/notifikasi/{id}/read', [NotifikasiController::class, 'read']);
 
-    Route::post('/surat/{id}/approve-kades', [SuratController::class, 'approveKades']);
-    Route::post('/surat/{id}/reject-kades', [SuratController::class, 'rejectKades']);
+    // PENDUDUK
+    Route::get('/penduduk', [PendudukApiController::class, 'index']);
+});
 
-    Route::post('/surat/{id}/selesai', [SuratController::class, 'selesai']);
+// =======================
+// ADMIN ONLY
+// =======================
+Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
-    // ================= USER =================
     Route::get('/users', [UserController::class, 'index']);
     Route::post('/users', [UserController::class, 'store']);
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
 
-    // ================= PENDUDUK =================
-    Route::get('/penduduk', [PendudukApiController::class, 'index']);
+    Route::post('/pengaduan/{id}/validasi', [PengaduanController::class, 'validasi']);
 
+    Route::post('/surat/{id}/approve-admin', [SuratController::class, 'approveAdmin']);
+    Route::post('/surat/{id}/reject-admin', [SuratController::class, 'rejectAdmin']);
+});
+
+// =======================
+// MASYARAKAT ONLY
+// =======================
+Route::middleware(['auth:sanctum', 'role:masyarakat'])->group(function () {
+
+    Route::get('/surat', [SuratController::class, 'index']);
+    Route::post('/surat', [SuratController::class, 'store']);
+    Route::get('/surat/{id}', [SuratController::class, 'show']);
+
+    Route::get('/pengaduan', [PengaduanController::class, 'index']);
+    Route::post('/pengaduan', [PengaduanController::class, 'store']);
+    Route::get('/pengaduan/{id}', [PengaduanController::class, 'show']);
+});
+
+// =======================
+// KADES ONLY
+// =======================
+Route::middleware(['auth:sanctum', 'role:kades'])->group(function () {
+
+    Route::post('/surat/{id}/approve-kades', [SuratController::class, 'approveKades']);
+    Route::post('/surat/{id}/reject-kades', [SuratController::class, 'rejectKades']);
+    Route::post('/surat/{id}/selesai', [SuratController::class, 'selesai']);
 });
