@@ -12,33 +12,42 @@ class UserController extends Controller
     // =========================
     // REGISTER (PUBLIC)
     // =========================
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'nik' => 'required|digits:16|unique:users,nik',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6|confirmed',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'nik' => $request->nik,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'masyarakat'
+    ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Register berhasil',
-            'data' => $user
-        ]);
-    }
+    return response()->json([
+        'status' => 'success',
+        'message' => 'Register berhasil',
+        'data' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'nik' => $user->nik,
+            'email' => $user->email,
+            'role' => $user->role
+        ]
+    ]);
+}
 
     // =========================
-    // GET ALL USERS
+    // GET ALL USERS (ADMIN)
     // =========================
     public function index()
     {
-        $users = User::all();
+        $users = User::select('id', 'name', 'nik', 'email', 'role')->get();
 
         return response()->json([
             'status' => 'success',
@@ -49,27 +58,36 @@ class UserController extends Controller
     // =========================
     // TAMBAH USER (ADMIN)
     // =========================
-    public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
+  public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'nik' => 'required|digits:16|unique:users,nik',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|min:6',
+        'role' => 'required|in:masyarakat,admin,kades'
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'nik' => $request->nik,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => $request->role
+    ]);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User berhasil ditambahkan',
-            'data' => $user
-        ]);
-    }
-
+    return response()->json([
+        'status' => 'success',
+        'message' => 'User berhasil dibuat',
+        'data' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'nik' => $user->nik,
+            'email' => $user->email,
+            'role' => $user->role
+        ]
+    ], 201);
+}
     // =========================
     // UPDATE USER
     // =========================
@@ -78,19 +96,29 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         $request->validate([
-            'name' => 'required',
+            'name' => 'required|string|max:255',
+            'nik' => 'required|digits:16|unique:users,nik,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
+            'role' => 'in:masyarakat,admin,kades'
         ]);
 
         $user->update([
             'name' => $request->name,
+            'nik' => $request->nik,
             'email' => $request->email,
+            'role' => $request->role ?? $user->role
         ]);
 
         return response()->json([
             'status' => 'success',
             'message' => 'User berhasil diupdate',
-            'data' => $user
+            'data' => [
+            'id' => $user->id,
+            'name' => $user->name,
+            'nik' => $user->nik,
+            'email' => $user->email,
+            'role' => $user->role
+        ]
         ]);
     }
 
