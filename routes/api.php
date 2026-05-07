@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // PENDUDUK
     Route::get('/penduduk', [PendudukApiController::class, 'index']);
+    Route::get('/penduduk/{id}', [PendudukApiController::class, 'show']);
 });
 
 // =======================
@@ -53,6 +54,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
 
     Route::post('/surat/{id}/approve-admin', [SuratController::class, 'approveAdmin']);
     Route::post('/surat/{id}/reject-admin', [SuratController::class, 'rejectAdmin']);
+
+    Route::post('/penduduk', [PendudukApiController::class, 'store']);
+    Route::put('/penduduk/{id}', [PendudukApiController::class, 'update']);
+    Route::delete('/penduduk/{id}', [PendudukApiController::class, 'destroy']);
 });
 
 // =======================
@@ -69,12 +74,3 @@ Route::middleware(['auth:sanctum', 'role:masyarakat'])->group(function () {
     Route::get('/pengaduan/{id}', [PengaduanController::class, 'show']);
 });
 
-// =======================
-// KADES ONLY
-// =======================
-Route::middleware(['auth:sanctum', 'role:kades'])->group(function () {
-
-    Route::post('/surat/{id}/approve-kades', [SuratController::class, 'approveKades']);
-    Route::post('/surat/{id}/reject-kades', [SuratController::class, 'rejectKades']);
-    Route::post('/surat/{id}/selesai', [SuratController::class, 'selesai']);
-});
