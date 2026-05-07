@@ -87,6 +87,9 @@ class IndukPendudukEditController extends Component
     #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 digit karakter!')]
     public $nomor_akta_lahir;
 
+    #[Rule('nullable|max:13', message: 'Input Asal Penduduk Maksimal 13 digit karakter!')]
+    public $nomor_telepon;
+
     #[Rule('nullable|max:50', message: 'Input Asal Penduduk Maksimal 50 digit karakter!')]
     public $suku;
 

@@ -12,7 +12,7 @@
                 <div class="grid gap-6 mb-6 md:grid-cols-2">
                     <div class="input-component">
                         <label for="nik" class="block mb-2 text-sm font-semibold text-gray-950">NIK</label>
-                        <input type="text" id="nik" wire:model.live="nik" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nik') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan NIK " autocomplete="off" />
+                        <input type="text" id="nik" wire:model.live="nik" class="bg-gray-50 text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nik') border border-red-500 focus:ring-red-500 focus:border-red-500 @else border border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan NIK " autocomplete="off" />
                         <div class="h-0.25">
                             @error('nik') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
@@ -159,6 +159,10 @@
                             @error('nomor_akta_lahir') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                         </div>
                     </div>
+    <div class="input-component">
+  <label for="nomor_telepon" class="block mb-2 text-sm font-semibold text-gray-950">Nomor Telepon <span class="text-gray-500">*Jika Ada</span></label>
+    <input type="text" id="nomor_telepon" wire:model.live="nomor_telepon" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('nomor_telepon') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Nomor Telepon" autocomplete="off" />
+</div>
                     <div class="input-component">
                         <label for="golongan_darah" class="block mb-2 text-sm font-semibold text-gray-950">Golongan Darah</label>
                         <select id="golongan_darah" wire:model.live="golongan_darah" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('golongan_darah') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
@@ -264,9 +268,9 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="kedudukan_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Keududukan Keluarga</label>
+                        <label for="kedudukan_keluarga" class="block mb-2 text-sm font-semibold text-gray-950">Kedudukan Keluarga</label>
                         <select id="kedudukan_keluarga" wire:model.live="kedudukan_keluarga" class="bg-gray-50 [&>option]:font-medium border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 @error('kedudukan_keluarga') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror">
-                            <option selected>Pilih Keududukan Keluarga</option>
+                            <option selected>Pilih Kedudukan Keluarga</option>
                             <option value="KEPALA KELUARGA">KEPALA KELUARGA</option>
                             <option value="ISTRI">ISTRI</option>
                             <option value="ANAK">ANAK</option>

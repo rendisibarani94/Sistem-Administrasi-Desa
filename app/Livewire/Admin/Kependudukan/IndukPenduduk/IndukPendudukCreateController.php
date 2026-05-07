@@ -9,41 +9,68 @@ use Livewire\Attributes\Rule;
 
 class IndukPendudukCreateController extends Component
 {
-
-    #[Rule('required', message: 'Kolom Kewarganegaraan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Kewarganegaraan Maksimal 50 digit karakter!')]
+    #[Rule(
+        ['required', 'max:50'],
+        message: [
+            'required' => 'Kolom Kewarganegaraan Harus Diisi!',
+            'max'      => 'Input Kewarganegaraan Maksimal 50 karakter!',
+        ]
+    )]
     public $kewarganegaraan;
 
-    #[Rule('required', message: 'Kolom Keturunan Harus Diisi!')]
-    #[Rule('max:50', message: 'Input Keturunan Maksimal 50 digit karakter!')]
+    #[Rule(
+        ['required', 'max:50'],
+        message: [
+            'required' => 'Kolom Keturunan Harus Diisi!',
+            'max'      => 'Input Keturunan Maksimal 50 karakter!',
+        ]
+    )]
     public $keturunan;
 
-    #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal')]
+    #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal!')]
     public $tanggal_keluar_ktp;
 
-    // #[Rule('regex:/^\d{6}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/', message: 'Format NIK Tidak Valid (16 digit, wilayah, tanggal, bulan, tahun, urutan)!')]
-
-    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
-    #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
-    #[Rule('unique:penduduk,nik', message: 'NIK sudah terdaftar!')]
+    #[Rule(
+        ['required', 'size:16', 'unique:penduduk,nik'],
+        message: [
+            'required' => 'Kolom NIK Harus Diisi!',
+            'size'     => 'Input NIK Harus 16 Karakter!',
+            'unique'   => 'NIK sudah terdaftar!',
+        ]
+    )]
     public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
     public $jenis_kelamin;
 
-    #[Rule('required', message: 'Kolom Nama Lengkap Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Lengkap Maksimal 100 digit karakter!')]
+    #[Rule(
+        ['required', 'max:100'],
+        message: [
+            'required' => 'Kolom Nama Lengkap Harus Diisi!',
+            'max'      => 'Input Nama Lengkap Maksimal 100 karakter!',
+        ]
+    )]
     public $nama_lengkap;
 
-    #[Rule('required', message: 'Kolom Alamat Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Alamat Maksimal 150 digit karakter!')]
+    #[Rule(
+        ['required', 'max:150'],
+        message: [
+            'required' => 'Kolom Alamat Harus Diisi!',
+            'max'      => 'Input Alamat Maksimal 150 karakter!',
+        ]
+    )]
     public $alamat;
 
     #[Rule('required', message: 'Input Kartu Keluarga Harus Diisi!')]
     public $id_kartu_keluarga;
 
-    #[Rule('required', message: 'Kolom Tempat Lahir Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Tempat Lahir Maksimal 150 Karakter!')]
+    #[Rule(
+        ['required', 'max:150'],
+        message: [
+            'required' => 'Kolom Tempat Lahir Harus Diisi!',
+            'max'      => 'Input Tempat Lahir Maksimal 150 karakter!',
+        ]
+    )]
     public $tempat_lahir;
 
     #[Rule('required', message: 'Kolom Tanggal Lahir Harus Diisi!')]
@@ -61,19 +88,34 @@ class IndukPendudukCreateController extends Component
     #[Rule('required', message: 'Kolom Pendidikan Terakhir Harus Diisi!')]
     public $pendidikan_terakhir;
 
-    #[Rule('required', message: 'Kolom Pekerjaan Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Pekerjaan Maksimal 100 digit karakter!')]
+    #[Rule(
+        ['required', 'max:100'],
+        message: [
+            'required' => 'Kolom Pekerjaan Harus Diisi!',
+            'max'      => 'Input Pekerjaan Maksimal 100 karakter!',
+        ]
+    )]
     public $pekerjaan;
 
     #[Rule('required', message: 'Kolom Baca Huruf Harus Diisi!')]
     public $baca_huruf;
 
-    #[Rule('required', message: 'Kolom Nama Ayah Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Ayah Maksimal 100 digit karakter!')]
+    #[Rule(
+        ['required', 'max:100'],
+        message: [
+            'required' => 'Kolom Nama Ayah Harus Diisi!',
+            'max'      => 'Input Nama Ayah Maksimal 100 karakter!',
+        ]
+    )]
     public $nama_ayah;
 
-    #[Rule('required', message: 'Kolom Nama Ibu Harus Diisi!')]
-    #[Rule('max:100', message: 'Input Nama Ibu Maksimal 100 digit karakter!')]
+    #[Rule(
+        ['required', 'max:100'],
+        message: [
+            'required' => 'Kolom Nama Ibu Harus Diisi!',
+            'max'      => 'Input Nama Ibu Maksimal 100 karakter!',
+        ]
+    )]
     public $nama_ibu;
 
     #[Rule('required', message: 'Kolom Kedudukan Keluarga Harus Diisi!')]
@@ -82,36 +124,45 @@ class IndukPendudukCreateController extends Component
     #[Rule('required', message: 'Kolom Dusun Harus Diisi!')]
     public $dusun;
 
-    #[Rule('required', message: 'Kolom Asal Penduduk Harus Diisi!')]
-    #[Rule('max:150', message: 'Input Asal Penduduk Maksimal 150 digit karakter!')]
+    #[Rule(
+        ['required', 'max:150'],
+        message: [
+            'required' => 'Kolom Asal Penduduk Harus Diisi!',
+            'max'      => 'Input Asal Penduduk Maksimal 150 karakter!',
+        ]
+    )]
     public $asal_penduduk;
 
-    #[Rule('nullable|max:30', message: 'Input Asal Penduduk Maksimal 30 digit karakter!')]
+    #[Rule('nullable|max:30', message: 'Input Nomor Akta Lahir Maksimal 30 karakter!')]
     public $nomor_akta_lahir;
 
-    #[Rule('nullable|max:50', message: 'Input Asal Penduduk Maksimal 50 digit karakter!')]
+    #[Rule('nullable|digits_between:10,15', message: 'Nomor telepon harus 10-15 digit angka!')]
+    public $nomor_telepon;
+
+    #[Rule('nullable|max:50', message: 'Input Suku Maksimal 50 karakter!')]
     public $suku;
 
     #[Rule('required', message: 'Kolom Tanggal Penambahan Harus Diisi!')]
     public $tanggal_penambahan;
 
-    #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
+    #[Rule('nullable|max:255', message: 'Input Keterangan Maksimal 255 karakter!')]
     public $keterangan;
 
     public function store()
     {
-        // Validate the form inputs
         $validated = $this->validate();
-        // Insert the data into the database
+
+        $validated['is_deleted']  = 0;
+        $validated['is_mutated']  = 0;
+        $validated['created_at']  = now();
+        $validated['updated_at']  = now();
+
         DB::table('penduduk')->insert($validated);
 
-        // Reset the form fields
         $this->reset();
 
-        // Redirect to index page
         return redirect()->route('indukPenduduk')->with('success', 'Data Induk Penduduk berhasil disimpan!');
     }
-
 
     #[Layout('components.layouts.layouts')]
     public function render()
@@ -131,12 +182,9 @@ class IndukPendudukCreateController extends Component
             ])
             ->get();
 
-        return view(
-            'admin.kependudukan.induk-penduduk.create',
-            [
-                'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
-                'kkData' => $kkData,
-            ]
-        );
+        return view('admin.kependudukan.induk-penduduk.create', [
+            'dusunData' => DB::table('dusun')->where('is_deleted', 0)->get(),
+            'kkData'    => $kkData,
+        ]);
     }
 }

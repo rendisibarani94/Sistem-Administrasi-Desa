@@ -467,7 +467,7 @@ CREATE TABLE `pendapatan_desa`  (
   `r_pendapatan_lain_sah` double NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
-  `id_deleted` tinyint NOT NULL DEFAULT 0,
+  `is_deleted` tinyint NOT NULL DEFAULT 0,
   PRIMARY KEY (`id_pendapatan_desa`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
