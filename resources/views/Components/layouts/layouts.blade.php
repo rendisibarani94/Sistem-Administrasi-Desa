@@ -84,25 +84,29 @@
                 @endphp
                 <x-nav-plus-link title="Administrasi Umum" :icon="$umumIcon" :childLinks="$childLinks" id="beda-aja" />
 
-                {{-- Pelayanan Surat (Pengajuan & Riwayat) --}}
+                {{-- Layanan Surat --}}
                 @php
-                    $pelayananSuratIcon = '
+                    $layananSuratIcon = '
                         <path fill-rule="evenodd" d="M8.5 3a2.5 2.5 0 0 0-2.5 2.5V8H3a1 1 0 0 0 0 2h3v2.5A2.5 2.5 0 0 0 8.5 15h7A2.5 2.5 0 0 0 18 12.5V10h3a1 1 0 1 0 0-2h-3V5.5A2.5 2.5 0 0 0 15.5 3h-7Zm-1 5V5.5A1.5 1.5 0 0 1 9 4h6a1.5 1.5 0 0 1 1.5 1.5V8H7.5Zm0 4.5V10h10v2.5A1.5 1.5 0 0 1 16 14h-6a1.5 1.5 0 0 1-1.5-1.5Z" clip-rule="evenodd" />
                     ';
 
-                    $pelayananSuratChildLinks = [
+                    $layananSuratChildLinks = [
                         [
-                            'route' => 'surat.index',
-                            'text'  => 'Pengajuan Surat',
+                            'route' => 'admin.layanan_surat.request',
+                            'text'  => 'Request Surat',
                         ],
                         [
-                            'route' => 'admin.riwayat_surat',
-                            'text'  => 'Riwayat Surat',
+                            'route' => 'admin.layanan_surat.pengaduan',
+                            'text'  => 'Pengaduan Surat',
+                        ],
+                        [
+                            'route' => 'admin.layanan_surat.notifikasi',
+                            'text'  => 'Notifikasi',
                         ],
                     ];
                 @endphp
 
-                <x-nav-plus-link title="Pelayanan Surat" :icon="$pelayananSuratIcon" :childLinks="$pelayananSuratChildLinks" id="pelayanan-surat-dropdown" />
+                <x-nav-plus-link title="Layanan Surat" :icon="$layananSuratIcon" :childLinks="$layananSuratChildLinks" id="layanan-surat-dropdown" />
                 @php
                 $kependudukanIcon = '
                 <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd" />';

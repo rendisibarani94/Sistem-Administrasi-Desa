@@ -102,7 +102,9 @@ use App\Livewire\Admin\Kependudukan\IndukPenduduk\FilterIndukPendudukController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateExcelController;
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukKkMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaDetailController;
-
+use App\Livewire\Admin\LayananSurat\RequestSuratController;
+use App\Livewire\Admin\LayananSurat\PengaduanSuratController;
+use App\Livewire\Admin\LayananSurat\NotifikasiSuratController;
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -139,11 +141,15 @@ Route::get('/kartu-keluarga/{id_kartu_keluarga}/edit', KartuKeluargaEditControll
 Route::get('/penduduk-sementara', PendudukSementaraController::class)->name('pendudukSementara');
 Route::get('/penduduk-sementara/create', PendudukSementaraCreateController::class)->name('pendudukSementara.create');
 Route::get('/penduduk-sementara/{id_penduduk}/edit', PendudukSementaraEditController::class)->name('pendudukSementara.edit');
+// Layanan Surat
+Route::get('/layanan-surat/request', RequestSuratController::class)->name('admin.layanan_surat.request');
+Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan_surat.pengaduan');
+Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan_surat.notifikasi');
 
 // Administrasi Umum
 Route::get('/keputusan-kepala-desa', KeputusanKepalaDesaController::class)->name('keputusanKepalaDesa');
 Route::get('/keputusan-kepala-desa/create', KeputusanKepalaDesaCreateController::class)->name('keputusanKepalaDesa.create');
-Route::get('/keputusan-kepala-desa/{id_keputusan_kepala_desa}/edit}', KeputusanKepalaDesaEditController::class)->name('keputusanKepalaDesa.edit');
+Route::get('/keputusan-kepala-desa/{id_keputusan_kepala_desa}/edit', KeputusanKepalaDesaEditController::class)->name('keputusanKepalaDesa.edit');
 
 Route::get('/aparatur-desa', AparaturPemerintahDesaController::class)->name('AparaturDesa');
 Route::get('/aparatur-desa/create', AparaturPemerintahDesaCreateController::class)->name('AparaturDesa.create');
