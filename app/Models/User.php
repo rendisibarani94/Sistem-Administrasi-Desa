@@ -54,8 +54,4 @@ class User extends Authenticatable
         return $this->role === 'masyarakat';
     }
 
-    public function isKades()
-    {
-        return $this->role === 'kades';
-    }
 }

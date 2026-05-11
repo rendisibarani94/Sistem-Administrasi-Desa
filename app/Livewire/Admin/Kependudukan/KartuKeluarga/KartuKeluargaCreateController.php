@@ -108,9 +108,6 @@ class KartuKeluargaCreateController extends Component
     #[Rule('required|max:150')]
     public $asal_penduduk;
 
-    #[Rule('nullable|digits_between:10,15')]
-    public $nomor_telepon;
-
     #[Rule('required|date')]
     public $tanggal_penambahan;
 
@@ -191,7 +188,6 @@ class KartuKeluargaCreateController extends Component
             'kedudukan_keluarga'  => 'KEPALA KELUARGA',
             'dusun'               => $this->dusun,
             'asal_penduduk'       => $this->asal_penduduk,
-            'nomor_telepon'       => $this->nomor_telepon ?: null,
             'tanggal_penambahan'  => $this->tanggal_penambahan,
             'keterangan'          => $this->keterangan ?: null,
             'id_kartu_keluarga'   => $kkId,

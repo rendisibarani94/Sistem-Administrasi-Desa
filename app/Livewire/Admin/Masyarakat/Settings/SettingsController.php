@@ -44,9 +44,6 @@ class SettingsController extends Component
     #[Rule('nullable', message: 'Kolom Ini Harus Dalam Bentuk URL!')]
     public $link_yt;
 
-    #[Rule('nullable|max:20', message: 'Kolom Nomor Telepon Maksimal 20 karakter!')]
-    public $nomor_telp;
-
     #[Rule('nullable|max:20', message: 'Kolom Nomor HP Maksimal 20 karakter!')]
     public $nomor_hp;
 
@@ -81,7 +78,6 @@ class SettingsController extends Component
         $this->link_twt = $settings['link_twt'] ?? null;
         $this->link_wa = $settings['link_wa'] ?? null;
         $this->link_yt = $settings['link_yt'] ?? null;
-        $this->nomor_telp = $settings['nomor_telp'] ?? null;
         $this->nomor_hp = $settings['nomor_hp'] ?? null;
         $this->email = $settings['email'] ?? null;
     }
@@ -123,7 +119,6 @@ class SettingsController extends Component
         $this->saveSetting('link_twt', $this->link_twt);
         $this->saveSetting('link_wa', $this->link_wa);
         $this->saveSetting('link_yt', $this->link_yt);
-        $this->saveSetting('nomor_telp', $this->nomor_telp);
         $this->saveSetting('nomor_hp', $this->nomor_hp);
         $this->saveSetting('email', $this->email);
 

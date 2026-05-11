@@ -99,7 +99,7 @@ public function register(Request $request)
             'name' => 'required|string|max:255',
             'nik' => 'required|digits:16|unique:users,nik,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
-            'role' => 'in:masyarakat,admin,kades'
+            'role' => 'in:masyarakat,admin'
         ]);
 
         $user->update([

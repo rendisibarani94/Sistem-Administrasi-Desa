@@ -26,7 +26,6 @@ class PendudukApiController extends Controller
             $query->where(function ($q) use ($request) {
                 $q->where('nama_lengkap', 'like', '%' . $request->search . '%')
                   ->orWhere('nik', 'like', '%' . $request->search . '%')
-                  ->orWhere('nomor_telepon', 'like', '%' . $request->search . '%')
                   ->orWhere('alamat', 'like', '%' . $request->search . '%');
             });
         }
@@ -91,7 +90,6 @@ class PendudukApiController extends Controller
             'keturunan' => 'nullable|max:50',
             'status_perkawinan' => 'required|in:Belum Kawin,Kawin Tercatat,Cerai Hidup,Cerai Mati',
             'pendidikan_terakhir' => 'required|in:TIDAK PERNAH SEKOLAH,TK/KELOMPOK BERMAIN,SD/SEDERAJAT,SLTP/SEDERAJAT,SLTA/SEDERAJAT,D-1/SEDERAJAT,D-2/SEDERAJAT,D-3/SEDERAJAT,S-1/SEDERAJAT,S-2/SEDERAJAT,S-3/SEDERAJAT,SLB /SEDERAJAT',
-            'nomor_telepon' => 'nullable|digits_between:10,15',
             'pekerjaan' => 'required|max:100',
             'baca_huruf' => 'required|in:D,A,L,I',
             'dusun' => 'required|integer|exists:dusun,id_dusun',
@@ -126,7 +124,6 @@ class PendudukApiController extends Controller
             'keturunan' => $request->keturunan,
             'status_perkawinan' => $request->status_perkawinan,
             'pendidikan_terakhir' => $request->pendidikan_terakhir,
-            'nomor_telepon' => $request->nomor_telepon ?: null,
             'pekerjaan' => $request->pekerjaan,
             'baca_huruf' => $request->baca_huruf,
             'kedudukan_keluarga' => 'KEPALA KELUARGA',
@@ -166,7 +163,6 @@ class PendudukApiController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_lengkap' => 'required|max:100',
             'alamat' => 'required|max:150',
-            'nomor_telepon' => 'nullable|digits_between:10,15',
             'pekerjaan' => 'required|max:100'
         ]);
 
@@ -180,7 +176,6 @@ class PendudukApiController extends Controller
         $penduduk->update([
             'nama_lengkap' => $request->nama_lengkap,
             'alamat' => $request->alamat,
-            'nomor_telepon' => $request->nomor_telepon,
             'pekerjaan' => $request->pekerjaan,
         ]);
 

@@ -136,9 +136,6 @@ class IndukPendudukCreateController extends Component
     #[Rule('nullable|max:30', message: 'Input Nomor Akta Lahir Maksimal 30 karakter!')]
     public $nomor_akta_lahir;
 
-    #[Rule('nullable|digits_between:10,15', message: 'Nomor telepon harus 10-15 digit angka!')]
-    public $nomor_telepon;
-
     #[Rule('nullable|max:50', message: 'Input Suku Maksimal 50 karakter!')]
     public $suku;
 

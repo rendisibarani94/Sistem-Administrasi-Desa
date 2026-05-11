@@ -38,7 +38,6 @@ class Penduduk extends Model
         'kedudukan_keluarga',
         'dusun',
         'asal_penduduk',
-        'nomor_telepon',
         'suku',
         'tanggal_penambahan',
         'tanggal_pengurangan',
