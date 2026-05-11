@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Livewire\Admin\DatabaseBackup;
 
 use Illuminate\Support\Facades\DB;
@@ -6,7 +7,6 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\Exception\ProcessFailedException;
 use Illuminate\Support\Facades\Storage;
 
 class DatabaseBackupController extends Component
@@ -14,95 +14,84 @@ class DatabaseBackupController extends Component
     use WithFileUploads;
 
     public $sqlFile;
-    public $backupStatus = '';
+    public $backupStatus        = '';
     public $backupStatusMessage = '';
-    public $restoreStatus = '';
-    public $isRestoring = false;
-    public $isBackingUp = false;
-    public $availableBackups = [];
+    public $restoreStatus       = '';
+    public $isRestoring         = false;
+    public $isBackingUp         = false;
+    public $availableBackups    = [];
 
     protected $rules = [
-        'sqlFile' => 'required|file|mimes:sql,txt|max:10240', // 100MB max
+        'sqlFile' => 'required|file|mimes:sql,txt|max:102400', // 100 MB
     ];
 
-    public function mount()
+    // -------------------------------------------------------------------------
+    // Lifecycle
+    // -------------------------------------------------------------------------
+
+    public function mount(): void
     {
         $this->refreshBackupList();
     }
 
-    public function refreshBackupList()
-    {
-        $files = Storage::disk('backups')->files('');
-        $this->availableBackups = collect($files)
-            ->filter(fn($file) => pathinfo($file, PATHINFO_EXTENSION) === 'sql')
-            ->map(fn($file) => [
-                'name' => basename($file),
-                'size' => Storage::disk('backups')->size($file),
-                'date' => Storage::disk('backups')->lastModified($file)
-            ])
-            ->sortByDesc('date')
-            ->toArray();
-    }
+    // -------------------------------------------------------------------------
+    // Backup
+    // -------------------------------------------------------------------------
 
-    public function backupDatabase()
+    public function backupDatabase(): void
     {
         $this->resetMessages();
         $this->isBackingUp = true;
 
         try {
-            // Try mysqldump first, fallback to PHP method
-            if ($this->tryMysqldumpBackup()) {
-                $this->backupStatus = 'success';
-                $this->refreshBackupList();
-                return;
+            $success = $this->tryMysqldumpBackup();
+
+            if (! $success) {
+                // Fallback: pure-PHP backup (includes CREATE TABLE statements)
+                $this->createPhpBackup();
             }
 
-            // Fallback to PHP-based backup
-            $this->createPhpBackup();
-            $this->backupStatus = 'success';
+            $this->backupStatus        = 'success';
+            $this->backupStatusMessage = 'Backup berhasil dibuat!';
             $this->refreshBackupList();
 
         } catch (\Exception $e) {
-            $this->backupStatus = 'error';
+            $this->backupStatus        = 'error';
+            $this->backupStatusMessage = 'Backup gagal: ' . $e->getMessage();
             logger()->error('Backup failed: ' . $e->getMessage(), [
-                'exception' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         } finally {
             $this->isBackingUp = false;
-            $this->backupStatusMessage = 'Backup Berhasil!';
         }
     }
 
-    private function tryMysqldumpBackup()
+    private function tryMysqldumpBackup(): bool
     {
         $filename = 'backup-' . now()->format('Y-m-d_H-i-s') . '.sql';
-        $path = storage_path('app/backups/' . $filename);
+        $path     = storage_path('app/backups/' . $filename);
 
-        // Ensure directory exists
-        if (!Storage::disk('backups')->exists('')) {
-            Storage::disk('backups')->makeDirectory('');
-        }
+        $this->ensureBackupDirectoryExists();
 
         $config = config('database.connections.mysql');
 
-        // Build command array with Windows/XAMPP specific fixes
+        // Build command — WITHOUT --no-create-info so CREATE TABLE is included
         $command = [
             'mysqldump',
-            '--user=' . $config['username'],
+            '--user='     . $config['username'],
+            '--host='     . ($config['host'] === '127.0.0.1' ? 'localhost' : $config['host']),
+            '--port='     . $config['port'],
             '--protocol=TCP',
-            '--host=' . ($config['host'] === '127.0.0.1' ? 'localhost' : $config['host']),
-            '--port=' . $config['port'],
             '--single-transaction',
             '--routines',
             '--triggers',
-            '--no-create-info',
-            '--skip-add-drop-table',
+            '--add-drop-table',          // DROP TABLE IF EXISTS before CREATE TABLE
             '--result-file=' . $path,
-            $config['database']
+            $config['database'],
         ];
 
-        // Only add password if it's not empty
-        if (!empty($config['password'])) {
+        // Insert password only when non-empty
+        if (! empty($config['password'])) {
             array_splice($command, 2, 0, ['--password=' . $config['password']]);
         }
 
@@ -111,128 +100,310 @@ class DatabaseBackupController extends Component
             $process->setTimeout(300);
             $process->run();
 
-            if ($process->isSuccessful() && Storage::disk('backups')->exists($filename) && Storage::disk('backups')->size($filename) > 0) {
+            if (
+                $process->isSuccessful()
+                && Storage::disk('backups')->exists($filename)
+                && Storage::disk('backups')->size($filename) > 0
+            ) {
                 return true;
             }
+
+            logger()->warning('mysqldump did not produce a valid file', [
+                'stderr' => $process->getErrorOutput(),
+            ]);
+
         } catch (\Exception $e) {
-            logger()->warning('Mysqldump failed, trying PHP backup', ['error' => $e->getMessage()]);
+            logger()->warning('mysqldump not available, falling back to PHP backup', [
+                'error' => $e->getMessage(),
+            ]);
         }
 
         return false;
     }
 
-    private function createPhpBackup()
+    private function createPhpBackup(): void
     {
         $filename = 'backup-' . now()->format('Y-m-d_H-i-s') . '.sql';
 
-        // Ensure directory exists
-        if (!Storage::disk('backups')->exists('')) {
-            Storage::disk('backups')->makeDirectory('');
-        }
+        $this->ensureBackupDirectoryExists();
 
-        $sql = '';
-        $tables = DB::select('SHOW TABLES');
         $dbName = config('database.connections.mysql.database');
+        $tables = DB::select('SHOW TABLES');
+        $sql    = "-- PHP Backup: {$dbName} | " . now()->toDateTimeString() . "\n";
+        $sql   .= "SET FOREIGN_KEY_CHECKS=0;\n\n";
 
-        foreach ($tables as $table) {
-            $tableName = $table->{"Tables_in_{$dbName}"};
+        foreach ($tables as $tableRow) {
+            $tableName = $tableRow->{"Tables_in_{$dbName}"};
 
-            // Get table data
-            $rows = DB::table($tableName)->get();
+            // DROP + CREATE TABLE
+            $createRow = DB::select("SHOW CREATE TABLE `{$tableName}`");
+            $createSql = $createRow[0]->{'Create Table'};
+            $sql      .= "DROP TABLE IF EXISTS `{$tableName}`;\n";
+            $sql      .= $createSql . ";\n\n";
 
-            if ($rows->count() > 0) {
+            // INSERT rows in chunks to avoid memory issues
+            DB::table($tableName)->orderBy(DB::raw('1'))->chunk(500, function ($rows) use ($tableName, &$sql) {
                 foreach ($rows as $row) {
-                    $sql .= "INSERT INTO `{$tableName}` VALUES (";
                     $values = [];
-                    foreach ($row as $value) {
+                    foreach ((array) $row as $value) {
                         if (is_null($value)) {
                             $values[] = 'NULL';
                         } else {
-                            $values[] = "'" . addslashes($value) . "'";
+                            $values[] = "'" . addslashes((string) $value) . "'";
                         }
                     }
-                    $sql .= implode(', ', $values) . ");\n";
+                    $sql .= "INSERT INTO `{$tableName}` VALUES (" . implode(', ', $values) . ");\n";
                 }
-            }
+            });
+
+            $sql .= "\n";
         }
+
+        $sql .= "SET FOREIGN_KEY_CHECKS=1;\n";
 
         Storage::disk('backups')->put($filename, $sql);
 
-        if (Storage::disk('backups')->size($filename) == 0) {
-            throw new \Exception('PHP backup created empty file');
+        if (Storage::disk('backups')->size($filename) === 0) {
+            throw new \Exception('PHP backup produced an empty file.');
         }
     }
 
-    public function restoreDatabase()
+    // -------------------------------------------------------------------------
+    // Restore
+    // -------------------------------------------------------------------------
+
+    public function restoreDatabase(): void
     {
         $this->resetMessages();
         $this->isRestoring = true;
-
-        $this->validate();
+        $filePath          = null; // must be declared here so finally{} can see it
 
         try {
-            if (!$this->sqlFile) {
-                throw new \Exception('No file selected for restore');
+            $this->validate();
+
+            if (! $this->sqlFile) {
+                throw new \Exception('Tidak ada file yang dipilih untuk restore.');
             }
 
-            // Store uploaded file in the 'backups' disk
-            $filePath = $this->sqlFile->storeAs('', 'restore-' . now()->format('Y-m-d_H-i_s') . '.sql', 'backups');
+            // Save upload to backups disk temporarily
+            $filePath = $this->sqlFile->storeAs(
+                '',
+                'restore-tmp-' . now()->format('Y-m-d_H-i-s') . '.sql',
+                'backups'
+            );
 
-            // Read the SQL file
             $sql = Storage::disk('backups')->get($filePath);
 
             if (empty(trim($sql))) {
-                throw new \Exception('Uploaded SQL file is empty or could not be read');
+                throw new \Exception('File SQL kosong atau tidak dapat dibaca.');
             }
 
-            // Execute the SQL commands
-            DB::unprepared($sql);
+            // Try mysql CLI restore first (fastest, handles edge cases)
+            $restored = $this->tryMysqlCliRestore(
+                Storage::disk('backups')->path($filePath)
+            );
+
+            if (! $restored) {
+                // Fallback: execute statement-by-statement via Laravel DB
+                $this->executeStatements($sql);
+            }
 
             $this->restoreStatus = 'success';
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->restoreStatus = 'error';
+            throw $e; // let Livewire handle validation errors normally
+
         } catch (\Exception $e) {
             $this->restoreStatus = 'error';
             logger()->error('Restore failed: ' . $e->getMessage(), [
-                'exception' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         } finally {
-        if ($filePath) {
-            Storage::disk('backups')->delete($filePath);
-        }
-
+            // Clean up temp file
+            if ($filePath && Storage::disk('backups')->exists($filePath)) {
+                Storage::disk('backups')->delete($filePath);
+            }
             $this->isRestoring = false;
             $this->refreshBackupList();
         }
     }
 
-    public function downloadBackup($filename)
+    /**
+     * Try to restore using the mysql CLI tool.
+     * Returns true on success, false if CLI is not available.
+     */
+    private function tryMysqlCliRestore(string $absolutePath): bool
     {
-        if (!Storage::disk('backups')->exists($filename)) {
-            $this->backupStatus = 'error';
+        $config  = config('database.connections.mysql');
+        $command = [
+            'mysql',
+            '--user='  . $config['username'],
+            '--host='  . ($config['host'] === '127.0.0.1' ? 'localhost' : $config['host']),
+            '--port='  . $config['port'],
+            '--protocol=TCP',
+            $config['database'],
+        ];
+
+        if (! empty($config['password'])) {
+            array_splice($command, 2, 0, ['--password=' . $config['password']]);
+        }
+
+        try {
+            $process = new Process(
+                array_merge($command, ['--execute=source ' . $absolutePath])
+            );
+            $process->setTimeout(300);
+            $process->run();
+
+            if ($process->isSuccessful()) {
+                return true;
+            }
+
+            logger()->warning('mysql CLI restore failed, falling back to PHP', [
+                'stderr' => $process->getErrorOutput(),
+            ]);
+
+        } catch (\Exception $e) {
+            logger()->warning('mysql CLI not available, using PHP fallback', [
+                'error' => $e->getMessage(),
+            ]);
+        }
+
+        return false;
+    }
+
+    /**
+     * Execute SQL file statement by statement using Laravel DB.
+     */
+    private function executeStatements(string $sql): void
+    {
+        // Strip /* ... */ block comments and -- line comments
+        $sql = preg_replace('/\/\*.*?\*\//s', '', $sql);
+        $sql = preg_replace('/^--.*$/m', '', $sql);
+
+        // Split on semicolons that are NOT inside quoted strings
+        $statements = $this->splitSqlStatements($sql);
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+
+        foreach ($statements as $statement) {
+            $statement = trim($statement);
+            if (! empty($statement)) {
+                DB::unprepared($statement);
+            }
+        }
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+    }
+
+    /**
+     * Split SQL into individual statements, respecting quoted strings.
+     */
+    private function splitSqlStatements(string $sql): array
+    {
+        $statements  = [];
+        $current     = '';
+        $inString    = false;
+        $stringChar  = '';
+        $length      = strlen($sql);
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $sql[$i];
+
+            if ($inString) {
+                $current .= $char;
+                // Handle escape sequences inside strings
+                if ($char === '\\') {
+                    $current .= $sql[++$i] ?? '';
+                } elseif ($char === $stringChar) {
+                    $inString = false;
+                }
+            } elseif ($char === '"' || $char === "'" || $char === '`') {
+                $inString   = true;
+                $stringChar = $char;
+                $current   .= $char;
+            } elseif ($char === ';') {
+                $statements[] = $current;
+                $current      = '';
+            } else {
+                $current .= $char;
+            }
+        }
+
+        if (! empty(trim($current))) {
+            $statements[] = $current;
+        }
+
+        return $statements;
+    }
+
+    // -------------------------------------------------------------------------
+    // Manage existing backups
+    // -------------------------------------------------------------------------
+
+    public function downloadBackup(string $filename)
+    {
+        if (! Storage::disk('backups')->exists($filename)) {
+            $this->backupStatus        = 'error';
+            $this->backupStatusMessage = 'File backup tidak ditemukan.';
             return;
         }
 
-        // return Storage::download('backups', $filename);
         return Storage::disk('backups')->download($filename);
     }
 
-    private function resetMessages()
+    public function deleteBackup(string $filename): void
     {
-        $this->reset(['backupStatus', 'restoreStatus']);
-    }
-
-    public function deleteBackup($filename)
-    {
-        if (!Storage::disk('backups')->exists($filename)) {
-            $this->backupStatus = 'error';
-            $this->backupStatusMessage = 'Backup Gagal Dihapus.';
+        if (! Storage::disk('backups')->exists($filename)) {
+            $this->backupStatus        = 'error';
+            $this->backupStatusMessage = 'File backup tidak ditemukan.';
             return;
         }
 
         Storage::disk('backups')->delete($filename);
         $this->refreshBackupList();
-        $this->backupStatus = 'success';
-        $this->backupStatusMessage = 'Backup Berhasil Dihapus.';
+
+        $this->backupStatus        = 'success';
+        $this->backupStatusMessage = 'Backup berhasil dihapus.';
     }
+
+    public function refreshBackupList(): void
+    {
+        $files = Storage::disk('backups')->files('');
+
+        $this->availableBackups = collect($files)
+            ->filter(fn ($file) => pathinfo($file, PATHINFO_EXTENSION) === 'sql')
+            ->map(fn ($file) => [
+                'name' => basename($file),
+                'size' => Storage::disk('backups')->size($file),
+                'date' => Storage::disk('backups')->lastModified($file),
+            ])
+            ->sortByDesc('date')
+            ->values()
+            ->toArray();
+    }
+
+    // -------------------------------------------------------------------------
+    // Helpers
+    // -------------------------------------------------------------------------
+
+    private function ensureBackupDirectoryExists(): void
+    {
+        $path = storage_path('app/backups');
+        if (! is_dir($path)) {
+            mkdir($path, 0755, true);
+        }
+    }
+
+    private function resetMessages(): void
+    {
+        $this->reset(['backupStatus', 'backupStatusMessage', 'restoreStatus']);
+    }
+
+    // -------------------------------------------------------------------------
+    // Render
+    // -------------------------------------------------------------------------
 
     #[Layout('components.layouts.layouts')]
     public function render()
