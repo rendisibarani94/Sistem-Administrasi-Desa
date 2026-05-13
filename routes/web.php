@@ -103,6 +103,9 @@ use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateExcelContro
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukKkMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaDetailController;
 use App\Livewire\Admin\LayananSurat\RequestSuratController;
+
+
+
 use App\Livewire\Admin\LayananSurat\PengaduanSuratController;
 use App\Livewire\Admin\LayananSurat\NotifikasiSuratController;
 // Authentication Routes
@@ -142,10 +145,17 @@ Route::get('/penduduk-sementara', PendudukSementaraController::class)->name('pen
 Route::get('/penduduk-sementara/create', PendudukSementaraCreateController::class)->name('pendudukSementara.create');
 Route::get('/penduduk-sementara/{id_penduduk}/edit', PendudukSementaraEditController::class)->name('pendudukSementara.edit');
 // Layanan Surat
-Route::get('/layanan-surat/request', RequestSuratController::class)->name('admin.layanan_surat.request');
-Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan_surat.pengaduan');
-Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan_surat.notifikasi');
-
+Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->group(function () {
+    Route::get('/', [RequestSuratController::class, 'index'])->name('index');
+    Route::get('/create', [RequestSuratController::class, 'create'])->name('create');
+    Route::post('/', [RequestSuratController::class, 'store'])->name('store');
+    Route::get('/{id}', [RequestSuratController::class, 'show'])->name('show');
+    Route::patch('/{id}/setujui', [RequestSuratController::class, 'setujui'])->name('setujui');
+    Route::patch('/{id}/tolak', [RequestSuratController::class, 'tolak'])->name('tolak');
+    Route::get('/{id}/download', [RequestSuratController::class, 'download'])->name('download');
+});
+Route::get('/layanan-surat/pengaduan', [PengaduanSuratController::class, 'index'])->name('admin.layanan_surat.pengaduan');
+Route::get('/layanan-surat/notifikasi', [NotifikasiSuratController::class, 'index'])->name('admin.layanan_surat.notifikasi');
 // Administrasi Umum
 Route::get('/keputusan-kepala-desa', KeputusanKepalaDesaController::class)->name('keputusanKepalaDesa');
 Route::get('/keputusan-kepala-desa/create', KeputusanKepalaDesaCreateController::class)->name('keputusanKepalaDesa.create');

@@ -92,7 +92,7 @@
 
                     $layananSuratChildLinks = [
                         [
-                            'route' => 'admin.layanan_surat.request',
+                            'route' => 'admin.layanan-surat.request.index',
                             'text'  => 'Request Surat',
                         ],
                         [

@@ -19,7 +19,8 @@ class User extends Authenticatable
         'nik',
         'email',
         'password',
-        'role'
+        'role',
+        'id_penduduk'
     ];
 
     // =========================
@@ -47,6 +48,24 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->role === 'admin';
+    }
+
+    // =========================
+    // RELATIONS
+    // =========================
+    public function penduduk()
+    {
+        return $this->belongsTo(Penduduk::class, 'id_penduduk');
+    }
+
+    public function pengajuanSurat()
+    {
+        return $this->hasMany(PengajuanSurat::class, 'id_penduduk', 'id_penduduk');
+    }
+
+    public function pengajuanSuratDiproses()
+    {
+        return $this->hasMany(PengajuanSurat::class, 'id_diproses_oleh');
     }
 
     public function isMasyarakat()
