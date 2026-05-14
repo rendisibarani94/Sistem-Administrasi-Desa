@@ -60,14 +60,27 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="5" class="px-6 py-4 text-center text-gray-500 font-semibold">Data belum tersedia.</td>
-                    </tr>
+                    @forelse($pengaduan as $item)
+                        <tr class="bg-white border-b">
+                            <td class="px-6 py-4 font-medium text-gray-900">{{ $loop->iteration }}</td>
+                            <td class="px-6 py-4">{{ $item->judul }}</td>
+                            <td class="px-6 py-4">{{ $item->user?->name ?? 'Tidak diketahui' }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-2 py-1 text-xs font-semibold rounded-full {{ $item->status === 'baru' ? 'bg-yellow-100 text-yellow-700' : ($item->status === 'diproses' ? 'bg-blue-100 text-blue-700' : ($item->status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')) }}">
+                                    {{ ucfirst($item->status) }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 text-center whitespace-nowrap">
+                                <button type="button" class="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white bg-sky-600 rounded hover:bg-sky-700">Lihat</button>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center text-gray-500 font-semibold">Belum ada pengaduan.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
-            <div class="mt-4 mb-4 px-4">
-                {{-- Pagination Links Here --}}
-            </div>
         </div>
     </div>
 </div>

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Notifikasi;
+use App\Models\Pengaduan;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -66,6 +68,16 @@ class User extends Authenticatable
     public function pengajuanSuratDiproses()
     {
         return $this->hasMany(PengajuanSurat::class, 'id_diproses_oleh');
+    }
+
+    public function pengaduan()
+    {
+        return $this->hasMany(Pengaduan::class, 'user_id');
+    }
+
+    public function notifikasi()
+    {
+        return $this->hasMany(Notifikasi::class, 'user_id');
     }
 
     public function isMasyarakat()

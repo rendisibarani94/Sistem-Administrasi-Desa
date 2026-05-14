@@ -154,8 +154,8 @@ Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->gr
     Route::patch('/{id}/tolak', [RequestSuratController::class, 'tolak'])->name('tolak');
     Route::get('/{id}/download', [RequestSuratController::class, 'download'])->name('download');
 });
-Route::get('/layanan-surat/pengaduan', [PengaduanSuratController::class, 'index'])->name('admin.layanan_surat.pengaduan');
-Route::get('/layanan-surat/notifikasi', [NotifikasiSuratController::class, 'index'])->name('admin.layanan_surat.notifikasi');
+Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');
+Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan-surat.notifikasi');
 // Administrasi Umum
 Route::get('/keputusan-kepala-desa', KeputusanKepalaDesaController::class)->name('keputusanKepalaDesa');
 Route::get('/keputusan-kepala-desa/create', KeputusanKepalaDesaCreateController::class)->name('keputusanKepalaDesa.create');

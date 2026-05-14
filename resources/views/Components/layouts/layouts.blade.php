@@ -96,12 +96,8 @@
                             'text'  => 'Request Surat',
                         ],
                         [
-                            'route' => 'admin.layanan_surat.pengaduan',
+                            'route' => 'admin.layanan-surat.pengaduan',
                             'text'  => 'Pengaduan Surat',
-                        ],
-                        [
-                            'route' => 'admin.layanan_surat.notifikasi',
-                            'text'  => 'Notifikasi',
                         ],
                     ];
                 @endphp

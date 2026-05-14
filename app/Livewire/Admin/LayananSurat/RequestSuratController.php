@@ -3,11 +3,12 @@
 namespace App\Livewire\Admin\LayananSurat;
 
 use App\Http\Controllers\Controller;
-use App\Models\PengajuanSurat;
 use App\Models\JenisSurat;
+use App\Models\Notifikasi;
+use App\Models\PengajuanSurat;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
 class RequestSuratController extends Controller
 {
@@ -30,12 +31,14 @@ class RequestSuratController extends Controller
 
         // Filter berdasarkan pencarian
         if (request('search')) {
-            $query->whereHas('penduduk', function($q) {
-                $q->where('nama_lengkap', 'like', '%' . request('search') . '%')
-                  ->orWhere('nik', 'like', '%' . request('search') . '%');
-            })
-            ->orWhereHas('jenisSurat', function($q) {
-                $q->where('nama_surat', 'like', '%' . request('search') . '%');
+            $query->where(function ($sub) {
+                $sub->whereHas('penduduk', function ($q) {
+                    $q->where('nama_lengkap', 'like', '%' . request('search') . '%')
+                      ->orWhere('nik', 'like', '%' . request('search') . '%');
+                })
+                ->orWhereHas('jenisSurat', function ($q) {
+                    $q->where('nama_surat', 'like', '%' . request('search') . '%');
+                });
             });
         }
 
@@ -57,7 +60,7 @@ class RequestSuratController extends Controller
         $totalDisetujui = $isAdmin ? PengajuanSurat::where('status', 'selesai')->count() : $user->pengajuanSurat()->where('status', 'selesai')->count();
         $totalDitolak = $isAdmin ? PengajuanSurat::where('status', 'ditolak')->count() : $user->pengajuanSurat()->where('status', 'ditolak')->count();
 
-        $jenisSuratList = JenisSurat::where('is_deleted', 0)->get();
+        $jenisSuratList = JenisSurat::where('is_active', 1)->get();
 
         return view('livewire.admin.layanan-surat.request-surat-controller', compact(
             'pengajuanSurat',
@@ -75,7 +78,7 @@ class RequestSuratController extends Controller
      */
     public function create()
     {
-        $jenisSuratList = JenisSurat::where('is_deleted', 0)->get();
+        $jenisSuratList = JenisSurat::where('is_active', 1)->get();
         return view('livewire.admin.layanan-surat.request-surat-create', compact('jenisSuratList'));
     }
 
@@ -90,6 +93,7 @@ class RequestSuratController extends Controller
         ]);
 
         $user = Auth::user();
+        $jenisSurat = JenisSurat::find($validated['id_jenis_surat']);
         
         $pengajuanSurat = PengajuanSurat::create([
             'id_penduduk' => $user->id_penduduk,
@@ -98,6 +102,11 @@ class RequestSuratController extends Controller
             'status' => 'diajukan',
             'tanggal_respons' => null,
         ]);
+
+        $this->notifyAdmins(
+            'Permintaan Surat Baru',
+            "{$user->name} mengajukan surat {$jenisSurat?->nama_surat}."
+        );
 
         return redirect()
             ->route('admin.layanan-surat.request.index')
@@ -109,10 +118,15 @@ class RequestSuratController extends Controller
      */
     public function show($id)
     {
+        $user = Auth::user();
+        $isAdmin = $user->role === 'admin';
+
         $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
             ->findOrFail($id);
 
-        $this->authorize('view', $pengajuanSurat);
+        if (!$isAdmin && $pengajuanSurat->id_penduduk !== $user->id_penduduk) {
+            abort(403, 'Unauthorized action.');
+        }
 
         return view('livewire.admin.layanan-surat.request-surat-show', compact('pengajuanSurat'));
     }
@@ -132,6 +146,12 @@ class RequestSuratController extends Controller
             'tanggal_respons' => now(),
             'tanggal_selesai' => now(),
         ]);
+
+        $this->notifyUserByPendudukId(
+            $pengajuanSurat->id_penduduk,
+            'Pengajuan Surat Disetujui',
+            'Permintaan surat Anda telah disetujui dan selesai diproses.'
+        );
 
         return redirect()
             ->back()
@@ -158,6 +178,12 @@ class RequestSuratController extends Controller
             'tanggal_respons' => now(),
         ]);
 
+        $this->notifyUserByPendudukId(
+            $pengajuanSurat->id_penduduk,
+            'Pengajuan Surat Ditolak',
+            "Pengajuan surat Anda ditolak: {$validated['alasan_tolak']}"
+        );
+
         return redirect()
             ->back()
             ->with('success', 'Request surat berhasil ditolak.');
@@ -168,9 +194,12 @@ class RequestSuratController extends Controller
      */
     public function download($id)
     {
+        $user = Auth::user();
         $pengajuanSurat = PengajuanSurat::findOrFail($id);
 
-        $this->authorize('view', $pengajuanSurat);
+        if ($user->role !== 'admin' && $pengajuanSurat->id_penduduk !== $user->id_penduduk) {
+            abort(403, 'Unauthorized action.');
+        }
 
         if ($pengajuanSurat->status !== 'selesai') {
             return redirect()->back()->with('error', 'Hanya surat yang sudah disetujui dapat diunduh.');
@@ -191,5 +220,33 @@ class RequestSuratController extends Controller
         if (Auth::user()->role !== 'admin') {
             abort(403, 'Unauthorized action.');
         }
+    }
+
+    private function notifyAdmins(string $judul, string $pesan): void
+    {
+        User::where('role', 'admin')->each(function (User $admin) use ($judul, $pesan) {
+            Notifikasi::create([
+                'user_id' => $admin->id,
+                'judul' => $judul,
+                'pesan' => $pesan,
+                'is_read' => false,
+            ]);
+        });
+    }
+
+    private function notifyUserByPendudukId(int $idPenduduk, string $judul, string $pesan): void
+    {
+        $user = User::where('id_penduduk', $idPenduduk)->first();
+
+        if (! $user) {
+            return;
+        }
+
+        Notifikasi::create([
+            'user_id' => $user->id,
+            'judul' => $judul,
+            'pesan' => $pesan,
+            'is_read' => false,
+        ]);
     }
 }

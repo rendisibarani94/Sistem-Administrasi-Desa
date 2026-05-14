@@ -2,6 +2,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengaduan;
+use App\Models\Notifikasi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -32,6 +34,15 @@ class PengaduanController extends Controller
             'isi' => $request->isi,
         ]);
 
+        User::where('role', 'admin')->each(function (User $admin) use ($pengaduan) {
+            Notifikasi::create([
+                'user_id' => $admin->id,
+                'judul' => 'Pengaduan Baru',
+                'pesan' => "Pengaduan baru dari pengguna: {$pengaduan->judul}",
+                'is_read' => false,
+            ]);
+        });
+
         return response()->json([
             'status' => 'success',
             'message' => 'Pengaduan berhasil dikirim',
@@ -56,6 +67,13 @@ class PengaduanController extends Controller
         $data = Pengaduan::findOrFail($id);
         $data->update(['status' => 'diproses']);
 
+        Notifikasi::create([
+            'user_id' => $data->user_id,
+            'judul' => 'Pengaduan Diproses',
+            'pesan' => "Pengaduan Anda sedang diproses.",
+            'is_read' => false,
+        ]);
+
         return response()->json([
             'message' => 'Pengaduan diproses'
         ]);
@@ -66,6 +84,13 @@ class PengaduanController extends Controller
     {
         $data = Pengaduan::findOrFail($id);
         $data->update(['status' => 'selesai']);
+
+        Notifikasi::create([
+            'user_id' => $data->user_id,
+            'judul' => 'Pengaduan Selesai',
+            'pesan' => "Pengaduan Anda telah selesai.",
+            'is_read' => false,
+        ]);
 
         return response()->json([
             'message' => 'Pengaduan selesai'
@@ -80,6 +105,13 @@ class PengaduanController extends Controller
         $data->update([
             'status' => 'ditolak',
             'catatan_admin' => $request->catatan
+        ]);
+
+        Notifikasi::create([
+            'user_id' => $data->user_id,
+            'judul' => 'Pengaduan Ditolak',
+            'pesan' => "Pengaduan Anda ditolak. Catatan: {$request->catatan}",
+            'is_read' => false,
         ]);
 
         return response()->json([
