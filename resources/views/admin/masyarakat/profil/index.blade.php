@@ -33,7 +33,6 @@
                 <label for="editor-container-profil-desa" class="block mb-2 text-sm font-semibold text-gray-950">Profil Desa</label>
                 <div wire:ignore>
                     <div id="editor-container-profil-desa" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                        {!! $profil_desa !!}
                     </div>
                     <input type="hidden" id="profil-desa-input" wire:model="profil_desa">
                 </div>
@@ -49,7 +48,6 @@
                 <label for="editor-container-visi-desa" class="block mb-2 text-sm font-semibold text-gray-950">Visi Desa</label>
                 <div wire:ignore>
                     <div id="editor-container-visi-desa" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                        {!! $visi_desa !!}
                     </div>
                     <input type="hidden" id="visi-desa-input" wire:model="visi_desa">
                 </div>
@@ -66,7 +64,6 @@
                 <label for="editor-container-misi-desa" class="block mb-2 text-sm font-semibold text-gray-950">Misi Desa</label>
                 <div wire:ignore>
                     <div id="editor-container-misi-desa" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                        {!! $misi_desa !!}
                     </div>
                     <input type="hidden" id="misi-desa-input" wire:model="misi_desa">
                 </div>
@@ -82,7 +79,6 @@
                 <label for="editor-container-sejarah-desa" class="block mb-2 text-sm font-semibold text-gray-950">Sejarah Desa</label>
                 <div wire:ignore>
                     <div id="editor-container-sejarah-desa" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                        {!! $sejarah_desa !!}
                     </div>
                     <input type="hidden" id="sejarah-desa-input" wire:model="sejarah_desa">
                 </div>
@@ -115,163 +111,157 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Initialize Quill for Profil
         const quillProfil = new Quill('#editor-container-profil-desa', {
-            theme: 'snow'
-            , placeholder: 'Masukkan Profil Desa Organisasi'
-            , modules: {
+            theme: 'snow',
+            placeholder: 'Masukkan Profil Desa',
+            modules: {
                 toolbar: [
-                    [{
-                        'header': [1, 2, 3, false]
-                    }]
-                    , ['bold', 'italic', 'underline']
-                    , ['link']
-                    , [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }]
-                    , ['clean']
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
                 ]
             }
         });
 
-        // Set initial content for Profil
-        quillProfil.root.innerHTML = document.querySelector('#profil-desa-input').value || '';
+        // Function to initialize Profil content
+        function initializeProfilContent() {
+            const hiddenInput = document.querySelector('#profil-desa-input');
+            if (hiddenInput && hiddenInput.value && quillProfil.root.innerHTML !== hiddenInput.value) {
+                quillProfil.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize Profil content immediately if available
+        initializeProfilContent();
 
         // Update Livewire on content change for Profil
         quillProfil.on('text-change', function() {
             const content = quillProfil.root.innerHTML;
-            document.querySelector('#profil-desa-input').value = content;
-            @this.set('profil_desa', content);
+            const hiddenInput = document.querySelector('#profil-desa-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('profil_desa', content);
+            }
         });
 
         // Initialize Quill for Visi
         const quillVisi = new Quill('#editor-container-visi-desa', {
-            theme: 'snow'
-            , placeholder: 'Masukkan Visi Desa'
-            , modules: {
+            theme: 'snow',
+            placeholder: 'Masukkan Visi Desa',
+            modules: {
                 toolbar: [
-                    [{
-                        'header': [1, 2, 3, false]
-                    }]
-                    , ['bold', 'italic', 'underline']
-                    , ['link']
-                    , [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }]
-                    , ['clean']
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
                 ]
             }
         });
 
-        // Set initial content for Visi
-        quillVisi.root.innerHTML = document.querySelector('#visi-desa-input').value || '';
+        // Function to initialize Visi content
+        function initializeVisiContent() {
+            const hiddenInput = document.querySelector('#visi-desa-input');
+            if (hiddenInput && hiddenInput.value && quillVisi.root.innerHTML !== hiddenInput.value) {
+                quillVisi.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize Visi content immediately if available
+        initializeVisiContent();
 
         // Update Livewire on content change for Visi
         quillVisi.on('text-change', function() {
             const content = quillVisi.root.innerHTML;
-            document.querySelector('#visi-desa-input').value = content;
-            @this.set('visi_desa', content);
+            const hiddenInput = document.querySelector('#visi-desa-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('visi_desa', content);
+            }
         });
 
         // Initialize Quill for Misi
         const quillMisi = new Quill('#editor-container-misi-desa', {
-            theme: 'snow'
-            , placeholder: 'Masukkan Misi Desa'
-            , modules: {
+            theme: 'snow',
+            placeholder: 'Masukkan Misi Desa',
+            modules: {
                 toolbar: [
-                    [{
-                        'header': [1, 2, 3, false]
-                    }]
-                    , ['bold', 'italic', 'underline']
-                    , ['link']
-                    , [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }]
-                    , ['clean']
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
                 ]
             }
         });
 
-        // Set initial content for Misi
-        quillMisi.root.innerHTML = document.querySelector('#misi-desa-input').value || '';
+        // Function to initialize Misi content
+        function initializeMisiContent() {
+            const hiddenInput = document.querySelector('#misi-desa-input');
+            if (hiddenInput && hiddenInput.value && quillMisi.root.innerHTML !== hiddenInput.value) {
+                quillMisi.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize Misi content immediately if available
+        initializeMisiContent();
 
         // Update Livewire on content change for Misi
         quillMisi.on('text-change', function() {
             const content = quillMisi.root.innerHTML;
-            document.querySelector('#misi-desa-input').value = content;
-            @this.set('misi_desa', content);
+            const hiddenInput = document.querySelector('#misi-desa-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('misi_desa', content);
+            }
         });
 
         // Initialize Quill for Sejarah
         const quillSejarah = new Quill('#editor-container-sejarah-desa', {
-            theme: 'snow'
-            , placeholder: 'Masukkan Sejarah Desa'
-            , modules: {
+            theme: 'snow',
+            placeholder: 'Masukkan Sejarah Desa',
+            modules: {
                 toolbar: [
-                    [{
-                        'header': [1, 2, 3, false]
-                    }]
-                    , ['bold', 'italic', 'underline']
-                    , ['link']
-                    , [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }]
-                    , ['clean']
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    ['link'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
                 ]
             }
         });
 
-        // Set initial content for Misi
-        quillSejarah.root.innerHTML = document.querySelector('#sejarah-desa-input').value || '';
+        // Function to initialize Sejarah content
+        function initializeSejarahContent() {
+            const hiddenInput = document.querySelector('#sejarah-desa-input');
+            if (hiddenInput && hiddenInput.value && quillSejarah.root.innerHTML !== hiddenInput.value) {
+                quillSejarah.root.innerHTML = hiddenInput.value;
+            }
+        }
 
-        // Update Livewire on content change for Misi
+        // Initialize Sejarah content immediately if available
+        initializeSejarahContent();
+
+        // Update Livewire on content change for Sejarah
         quillSejarah.on('text-change', function() {
             const content = quillSejarah.root.innerHTML;
-            document.querySelector('#sejarah-desa-input').value = content;
-            @this.set('sejarah_desa', content);
+            const hiddenInput = document.querySelector('#sejarah-desa-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('sejarah_desa', content);
+            }
         });
 
-        // Handle Livewire updates for both editors
+        // Handle Livewire updates for all editors
         Livewire.hook('message.processed', (message, component) => {
             if (component.id === @this.__id) {
-
-                // Update Profil editor if Livewire property changed
-                const currentProfilDesaContent = quillProfil.root.innerHTML;
-                const newProfilDesaContent = component.get('profil_desa');
-                if (currentProfilDesaContent !== newProfilDesaContent) {
-                    quillProfil.root.innerHTML = newProfilDesaContent;
-                }
-
-                // Update Visi editor if Livewire property changed
-                const currentVisiDesaContent = quillVisi.root.innerHTML;
-                const newVisiDesaContent = component.get('visi_desa');
-                if (currentVisiDesaContent !== newVisiDesaContent) {
-                    quillVisi.root.innerHTML = newVisiDesaContent;
-                }
-
-                // Update Misi editor if Livewire property changed
-                const currentMisiDesaContent = quillMisi.root.innerHTML;
-                const newMisiDesaContent = component.get('misi_desa');
-                if (currentMisiDesaContent !== newMisiDesaContent) {
-                    quillMisi.root.innerHTML = newMisiDesaContent;
-                }
-
-                // Update Sejarah editor if Livewire property changed
-                const currentSejarahDesaContent = quillSejarah.root.innerHTML;
-                const newSejarahDesaContent = component.get('profil_desa');
-                if (currentSejarahDesaContent !== newSejarahDesaContent) {
-                    quillSejarah.root.innerHTML = newSejarahDesaContent;
-                }
-
+                initializeProfilContent();
+                initializeVisiContent();
+                initializeMisiContent();
+                initializeSejarahContent();
             }
         });
     });
-
 </script>
 @endpush

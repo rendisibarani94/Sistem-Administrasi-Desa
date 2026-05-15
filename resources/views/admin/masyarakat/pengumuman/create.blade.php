@@ -48,7 +48,6 @@
                     <div wire:ignore>
                         <!-- Editor container -->
                         <div id="editor-container" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                            {!! $deskripsi !!}
                         </div>
                         <!-- Hidden input for Livewire binding -->
                         <input type="hidden" id="deskripsi-input" wire:model="deskripsi">
@@ -73,45 +72,45 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const quill = new Quill('#editor-container', {
-            theme: 'snow'
-            , placeholder: 'Masukan Deskripsi Agenda'
-            , modules: {
+            theme: 'snow',
+            placeholder: 'Masukan Deskripsi Pengumuman',
+            modules: {
                 toolbar: [
-                    [{
-                        'header': [1, 2, 3, false]
-                    }]
-                    , ['bold', 'italic', 'underline']
-                    , [{
-                        'list': 'ordered'
-                    }, {
-                        'list': 'bullet'
-                    }]
-                    , ['clean']
+                    [{ 'header': [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline'],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ['clean']
                 ]
             }
         });
 
-        // Set initial content
-        quill.root.innerHTML = document.querySelector('#deskripsi-input').value || '';
+        // Function to initialize content
+        function initializeContent() {
+            const hiddenInput = document.querySelector('#deskripsi-input');
+            if (hiddenInput && hiddenInput.value && quill.root.innerHTML !== hiddenInput.value) {
+                quill.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize content immediately if available
+        initializeContent();
+
+        // Also initialize on Livewire updates
+        Livewire.hook('message.processed', (message, component) => {
+            if (component.id === @this.__id) {
+                initializeContent();
+            }
+        });
 
         // Update Livewire on content change
         quill.on('text-change', function() {
             const content = quill.root.innerHTML;
-            document.querySelector('#deskripsi-input').value = content;
-            @this.set('deskripsi', content);
-        });
-
-        // Handle Livewire updates
-        Livewire.hook('message.processed', (message, component) => {
-            if (component.id === @this.__id) {
-                const currentContent = quill.root.innerHTML;
-                const newContent = component.get('deskripsi');
-                if (currentContent !== newContent) {
-                    quill.root.innerHTML = newContent;
-                }
+            const hiddenInput = document.querySelector('#deskripsi-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('deskripsi', content);
             }
         });
     });
-
 </script>
 @endpush

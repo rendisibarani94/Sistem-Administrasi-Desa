@@ -7,6 +7,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +30,7 @@ class AppServiceProvider extends ServiceProvider
     });
 
     $settings = DB::table('settings')->pluck('value', 'key')->toArray();
+    $settings['logo_url'] = isset($settings['logo']) && $settings['logo'] ? asset('storage/' . ltrim($settings['logo'], '/')) : null;
     View::share('settings', $settings);
 
         $kepala_desa = DB::table('aparatur_desa')

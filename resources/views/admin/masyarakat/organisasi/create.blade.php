@@ -130,7 +130,6 @@
                     <label for="editor-container-visi" class="block mb-2 text-sm font-semibold text-gray-950">Visi Organisasi</label>
                     <div wire:ignore>
                         <div id="editor-container-visi" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                            {!! $visi !!}
                         </div>
                         <input type="hidden" id="visi-input" wire:model="visi">
                     </div>
@@ -146,7 +145,6 @@
                     <label for="editor-container-misi" class="block mb-2 text-sm font-semibold text-gray-950">Misi Organisasi</label>
                     <div wire:ignore>
                         <div id="editor-container-misi" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                            {!! $misi !!}
                         </div>
                         <input type="hidden" id="misi-input" wire:model="misi">
                     </div>
@@ -186,14 +184,25 @@
             }
         });
 
-        // Set initial content for Visi
-        quillVisi.root.innerHTML = document.querySelector('#visi-input').value || '';
+        // Function to initialize Visi content
+        function initializeVisiContent() {
+            const hiddenInput = document.querySelector('#visi-input');
+            if (hiddenInput && hiddenInput.value && quillVisi.root.innerHTML !== hiddenInput.value) {
+                quillVisi.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize Visi content immediately if available
+        initializeVisiContent();
 
         // Update Livewire on content change for Visi
         quillVisi.on('text-change', function() {
             const content = quillVisi.root.innerHTML;
-            document.querySelector('#visi-input').value = content;
-            @this.set('visi', content);
+            const hiddenInput = document.querySelector('#visi-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('visi', content);
+            }
         });
 
         // Initialize Quill for Misi
@@ -211,32 +220,32 @@
             }
         });
 
-        // Set initial content for Misi
-        quillMisi.root.innerHTML = document.querySelector('#misi-input').value || '';
+        // Function to initialize Misi content
+        function initializeMisiContent() {
+            const hiddenInput = document.querySelector('#misi-input');
+            if (hiddenInput && hiddenInput.value && quillMisi.root.innerHTML !== hiddenInput.value) {
+                quillMisi.root.innerHTML = hiddenInput.value;
+            }
+        }
+
+        // Initialize Misi content immediately if available
+        initializeMisiContent();
 
         // Update Livewire on content change for Misi
         quillMisi.on('text-change', function() {
             const content = quillMisi.root.innerHTML;
-            document.querySelector('#misi-input').value = content;
-            @this.set('misi', content);
+            const hiddenInput = document.querySelector('#misi-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('misi', content);
+            }
         });
 
         // Handle Livewire updates for both editors
         Livewire.hook('message.processed', (message, component) => {
             if (component.id === @this.__id) {
-                // Update Visi editor if Livewire property changed
-                const currentVisiContent = quillVisi.root.innerHTML;
-                const newVisiContent = component.get('visi');
-                if (currentVisiContent !== newVisiContent) {
-                    quillVisi.root.innerHTML = newVisiContent;
-                }
-
-                // Update Misi editor if Livewire property changed
-                const currentMisiContent = quillMisi.root.innerHTML;
-                const newMisiContent = component.get('misi');
-                if (currentMisiContent !== newMisiContent) {
-                    quillMisi.root.innerHTML = newMisiContent;
-                }
+                initializeVisiContent();
+                initializeMisiContent();
             }
         });
     });

@@ -76,7 +76,6 @@
                     <div wire:ignore>
                         <!-- Editor container -->
                         <div id="deskripsi-singkat-desa-container" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                            {!! $deskripsi_singkat_desa !!}
                         </div>
                         <!-- Hidden input for Livewire binding -->
                         <input type="hidden" id="deskripsi-singkat-desa-input" wire:model="deskripsi_singkat_desa">
@@ -93,7 +92,6 @@
                     <div wire:ignore>
                         <!-- Editor container -->
                         <div id="deskripsi-singkat-organisasi-container" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                            {!! $deskripsi_singkat_organisasi !!}
                         </div>
                         <!-- Hidden input for Livewire binding -->
                         <input type="hidden" id="deskripsi-singkat-organisasi-input" wire:model="deskripsi_singkat_organisasi">
@@ -160,36 +158,45 @@
         });
 
         // Set initial content
-        quillDesa.root.innerHTML = document.querySelector('#deskripsi-singkat-desa-input').value || '';
-        quillOrganisasi.root.innerHTML = document.querySelector('#deskripsi-singkat-organisasi-input').value || '';
+        function initializeDesaContent() {
+            const hiddenInput = document.querySelector('#deskripsi-singkat-desa-input');
+            if (hiddenInput && hiddenInput.value && quillDesa.root.innerHTML !== hiddenInput.value) {
+                quillDesa.root.innerHTML = hiddenInput.value;
+            }
+        }
+        initializeDesaContent();
+
+        function initializeOrganisasiContent() {
+            const hiddenInput = document.querySelector('#deskripsi-singkat-organisasi-input');
+            if (hiddenInput && hiddenInput.value && quillOrganisasi.root.innerHTML !== hiddenInput.value) {
+                quillOrganisasi.root.innerHTML = hiddenInput.value;
+            }
+        }
+        initializeOrganisasiContent();
 
         quillDesa.on('text-change', function() {
             const content = quillDesa.root.innerHTML;
-            document.querySelector('#deskripsi-singkat-desa-input').value = content;
-            @this.set('deskripsi_singkat_desa', content);
+            const hiddenInput = document.querySelector('#deskripsi-singkat-desa-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('deskripsi_singkat_desa', content);
+            }
         });
 
         quillOrganisasi.on('text-change', function() {
             const content = quillOrganisasi.root.innerHTML;
-            document.querySelector('#deskripsi-singkat-organisasi-input').value = content;
-            @this.set('deskripsi_singkat_organisasi', content);
+            const hiddenInput = document.querySelector('#deskripsi-singkat-organisasi-input');
+            if (hiddenInput) {
+                hiddenInput.value = content;
+                @this.set('deskripsi_singkat_organisasi', content);
+            }
         });
 
         // Handle Livewire updates
         Livewire.hook('message.processed', (message, component) => {
             if (component.id === @this.__id) {
-
-                const currentDesaContent = quillDesa.root.innerHTML;
-                const newDesaContent = component.get('deskripsi_singkat_desa');
-                if (currentDesaContent !== newDesaContent) {
-                    quillDesa.root.innerHTML = newDesaContent;
-                }
-
-                const currentOrganisasiContent = quillOrganisasi.root.innerHTML;
-                const newOrganisasiContent = component.get('deskripsi_singkat_organisasi');
-                if (currentOrganisasiContent !== newOrganisasiContent) {
-                    quillOrganisasi.root.innerHTML = newOrganisasiContent;
-                }
+                initializeDesaContent();
+                initializeOrganisasiContent();
             }
         });
     });

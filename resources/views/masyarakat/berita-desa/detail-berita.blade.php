@@ -31,8 +31,8 @@
             </div>
 
             <div class="text-gray-700 text-lg md:text-md leading-relaxed text-justify">
-                {{-- {!! $berita->deskripsi !!} --}}
-                {!! App\Helpers\HtmlSanitizer::cleanList($berita->deskripsi) !!}
+                {!! $berita->deskripsi !!}
+                {{-- {!! App\Helpers\HtmlSanitizer::cleanList($berita->deskripsi) !!} --}}
             </div>
         </section>
 

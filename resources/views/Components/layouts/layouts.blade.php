@@ -32,8 +32,11 @@
 
         <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 shadow-sm shadow-black">
             <ul class="space-y-2 font-medium mb-10">
+                @php
+                    $logoUrl = $settings['logo_url'] ?? asset('images/masyarakat/beranda.png');
+                @endphp
                 <a href="{{ route('beranda.admin') }}" class="flex flex-col items-center justify-center mb-4">
-                    <img src="{{ asset('storage/'. $settings['logo']) }}" class="h-15 mb-2 " alt="Logo Desa" />
+                    <img src="{{ $logoUrl }}" class="h-15 mb-2" alt="Logo Desa" />
                     <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] ?? 'Nama Desa' }}</span>
                 </a>
                 <h5 class="text-xs font-semibold text-black pl-3">Administrasi Desa</h5>
