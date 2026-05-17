@@ -1,4 +1,4 @@
-<div>
+<x-layouts.layouts>
     <x-slot:judul>
         Detail Request Surat
     </x-slot:judul>
@@ -184,7 +184,7 @@
                     </form>
 
                     <button type="button" 
-                        onclick="openTolakModal('{{ $pengajuanSurat->id_pengajuan_surat }}', '{{ $pengajuanSurat->penduduk->nama_lengkap ?? 'pemohon' }}')"
+                        onclick="openTolakModal(@json($pengajuanSurat->id_pengajuan_surat), @json($pengajuanSurat->penduduk->nama_lengkap ?? 'pemohon'))"
                         class="w-full sm:w-auto inline-flex items-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -258,9 +258,11 @@
 
     <script>
         function openTolakModal(id, pemohon) {
+            const form = document.getElementById('tolakForm');
+            form.reset();
+            const tolakTemplate = "{{ route('admin.layanan-surat.request.tolak', ['__ID__']) }}";
+            form.action = tolakTemplate.replace('__ID__', encodeURIComponent(id));
             document.getElementById('pemohon').value = pemohon;
-            document.getElementById('tolakForm').action = `{{ route('admin.layanan-surat.request.tolak', '') }}/${id}`;
-            document.getElementById('tolakForm').reset();
             document.getElementById('tolakModal').classList.remove('hidden');
         }
 

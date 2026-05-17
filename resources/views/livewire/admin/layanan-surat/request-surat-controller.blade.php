@@ -1,4 +1,4 @@
-<div>
+<x-layouts.layouts>
     <x-slot:judul>
         Request Surat
     </x-slot:judul>
@@ -22,109 +22,123 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-sm mx-4 border border-gray-100">
-
-        {{-- Header --}}
-        <div class="px-6 pt-6 pb-4 border-b border-gray-100">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="bg-white rounded-xl shadow-sm mx-4 border border-gray-100 overflow-hidden">
+        <div class="px-6 py-6 border-b border-gray-100">
+            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h1 class="text-2xl font-semibold text-gray-800">Request Surat</h1>
-                    <nav class="mt-1" aria-label="Breadcrumb">
-                        <ol class="flex items-center gap-1.5 text-sm text-gray-400">
-                            <li>
-                                <a href="{{ route('beranda.admin') }}" class="flex items-center gap-1 hover:text-sky-600 transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                                    </svg>
-                                    Dashboard
-                                </a>
-                            </li>
-                            <li class="text-gray-300">/</li>
-                            <li class="font-medium text-gray-600">Request Surat</li>
-                        </ol>
-                    </nav>
                 </div>
-                <a href="{{ route('admin.layanan-surat.request.create') }}"
-                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 active:bg-sky-800 px-4 py-2.5 text-sm font-medium text-white transition-colors shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-                    Tambah Request
-                </a>
+                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <a href="{{ route('admin.layanan-surat.request.create') }}"
+                        class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Tambah Request
+                    </a>
+                </div>
+            </div>
+            <nav class="mt-5 text-sm text-gray-500" aria-label="Breadcrumb">
+                <ol class="inline-flex items-center gap-2">
+                    <li>
+                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center gap-1 hover:text-sky-600">
+                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <svg class="w-3 h-3 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                        </svg>
+                    </li>
+                    <li class="font-semibold text-gray-700">Request Surat</li>
+                </ol>
+            </nav>
+        </div>
+
+        <div class="px-6 py-5 border-b border-gray-100">
+            <div class="grid gap-3 sm:grid-cols-4">
+                <div class="rounded-lg bg-gray-50 p-4 text-sm text-gray-700">
+                    <p class="text-gray-500">Total Request</p>
+                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalSurat }}</p>
+                </div>
+                <div class="rounded-lg bg-amber-50 p-4 text-sm text-amber-900">
+                    <p class="text-amber-700">Menunggu</p>
+                    <p class="mt-2 text-2xl font-semibold">{{ $totalMenunggu }}</p>
+                </div>
+                <div class="rounded-lg bg-green-50 p-4 text-sm text-green-900">
+                    <p class="text-green-700">Disetujui</p>
+                    <p class="mt-2 text-2xl font-semibold">{{ $totalDisetujui }}</p>
+                </div>
+                <div class="rounded-lg bg-red-50 p-4 text-sm text-red-900">
+                    <p class="text-red-700">Ditolak</p>
+                    <p class="mt-2 text-2xl font-semibold">{{ $totalDitolak }}</p>
+                </div>
             </div>
         </div>
 
-        {{-- Kartu Ringkasan --}}
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 px-6 py-4 border-b border-gray-100">
-            <div class="rounded-lg bg-gray-50 px-4 py-3">
-                <p class="text-xs text-gray-500 mb-1">Total Request</p>
-                <p class="text-2xl font-semibold text-gray-800">{{ $totalSurat }}</p>
-            </div>
-            <div class="rounded-lg bg-amber-50 px-4 py-3">
-                <p class="text-xs text-amber-700 mb-1">Menunggu</p>
-                <p class="text-2xl font-semibold text-amber-800">{{ $totalMenunggu }}</p>
-            </div>
-            <div class="rounded-lg bg-green-50 px-4 py-3">
-                <p class="text-xs text-green-700 mb-1">Disetujui</p>
-                <p class="text-2xl font-semibold text-green-800">{{ $totalDisetujui }}</p>
-            </div>
-            <div class="rounded-lg bg-red-50 px-4 py-3">
-                <p class="text-xs text-red-700 mb-1">Ditolak</p>
-                <p class="text-2xl font-semibold text-red-800">{{ $totalDitolak }}</p>
-            </div>
-        </div>
-
-        {{-- Filter & Search --}}
-        <div class="flex flex-col sm:flex-row gap-3 px-6 py-4">
-            <form method="GET" action="{{ route('admin.layanan-surat.request.index') }}" class="flex flex-col sm:flex-row gap-3 w-full">
-                <div class="relative flex-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                    </svg>
-                    <input type="search" name="search" value="{{ request('search') }}"
-                        placeholder="Cari nama atau jenis surat..."
-                        class="w-full rounded-lg border border-gray-300 bg-white py-2 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" />
+        <div class="px-6 py-5 border-b border-gray-100">
+            <form method="GET" action="{{ route('admin.layanan-surat.request.index') }}" class="grid gap-3 sm:grid-cols-[1.5fr_1fr_1fr_1fr] items-end">
+                <div>
+                    <label for="search" class="sr-only">Cari</label>
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center ps-3">
+                            <svg class="w-4 h-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                            </svg>
+                        </div>
+                        <input id="search" name="search" type="search" value="{{ request('search') }}" placeholder="Cari nama atau jenis surat..."
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pl-10 pr-4 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" />
+                    </div>
                 </div>
-                <select name="status"
-                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                    onchange="this.form.submit()">
-                    <option value="">Semua Status</option>
-                    <option value="menunggu" {{ request('status') == 'menunggu' ? 'selected' : '' }}>Menunggu</option>
-                    <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
-                    <option value="disetujui" {{ request('status') == 'disetujui' ? 'selected' : '' }}>Disetujui</option>
-                    <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
-                </select>
-                <select name="jenis"
-                    class="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                    onchange="this.form.submit()">
-                    <option value="">Semua Jenis</option>
-                    @foreach ($jenisSuratList as $jenis)
-                        <option value="{{ $jenis->id }}" {{ request('jenis') == $jenis->id ? 'selected' : '' }}>
-                            {{ $jenis->nama_surat }}
-                        </option>
-                    @endforeach
-                </select>
-                <button type="submit"
-                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 20 20">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                    </svg>
-                    Cari
-                </button>
+                <div>
+                    <label for="status" class="sr-only">Status</label>
+                    <select id="status" name="status" onchange="this.form.submit()"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="">Semua Status</option>
+                        <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Menunggu</option>
+                        <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                        <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="jenis" class="sr-only">Jenis</label>
+                    <select id="jenis" name="jenis" onchange="this.form.submit()"
+                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        <option value="">Semua Jenis</option>
+                        @foreach ($jenisSuratList as $jenis)
+                            <option value="{{ $jenis->id_jenis_surat }}" {{ request('jenis') == $jenis->id_jenis_surat ? 'selected' : '' }}>
+                                {{ $jenis->nama_surat }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="sm:mt-0">
+                    <button type="submit"
+                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-sky-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
+                        Cari
+                    </button>
+                </div>
             </form>
         </div>
 
-        {{-- Tabel --}}
-        <div class="overflow-x-auto">
+        <div class="overflow-x-auto px-6 py-6">
             <table class="w-full text-sm">
                 <thead>
                     <tr class="bg-gray-50 border-y border-gray-100 text-xs font-medium uppercase tracking-wide text-gray-500">
                         <th class="px-6 py-3 text-left w-10">#</th>
                         <th class="px-6 py-3 text-left">Pemohon</th>
                         <th class="px-6 py-3 text-left">Jenis Surat</th>
+                        <th class="px-6 py-3 text-left">Diproses Oleh</th>
                         <th class="px-6 py-3 text-left">Tanggal</th>
                         <th class="px-6 py-3 text-center w-32">Status</th>
-                        <th class="px-6 py-3 text-center w-36">Aksi</th>
+                        <th class="px-6 py-3 text-center w-40">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
@@ -145,7 +159,15 @@
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-gray-700">
-                                {{ $surat->jenisSurat->nama_surat ?? '-' }}
+                                <div class="space-y-1">
+                                    <p>{{ $surat->jenisSurat->nama_surat ?? '-' }}</p>
+                                    @if($surat->nomor_surat)
+                                        <p class="text-xs text-gray-400">No. Surat: {{ $surat->nomor_surat }}</p>
+                                    @endif
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 text-gray-700">
+                                {{ $surat->diprosesOleh?->name ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-gray-500">
                                 {{ $surat->created_at->format('d M Y') }}
@@ -208,7 +230,7 @@
                                         {{-- Tombol Tolak --}}
                                         <button 
                                             type="button"
-                                            onclick="openTolakModal({{ $surat->id_pengajuan_surat }}, '{{ $surat->penduduk->nama_lengkap ?? 'pemohon' }}')"
+                                            onclick="openTolakModal(@json($surat->id_pengajuan_surat), @json($surat->penduduk->nama_lengkap ?? 'pemohon'))"
                                             title="Tolak"
                                             class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -232,7 +254,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="7" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center gap-2 text-gray-400">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
@@ -312,9 +334,11 @@
 
     <script>
         function openTolakModal(id, pemohon) {
+            const form = document.getElementById('tolakForm');
+            form.reset();
+            const tolakTemplate = "{{ route('admin.layanan-surat.request.tolak', ['__ID__']) }}";
+            form.action = tolakTemplate.replace('__ID__', encodeURIComponent(id));
             document.getElementById('pemohon').value = pemohon;
-            document.getElementById('tolakForm').action = `{{ route('admin.layanan-surat.request.tolak', '') }}/${id}`;
-            document.getElementById('tolakForm').reset();
             document.getElementById('tolakModal').classList.remove('hidden');
         }
 
@@ -329,4 +353,4 @@
             }
         });
     </script>
-</div>
+</x-layouts.layouts>

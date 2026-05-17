@@ -1,4 +1,4 @@
-<div>
+<x-layouts.layouts>
     <x-slot:judul>
         Notifikasi Surat
     </x-slot:judul>
@@ -69,4 +69,4 @@
             </div>
         </div>
     </div>
-</div>
+</x-layouts.layouts>

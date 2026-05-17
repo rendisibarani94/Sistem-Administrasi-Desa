@@ -233,6 +233,6 @@
                     </div>
                 </div>
             </div>
-    </div> </a>
+        </a>
 
-</div>
+    </div>

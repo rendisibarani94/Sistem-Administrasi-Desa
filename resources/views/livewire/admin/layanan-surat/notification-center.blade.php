@@ -1,4 +1,4 @@
-<div>
+<x-layouts.layouts>
     <x-slot:judul>
         Notifikasi Sistem
     </x-slot:judul>
@@ -223,4 +223,4 @@
             }
         }
     </script>
-</div>
+</x-layouts.layouts>

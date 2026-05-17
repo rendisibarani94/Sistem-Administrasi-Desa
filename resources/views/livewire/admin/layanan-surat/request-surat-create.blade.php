@@ -1,4 +1,4 @@
-<div>
+<x-layouts.layouts>
     <x-slot:judul>
         Buat Request Surat
     </x-slot:judul>
@@ -20,7 +20,7 @@
         </div>
     @endif
 
-    <div class="bg-white rounded-xl shadow-sm mx-4 border border-gray-100 overflow-hidden">
+    <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         {{-- Header --}}
         <div class="px-6 pt-6 pb-4 border-b border-gray-100">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
@@ -91,6 +91,7 @@
                                 type="text"
                                 id="keperluan"
                                 name="data_form[keperluan]"
+                                value="{{ old('data_form.keperluan') }}"
                                 placeholder="Cth: Lamaran kerja, Beasiswa, dll"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-gray-700"
                             >
@@ -102,6 +103,7 @@
                                 type="text"
                                 id="instansi_tujuan"
                                 name="data_form[instansi_tujuan]"
+                                value="{{ old('data_form.instansi_tujuan') }}"
                                 placeholder="Cth: PT ABC, Universitas XYZ"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-gray-700"
                             >
@@ -115,20 +117,20 @@
                                 placeholder="Tambahkan keterangan jika diperlukan..."
                                 rows="3"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky-500 focus:ring-1 focus:ring-sky-500 text-gray-700"
-                            ></textarea>
+                            >{{ old('data_form.keterangan') }}</textarea>
                         </div>
                     </div>
                 </div>
 
                 {{-- Tombol Submit --}}
-                <div class="flex flex-col sm:flex-row gap-3 pt-6 border-t border-gray-100">
+                <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100">
                     <a href="{{ route('admin.layanan-surat.request.index') }}"
-                        class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
                         Batal
                     </a>
                     <button 
                         type="submit"
-                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 active:bg-sky-800 px-6 py-2.5 text-sm font-medium text-white transition-colors">
+                        class="inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 active:bg-sky-800 px-4 py-2 text-sm font-medium text-white transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -138,4 +140,4 @@
             </form>
         </div>
     </div>
-</div>
+</x-layouts.layouts>
