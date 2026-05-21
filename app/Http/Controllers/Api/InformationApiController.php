@@ -3,57 +3,159 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Notifikasi;
+use App\Models\PengajuanSurat;
 use Illuminate\Http\Request;
-// Pastikan path Model ini sesuai dengan struktur folder Laravel kamu.
-// Biasanya ada di App\Models\Berita atau App\Models\Pengumuman
-use App\Models\Berita; 
-use App\Models\Pengumuman;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class InformationApiController extends Controller
 {
     /**
-     * Mengambil daftar berita desa
+     * Ambil notifikasi milik user yang sedang login (Flutter)
+     * GET /api/notifikasi
      */
-    public function getBerita()
+    public function getNotifikasi(Request $request)
     {
+        $user = Auth::user();
+
+        $notifikasiList = Notifikasi::where('user_id', $user->id)
+            ->latest()
+            ->limit(50)
+            ->get();
+
+        $formattedNotifikasi = $notifikasiList->map(function ($notif) {
+            $tipe = 'respons';
+            $ikon = '🔔';
+            $judulLower = strtolower($notif->judul);
+
+            if (str_contains($judulLower, 'disetujui') || str_contains($judulLower, 'selesai')) {
+                $tipe = 'disetujui';
+                $ikon = '✅';
+            } elseif (str_contains($judulLower, 'ditolak')) {
+                $tipe = 'ditolak';
+                $ikon = '❌';
+            } elseif (str_contains($judulLower, 'diproses')) {
+                $tipe = 'diproses';
+                $ikon = '⏳';
+            } elseif (str_contains($judulLower, 'pengajuan baru') || str_contains($judulLower, 'surat baru')) {
+                $tipe = 'pengajuan_baru';
+                $ikon = '📄';
+            }
+
+            return [
+                'id'          => (string) $notif->id,
+                'judul'       => $notif->judul,
+                'pesan'       => $notif->pesan,
+                'tipe'        => $tipe,
+                'ikon'        => $ikon,
+                'waktu'       => $notif->created_at->toIso8601String(),
+                'sudahDibaca' => (bool) $notif->is_read,
+            ];
+        });
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Berhasil mengambil notifikasi',
+            'data'    => $formattedNotifikasi,
+            'unread'  => $notifikasiList->where('is_read', false)->count(),
+        ]);
+    }
+
+    /**
+     * Tandai notifikasi sudah dibaca
+     * PATCH /api/notifikasi/{id}/read  (atau 'all' untuk semua)
+     */
+    public function markNotifikasiRead(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        if ($id === 'all') {
+            Notifikasi::where('user_id', $user->id)->update(['is_read' => true]);
+        } else {
+            Notifikasi::where('user_id', $user->id)
+                ->where('id', $id)
+                ->update(['is_read' => true]);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Notifikasi ditandai sudah dibaca']);
+    }
+
+    /**
+     * Tampilkan/Download surat yang sudah disetujui (untuk Flutter WebView/Download)
+     * GET /api/surat/{id}/view
+     */
+    public function viewSurat(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
+            ->findOrFail($id);
+
+        // Cek akses: milik sendiri atau admin
+        $milikSendiri = ($pengajuanSurat->id_penduduk == $user->id)
+            || ($user->id_penduduk && $pengajuanSurat->id_penduduk == $user->id_penduduk);
+
+        if ($user->role !== 'admin' && !$milikSendiri) {
+            return response()->json(['status' => 'error', 'message' => 'Akses ditolak'], 403);
+        }
+
+        if ($pengajuanSurat->status !== 'selesai') {
+            return response()->json(['status' => 'error', 'message' => 'Surat belum disetujui'], 400);
+        }
+
+        // Jika ada file HTML yang di-generate otomatis
+        if ($pengajuanSurat->file_pdf && str_ends_with($pengajuanSurat->file_pdf, '.html')) {
+            $htmlPath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            if (file_exists($htmlPath)) {
+                return response(file_get_contents($htmlPath), 200)
+                    ->header('Content-Type', 'text/html; charset=UTF-8');
+            }
+        }
+
+        // Jika ada file PDF upload manual
+        if ($pengajuanSurat->file_pdf && !str_ends_with($pengajuanSurat->file_pdf, '.html')) {
+            $pdfPath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            if (file_exists($pdfPath)) {
+                return response()->download($pdfPath);
+            }
+        }
+
+        // Fallback: generate HTML on-the-fly dari Blade template
         try {
-            // Mengambil semua berita, diurutkan dari yang terbaru (latest)
-            $berita = Berita::latest()->get();
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data berita berhasil diambil',
-                'data' => $berita
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal mengambil data berita: ' . $e->getMessage()
-            ], 500);
+            $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+            $html  = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul'))->render();
+            return response($html, 200)->header('Content-Type', 'text/html; charset=UTF-8');
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => 'Gagal generate surat: ' . $e->getMessage()], 500);
         }
     }
 
     /**
-     * Mengambil daftar pengumuman desa
+     * Berita publik desa
+     * GET /api/berita
      */
-    public function getPengumuman()
+    public function getBerita(Request $request)
     {
         try {
-            // Mengambil semua pengumuman, diurutkan dari yang terbaru
-            $pengumuman = Pengumuman::latest()->get();
+            $berita = DB::table('berita')->orderByDesc('created_at')->limit(20)->get();
+            return response()->json(['status' => 'success', 'data' => $berita]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'success', 'data' => []]);
+        }
+    }
 
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Data pengumuman berhasil diambil',
-                'data' => $pengumuman
-            ], 200);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Gagal mengambil data pengumuman: ' . $e->getMessage()
-            ], 500);
+    /**
+     * Pengumuman publik desa
+     * GET /api/pengumuman
+     */
+    public function getPengumuman(Request $request)
+    {
+        try {
+            $pengumuman = DB::table('pengumuman')->orderByDesc('created_at')->limit(20)->get();
+            return response()->json(['status' => 'success', 'data' => $pengumuman]);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'success', 'data' => []]);
         }
     }
 }

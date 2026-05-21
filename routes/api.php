@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\PendudukApiController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\SuratController;
 use App\Http\Controllers\Api\PengaduanController;
+use App\Http\Controllers\Api\LayananSuratApiController;
 use App\Http\Controllers\Api\KartuKeluargaApiController;
 use App\Http\Controllers\Api\InformationApiController; // TAMBAHAN: Controller untuk Berita & Pengumuman
 
@@ -17,10 +18,32 @@ Route::middleware('cors')->group(function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::get('/test', fn () => response()->json(['message' => 'API berjalan']));
 
-    // TAMBAHAN: API Berita dan Pengumuman
-    // Dibuat public agar masyarakat bisa melihat informasi desa sebelum login
+    // Berita & Pengumuman
     Route::get('/berita', [InformationApiController::class, 'getBerita']);
     Route::get('/pengumuman', [InformationApiController::class, 'getPengumuman']);
+
+    // View surat via browser (token dikirim sebagai query param ?token=xxx)
+    // Diakses oleh mobile via browser untuk cetak surat resmi
+    Route::get('/surat/{id}/view', function ($id) {
+        $token = request()->query('token');
+        if (!$token) {
+            return response('<h2 style="color:red;text-align:center;font-family:Arial">Token tidak valid. Silakan login ulang di aplikasi.</h2>', 401)
+                ->header('Content-Type', 'text/html');
+        }
+
+        // Autentikasi manual via token Sanctum
+        $tokenRecord = \Laravel\Sanctum\PersonalAccessToken::findToken($token);
+        if (!$tokenRecord) {
+            return response('<h2 style="color:red;text-align:center;font-family:Arial">Sesi habis. Silakan login ulang.</h2>', 401)
+                ->header('Content-Type', 'text/html');
+        }
+
+        $user = $tokenRecord->tokenable;
+        \Auth::login($user);
+
+        return app(\App\Http\Controllers\Api\InformationApiController::class)
+            ->viewSurat(request(), $id);
+    });
 });
 
 // =======================
@@ -32,17 +55,25 @@ Route::middleware(['auth:sanctum', 'cors'])->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
+    // NOTIFIKASI
+    Route::get('/notifikasi', [InformationApiController::class, 'getNotifikasi']);
+    Route::patch('/notifikasi/{id}/read', [InformationApiController::class, 'markNotifikasiRead']);
+
+    // SURAT — download (hanya untuk Bearer token, view ada di public route)
+    Route::get('/surat/{id}/download', [SuratController::class, 'download']);
+
     // PENDUDUK
     Route::get('/penduduk', [PendudukApiController::class, 'index']);
     Route::get('/penduduk/{id}', [PendudukApiController::class, 'show']);
 
     // PENGADUAN — masyarakat kirim & lihat miliknya sendiri
     Route::prefix('pengaduan')->group(function () {
-        Route::get('/',     [PengaduanController::class, 'index']);   // GET  /api/pengaduan
-        Route::post('/',    [PengaduanController::class, 'store']);   // POST /api/pengaduan
-        Route::get('/{id}', [PengaduanController::class, 'show']);    // GET  /api/pengaduan/{id}
+        Route::get('/',     [PengaduanController::class, 'index']);
+        Route::post('/',    [PengaduanController::class, 'store']);
+        Route::get('/{id}', [PengaduanController::class, 'show']);
     });
 });
+
 
 // =======================
 // ADMIN ONLY
@@ -86,6 +117,7 @@ Route::middleware(['auth:sanctum', 'role:masyarakat', 'cors'])->group(function (
     Route::post('/surat', [SuratController::class, 'store']);
     Route::get('/surat/{id}', [SuratController::class, 'show']);
     Route::get('/jenis-surat', [SuratController::class, 'jenisSurat']);
+    Route::post('/layanan-surat', [LayananSuratApiController::class, 'store']);
 
     // TAMBAHAN: Tarik Data Kartu Keluarga Sendiri
 

@@ -149,12 +149,22 @@
                             </td>
                             <td class="px-6 py-4">
                                 <div class="flex items-center gap-3">
+                                    @php
+                                        // Safely parse data_form for the list view
+                                        $df = $surat->data_form;
+                                        if (is_string($df)) { $df = json_decode($df, true) ?? []; }
+                                        if (!is_array($df)) { $df = []; }
+                                        $namaPemohon = $surat->penduduk->nama_lengkap ?? $df['nama'] ?? $df['nama_lengkap'] ?? 'N A';
+                                        $nikPemohon  = $surat->penduduk->nik ?? $df['nik'] ?? '';
+                                        $nameParts   = explode(' ', $namaPemohon);
+                                        $initials    = strtoupper(substr($nameParts[0] ?? 'N', 0, 1)) . strtoupper(substr($nameParts[1] ?? 'A', 0, 1));
+                                    @endphp
                                     <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-100 text-xs font-semibold text-sky-700">
-                                        {{ strtoupper(substr($surat->penduduk->nama ?? 'N', 0, 1)) }}{{ strtoupper(substr(explode(' ', $surat->penduduk->nama ?? 'NA')[1] ?? 'A', 0, 1)) }}
+                                        {{ $initials }}
                                     </div>
                                     <div>
-                                        <p class="font-medium text-gray-800">{{ $surat->penduduk->nama ?? '-' }}</p>
-                                        <p class="text-xs text-gray-400">NIK: {{ Str::mask($surat->penduduk->nik ?? '', '*', 8) }}</p>
+                                        <p class="font-medium text-gray-800">{{ $namaPemohon }}</p>
+                                        <p class="text-xs text-gray-400">NIK: {{ $nikPemohon ? Str::mask($nikPemohon, '*', 8) : '-' }}</p>
                                     </div>
                                 </div>
                             </td>
@@ -230,7 +240,9 @@
                                         {{-- Tombol Tolak --}}
                                         <button 
                                             type="button"
-                                            onclick="openTolakModal(@json($surat->id_pengajuan_surat), @json($surat->penduduk->nama_lengkap ?? 'pemohon'))"
+                                            data-id="{{ $surat->id_pengajuan_surat }}"
+                                            data-pemohon="{{ $surat->penduduk->nama_lengkap ?? 'pemohon' }}"
+                                            onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
                                             title="Tolak"
                                             class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -335,10 +347,10 @@
     <script>
         function openTolakModal(id, pemohon) {
             const form = document.getElementById('tolakForm');
-            form.reset();
             const tolakTemplate = "{{ route('admin.layanan-surat.request.tolak', ['__ID__']) }}";
             form.action = tolakTemplate.replace('__ID__', encodeURIComponent(id));
             document.getElementById('pemohon').value = pemohon;
+            document.getElementById('alasan_tolak').value = '';
             document.getElementById('tolakModal').classList.remove('hidden');
         }
 

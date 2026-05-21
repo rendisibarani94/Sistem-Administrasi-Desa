@@ -1,3 +1,5 @@
+<?php
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -25,13 +27,30 @@ class PengaduanController extends Controller
     {
         $request->validate([
             'judul' => 'required',
-            'isi' => 'required',
+            'isi' => 'required_without:deskripsi',
+            'deskripsi' => 'required_without:isi',
+            'jenis' => 'nullable|string',
+            'foto' => 'nullable|image|max:5120', // Maksimal 5MB
         ]);
+
+        $isi = $request->isi ?? $request->deskripsi;
+        
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . str_replace(' ', '_', $file->getClientOriginalName());
+            // Simpan ke storage/app/public/pengaduan
+            $file->storeAs('pengaduan', $filename, 'public');
+            // Path yang bisa diakses via url public
+            $fotoPath = 'storage/pengaduan/' . $filename;
+        }
 
         $pengaduan = Pengaduan::create([
             'user_id' => Auth::id(),
             'judul' => $request->judul,
-            'isi' => $request->isi,
+            'jenis' => $request->jenis,
+            'isi' => $isi,
+            'foto' => $fotoPath,
         ]);
 
         User::where('role', 'admin')->each(function (User $admin) use ($pengaduan) {

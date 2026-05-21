@@ -153,6 +153,7 @@ Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->gr
     Route::patch('/{id}/setujui', [RequestSuratController::class, 'setujui'])->name('setujui');
     Route::patch('/{id}/tolak', [RequestSuratController::class, 'tolak'])->name('tolak');
     Route::get('/{id}/download', [RequestSuratController::class, 'download'])->name('download');
+    Route::get('/{id}/print', [RequestSuratController::class, 'printSurat'])->name('print');
 });
 Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');
 Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan-surat.notifikasi');

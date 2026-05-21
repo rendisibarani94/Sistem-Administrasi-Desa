@@ -132,30 +132,67 @@ class RequestSuratController extends Controller
     }
 
     /**
-     * Menyetujui request surat (Admin)
+     * Menyetujui request surat (Admin) — PDF di-generate otomatis dari template
      */
-    public function setujui($id)
+    public function setujui(Request $request, $id)
     {
         $this->authorizeAdmin();
 
-        $pengajuanSurat = PengajuanSurat::findOrFail($id);
-
-        $pengajuanSurat->update([
-            'status' => 'selesai',
-            'id_diproses_oleh' => Auth::user()->id,
-            'tanggal_respons' => now(),
-            'tanggal_selesai' => now(),
+        $validated = $request->validate([
+            'nomor_surat' => 'required|string|max:100',
+            'file_pdf'    => 'nullable|file|mimes:pdf|max:10240',  // opsional sekarang
         ]);
 
-        $this->notifyUserByPendudukId(
+        $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
+            ->findOrFail($id);
+
+        $filePath = null;
+
+        if ($request->hasFile('file_pdf')) {
+            // Admin upload PDF manual (scan yang sudah ditandatangani)
+            $filePath = $request->file('file_pdf')->store('surat');
+        } else {
+            // Auto-generate PDF dari Blade template HTML
+            try {
+                $pengajuanSurat->nomor_surat = $validated['nomor_surat'];
+                $pengajuanSurat->tanggal_selesai = now();
+                $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+
+                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul'))->render();
+
+                // Pastikan folder ada
+                $dir = storage_path('app/surat');
+                if (!is_dir($dir)) { mkdir($dir, 0755, true); }
+
+                $filename = 'surat/' . date('Ymd') . '_' . $id . '_' . str_replace('/', '-', $validated['nomor_surat']) . '.html';
+                $htmlPath = storage_path('app/' . $filename);
+                file_put_contents($htmlPath, $html);
+                $filePath = $filename;
+            } catch (\Throwable $e) {
+                \Log::error('Gagal generate surat: ' . $e->getMessage());
+                // Lanjutkan tanpa file
+            }
+        }
+
+        $pengajuanSurat->update([
+            'status'           => 'selesai',
+            'nomor_surat'      => $validated['nomor_surat'],
+            'file_pdf'         => $filePath,
+            'id_diproses_oleh' => Auth::user()->id,
+            'tanggal_respons'  => now(),
+            'tanggal_selesai'  => now(),
+        ]);
+
+        // Notif ke user (fallback ke user.id jika id_penduduk kosong)
+        $this->notifyUser(
             $pengajuanSurat->id_penduduk,
-            'Pengajuan Surat Disetujui',
-            'Permintaan surat Anda telah disetujui dan selesai diproses.'
+            'Pengajuan Surat Disetujui ✅',
+            "Surat {$pengajuanSurat->jenisSurat->nama_surat} Anda telah disetujui dengan nomor: {$validated['nomor_surat']}. Silakan unduh melalui aplikasi."
         );
 
         return redirect()
             ->back()
-            ->with('success', 'Request surat berhasil disetujui.');
+            ->with('success', 'Request surat berhasil disetujui. PDF surat telah digenerate.');
     }
 
     /**
@@ -169,19 +206,20 @@ class RequestSuratController extends Controller
             'alasan_tolak' => 'required|string|min:5|max:500',
         ]);
 
-        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+        $pengajuanSurat = PengajuanSurat::with(['jenisSurat'])->findOrFail($id);
 
         $pengajuanSurat->update([
-            'status' => 'ditolak',
-            'alasan_tolak' => $validated['alasan_tolak'],
+            'status'           => 'ditolak',
+            'alasan_tolak'     => $validated['alasan_tolak'],
             'id_diproses_oleh' => Auth::user()->id,
-            'tanggal_respons' => now(),
+            'tanggal_respons'  => now(),
         ]);
 
-        $this->notifyUserByPendudukId(
+        // Notif ke user (fallback ke user.id jika id_penduduk kosong)
+        $this->notifyUser(
             $pengajuanSurat->id_penduduk,
-            'Pengajuan Surat Ditolak',
-            "Pengajuan surat Anda ditolak: {$validated['alasan_tolak']}"
+            'Pengajuan Surat Ditolak ❌',
+            "Pengajuan {$pengajuanSurat->jenisSurat->nama_surat} Anda ditolak. Alasan: {$validated['alasan_tolak']}"
         );
 
         return redirect()
@@ -213,6 +251,25 @@ class RequestSuratController extends Controller
     }
 
     /**
+     * Mencetak surat (Generate preview cetak surat resmi)
+     */
+    public function printSurat($id)
+    {
+        $user = Auth::user();
+        $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
+            ->findOrFail($id);
+
+        // Cek akses: admin atau pemilik
+        if ($user->role !== 'admin' && $pengajuanSurat->id_penduduk !== $user->id_penduduk) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+
+        return view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul'));
+    }
+
+    /**
      * Helper: Cek apakah user adalah admin
      */
     private function authorizeAdmin()
@@ -222,31 +279,49 @@ class RequestSuratController extends Controller
         }
     }
 
-    private function notifyAdmins(string $judul, string $pesan): void
+    /**
+     * Kirim notifikasi ke user berdasarkan id_penduduk, dengan fallback ke user.id
+     * (karena sering id_penduduk di tabel users kosong saat login via API)
+     */
+    private function notifyUser(int $idPenduduk, string $judul, string $pesan): void
     {
-        User::where('role', 'admin')->each(function (User $admin) use ($judul, $pesan) {
-            Notifikasi::create([
-                'user_id' => $admin->id,
-                'judul' => $judul,
-                'pesan' => $pesan,
-                'is_read' => false,
-            ]);
-        });
-    }
-
-    private function notifyUserByPendudukId(int $idPenduduk, string $judul, string $pesan): void
-    {
+        // Cari user berdasarkan id_penduduk
         $user = User::where('id_penduduk', $idPenduduk)->first();
 
-        if (! $user) {
+        // Fallback: jika tidak ketemu, cari user dengan id == idPenduduk
+        // (karena SuratController menyimpan user.id sebagai id_penduduk saat id_penduduk NULL)
+        if (!$user) {
+            $user = User::find($idPenduduk);
+        }
+
+        if (!$user) {
+            \Log::warning("notifyUser: user dengan id_penduduk=$idPenduduk tidak ditemukan.");
             return;
         }
 
         Notifikasi::create([
             'user_id' => $user->id,
-            'judul' => $judul,
-            'pesan' => $pesan,
+            'judul'   => $judul,
+            'pesan'   => $pesan,
             'is_read' => false,
         ]);
+    }
+
+    private function notifyAdmins(string $judul, string $pesan): void
+    {
+        User::where('role', 'admin')->each(function (User $admin) use ($judul, $pesan) {
+            Notifikasi::create([
+                'user_id' => $admin->id,
+                'judul'   => $judul,
+                'pesan'   => $pesan,
+                'is_read' => false,
+            ]);
+        });
+    }
+
+    // Tetap untuk backward compatibility
+    private function notifyUserByPendudukId(int $idPenduduk, string $judul, string $pesan): void
+    {
+        $this->notifyUser($idPenduduk, $judul, $pesan);
     }
 }

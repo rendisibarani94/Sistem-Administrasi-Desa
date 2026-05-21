@@ -52,8 +52,10 @@
                 <thead class="bg-gray-50 text-xs uppercase tracking-wide text-gray-500">
                     <tr>
                         <th scope="col" class="px-4 py-3 w-12">No</th>
+                        <th scope="col" class="px-4 py-3">Kategori</th>
                         <th scope="col" class="px-4 py-3">Subjek</th>
                         <th scope="col" class="px-4 py-3">Isi Pengaduan</th>
+                        <th scope="col" class="px-4 py-3 text-center">Foto Bukti</th>
                         <th scope="col" class="px-4 py-3">Pengirim</th>
                         <th scope="col" class="px-4 py-3">Catatan Admin</th>
                         <th scope="col" class="px-4 py-3">Status</th>
@@ -64,10 +66,24 @@
                     @forelse($pengaduan as $item)
                         <tr class="hover:bg-gray-50">
                             <td class="px-4 py-4 font-medium text-gray-900">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-4">
+                                <span class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-800 capitalize">
+                                    {{ $item->jenis ?? 'Umum' }}
+                                </span>
+                            </td>
                             <td class="px-4 py-4 font-semibold text-gray-800">{{ $item->judul }}</td>
-                            <td class="px-4 py-4 text-gray-600 whitespace-normal max-w-[360px]">{{ Str::limit($item->isi, 80) }}</td>
+                            <td class="px-4 py-4 text-gray-600 whitespace-normal max-w-[300px]">{{ Str::limit($item->isi, 80) }}</td>
+                            <td class="px-4 py-4 text-center">
+                                @if($item->foto)
+                                    <a href="{{ asset($item->foto) }}" target="_blank" class="inline-block hover:opacity-90 transition-opacity">
+                                        <img src="{{ asset($item->foto) }}" alt="Foto Bukti" class="w-12 h-12 object-cover rounded-lg border border-gray-200 shadow-sm inline-block">
+                                    </a>
+                                @else
+                                    <span class="text-gray-400 text-xs italic">Tidak ada</span>
+                                @endif
+                            </td>
                             <td class="px-4 py-4 text-gray-700">{{ $item->user?->name ?? 'Tidak diketahui' }}</td>
-                            <td class="px-4 py-4 text-sm text-gray-600 whitespace-normal max-w-[220px]">{{ $item->catatan_admin ?? '-' }}</td>
+                            <td class="px-4 py-4 text-sm text-gray-600 whitespace-normal max-w-[200px]">{{ $item->catatan_admin ?? '-' }}</td>
                             <td class="px-4 py-4">
                                 <span class="inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold {{ $item->status === 'baru' ? 'bg-yellow-100 text-yellow-700' : ($item->status === 'diproses' ? 'bg-blue-100 text-blue-700' : ($item->status === 'selesai' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700')) }}">
                                     {{ ucfirst($item->status) }}
