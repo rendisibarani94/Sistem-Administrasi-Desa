@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\PengaduanController;
 use App\Http\Controllers\Api\LayananSuratApiController;
 use App\Http\Controllers\Api\KartuKeluargaApiController;
 use App\Http\Controllers\Api\InformationApiController; // TAMBAHAN: Controller untuk Berita & Pengumuman
+use App\Http\Controllers\Api\PengajuanSuratController;
 
 // =======================
 // PUBLIC ROUTE
@@ -72,6 +73,11 @@ Route::middleware(['auth:sanctum', 'cors'])->group(function () {
         Route::post('/',    [PengaduanController::class, 'store']);
         Route::get('/{id}', [PengaduanController::class, 'show']);
     });
+
+    // DYNAMIC FORMS / PENGAJUAN SURAT BARU (EAV)
+    Route::get('/dynamic/jenis-surat', [PengajuanSuratController::class, 'getJenisSurat']);
+    Route::get('/dynamic/persyaratan/{jenis_surat_id}', [PengajuanSuratController::class, 'getPersyaratan']);
+    Route::post('/dynamic/pengajuan', [PengajuanSuratController::class, 'storePengajuan']);
 });
 
 

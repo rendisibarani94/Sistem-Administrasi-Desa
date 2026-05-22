@@ -275,14 +275,26 @@
     if (is_string($df)) { $df = json_decode($df, true) ?? []; }
     if (!is_array($df)) { $df = []; }
 
+    // Robust Lookup Pemohon: cari relasi penduduk, atau cari user pemohon lalu relasi penduduknya
+    $pemohon = $pengajuanSurat->penduduk;
+    $userPemohon = null;
+    if (!$pemohon) {
+        $userPemohon = \App\Models\User::where('id_penduduk', $pengajuanSurat->id_penduduk)
+            ->orWhere('id', $pengajuanSurat->id_penduduk)
+            ->first();
+        if ($userPemohon) {
+            $pemohon = $userPemohon->penduduk;
+        }
+    }
+
     // ===== Helper: ambil nilai dari data_form, fallback ke penduduk =====
-    $nama       = $pengajuanSurat->penduduk->nama_lengkap ?? $df['nama'] ?? $df['nama_lengkap'] ?? '-';
-    $nik        = $pengajuanSurat->penduduk->nik           ?? $df['nik']  ?? '-';
-    $noKk       = $df['no_kk'] ?? $df['nomor_kk'] ?? ($pengajuanSurat->penduduk->no_kk ?? '-');
+    $nama       = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? '-';
+    $nik        = $pemohon?->nik           ?? $userPemohon?->nik ?? $df['nik']  ?? '-';
+    $noKk       = $df['no_kk'] ?? $df['nomor_kk'] ?? ($pemohon?->no_kk ?? '-');
     $ttl        = $df['ttl']   ?? $df['tempat_lahir'] ?? '-';
     $jk         = $df['jk']    ?? $df['jenis_kelamin'] ?? '-';
-    $pekerjaan  = $df['pekerjaan'] ?? ($pengajuanSurat->penduduk->pekerjaan ?? '-');
-    $alamat     = $df['alamat'] ?? ($pengajuanSurat->penduduk->alamat ?? '-');
+    $pekerjaan  = $df['pekerjaan'] ?? ($pemohon?->pekerjaan ?? '-');
+    $alamat     = $df['alamat'] ?? ($pemohon?->alamat ?? '-');
     $keperluan  = $df['keperluan'] ?? '-';
     $penghasilan= $df['penghasilan'] ?? '-';
     $namaAnak   = $df['nama_anak'] ?? '-';

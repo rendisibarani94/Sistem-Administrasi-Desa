@@ -53,19 +53,28 @@ class PengaduanController extends Controller
             'foto' => $fotoPath,
         ]);
 
+        // Kirim notifikasi ke semua admin
         User::where('role', 'admin')->each(function (User $admin) use ($pengaduan) {
             Notifikasi::create([
                 'user_id' => $admin->id,
-                'judul' => 'Pengaduan Baru',
-                'pesan' => "Pengaduan baru dari pengguna: {$pengaduan->judul}",
+                'judul'   => 'Pengaduan Baru',
+                'pesan'   => "Pengaduan baru dari pengguna: {$pengaduan->judul}",
                 'is_read' => false,
             ]);
         });
 
+        // Kirim notifikasi ke user yang mengirim pengaduan
+        Notifikasi::create([
+            'user_id' => Auth::id(),
+            'judul'   => 'Pengaduan Terkirim',
+            'pesan'   => 'Pengaduan Anda berhasil dikirim.',
+            'is_read' => false,
+        ]);
+
         return response()->json([
-            'status' => 'success',
+            'status'  => 'success',
             'message' => 'Pengaduan berhasil dikirim',
-            'data' => $pengaduan
+            'data'    => $pengaduan
         ]);
     }
 

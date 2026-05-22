@@ -95,6 +95,10 @@
 
                     $layananSuratChildLinks = [
                         [
+                            'route' => 'admin.jenis-surat.index',
+                            'text'  => 'Master Jenis Surat',
+                        ],
+                        [
                             'route' => 'admin.layanan-surat.request.index',
                             'text'  => 'Request Surat',
                         ],

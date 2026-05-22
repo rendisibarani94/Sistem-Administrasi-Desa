@@ -37,10 +37,16 @@ class InformationApiController extends Controller
                 $ikon = '❌';
             } elseif (str_contains($judulLower, 'diproses')) {
                 $tipe = 'diproses';
-                $ikon = '⏳';
+                $ikon = '🔄';
+            } elseif (str_contains($judulLower, 'pengaduan terkirim')) {
+                $tipe = 'pengaduan_terkirim';
+                $ikon = '📨';
             } elseif (str_contains($judulLower, 'pengajuan baru') || str_contains($judulLower, 'surat baru')) {
                 $tipe = 'pengajuan_baru';
                 $ikon = '📄';
+            } elseif (str_contains($judulLower, 'pengaduan baru')) {
+                $tipe = 'pengaduan_baru';
+                $ikon = '📢';
             }
 
             return [

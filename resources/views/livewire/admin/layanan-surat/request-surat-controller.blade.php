@@ -154,8 +154,21 @@
                                         $df = $surat->data_form;
                                         if (is_string($df)) { $df = json_decode($df, true) ?? []; }
                                         if (!is_array($df)) { $df = []; }
-                                        $namaPemohon = $surat->penduduk->nama_lengkap ?? $df['nama'] ?? $df['nama_lengkap'] ?? 'N A';
-                                        $nikPemohon  = $surat->penduduk->nik ?? $df['nik'] ?? '';
+                                        
+                                        // Robust Lookup Pemohon: cari relasi penduduk, atau cari user pemohon lalu relasi penduduknya
+                                        $pemohon = $surat->penduduk;
+                                        $userPemohon = null;
+                                        if (!$pemohon) {
+                                            $userPemohon = \App\Models\User::where('id_penduduk', $surat->id_penduduk)
+                                                ->orWhere('id', $surat->id_penduduk)
+                                                ->first();
+                                            if ($userPemohon) {
+                                                $pemohon = $userPemohon->penduduk;
+                                            }
+                                        }
+
+                                        $namaPemohon = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? 'N A';
+                                        $nikPemohon  = $pemohon?->nik ?? $userPemohon?->nik ?? $df['nik'] ?? '';
                                         $nameParts   = explode(' ', $namaPemohon);
                                         $initials    = strtoupper(substr($nameParts[0] ?? 'N', 0, 1)) . strtoupper(substr($nameParts[1] ?? 'A', 0, 1));
                                     @endphp
@@ -226,7 +239,7 @@
                                     @if (in_array($surat->status, ['diajukan', 'diproses']))
                                         {{-- Tombol Setujui --}}
                                         <form action="{{ route('admin.layanan-surat.request.setujui', $surat->id_pengajuan_surat) }}" method="POST"
-                                            onsubmit="return confirm('Setujui request surat dari {{ $surat->penduduk->nama_lengkap ?? 'pemohon' }}?')">
+                                            onsubmit="return confirm('Setujui request surat dari {{ $namaPemohon }}?')">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" title="Setujui"
@@ -241,7 +254,7 @@
                                         <button 
                                             type="button"
                                             data-id="{{ $surat->id_pengajuan_surat }}"
-                                            data-pemohon="{{ $surat->penduduk->nama_lengkap ?? 'pemohon' }}"
+                                            data-pemohon="{{ $namaPemohon }}"
                                             onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
                                             title="Tolak"
                                             class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">

@@ -61,15 +61,30 @@
             if (!is_array($dataForm)) {
                 $dataForm = [];
             }
-            // Fallback: get applicant name/NIK from data_form if penduduk relation is null
-            $namaFallback = $pengajuanSurat->penduduk->nama_lengkap 
+
+            // Robust Lookup Pemohon: cari relasi penduduk, atau cari user pemohon lalu relasi penduduknya
+            $pemohon = $pengajuanSurat->penduduk;
+            $userPemohon = null;
+            if (!$pemohon) {
+                $userPemohon = \App\Models\User::where('id_penduduk', $pengajuanSurat->id_penduduk)
+                    ->orWhere('id', $pengajuanSurat->id_penduduk)
+                    ->first();
+                if ($userPemohon) {
+                    $pemohon = $userPemohon->penduduk;
+                }
+            }
+
+            // Fallback: get applicant name/NIK from data_form if relations are null
+            $namaFallback = $pemohon?->nama_lengkap 
+                ?? $userPemohon?->name
                 ?? $dataForm['nama'] 
                 ?? $dataForm['nama_lengkap'] 
                 ?? '-';
-            $nikFallback  = $pengajuanSurat->penduduk->nik 
+            $nikFallback  = $pemohon?->nik 
+                ?? $userPemohon?->nik
                 ?? $dataForm['nik'] 
                 ?? '-';
-            $alamatFallback = $pengajuanSurat->penduduk->alamat 
+            $alamatFallback = $pemohon?->alamat 
                 ?? $dataForm['alamat'] 
                 ?? '-';
         @endphp
@@ -140,7 +155,19 @@
                             <div class="flex gap-3">
                                 <div class="flex-1">
                                     <p class="text-xs text-gray-500 mb-1">{{ ucfirst(str_replace('_', ' ', $key)) }}</p>
-                                    <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
+                                    @if(is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value)))
+                                        <div class="mt-1">
+                                            <a href="{{ asset('storage/' . $value) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-sky-600 hover:text-sky-800 font-semibold underline">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                </svg>
+                                                Lihat Berkas / Foto
+                                            </a>
+                                        </div>
+                                    @else
+                                        <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
+                                    @endif
                                 </div>
                             </div>
                         @endforeach

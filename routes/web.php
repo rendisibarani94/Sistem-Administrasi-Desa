@@ -103,8 +103,7 @@ use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukCreateExcelContro
 use App\Livewire\Admin\Kependudukan\IndukPenduduk\IndukPendudukKkMutasiController;
 use App\Livewire\Admin\Kependudukan\KartuKeluarga\KartuKeluargaDetailController;
 use App\Livewire\Admin\LayananSurat\RequestSuratController;
-
-
+use App\Livewire\Admin\LayananSurat\JenisSuratController;
 
 use App\Livewire\Admin\LayananSurat\PengaduanSuratController;
 use App\Livewire\Admin\LayananSurat\NotifikasiSuratController;
@@ -155,6 +154,7 @@ Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->gr
     Route::get('/{id}/download', [RequestSuratController::class, 'download'])->name('download');
     Route::get('/{id}/print', [RequestSuratController::class, 'printSurat'])->name('print');
 });
+Route::get('/layanan-surat/jenis-surat', JenisSuratController::class)->name('admin.jenis-surat.index');
 Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');
 Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan-surat.notifikasi');
 // Administrasi Umum
