@@ -121,8 +121,12 @@ class RequestSuratController extends Controller
         $user = Auth::user();
         $isAdmin = $user->role === 'admin';
 
-        $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
-            ->findOrFail($id);
+        $pengajuanSurat = PengajuanSurat::with([
+                'jenisSurat',
+                'penduduk',
+                'diprosesOleh',
+                'detailPengajuanSurat.persyaratanSurat', // Data EAV dari pengajuan mobile
+            ])->findOrFail($id);
 
         if (!$isAdmin && $pengajuanSurat->id_penduduk !== $user->id_penduduk) {
             abort(403, 'Unauthorized action.');

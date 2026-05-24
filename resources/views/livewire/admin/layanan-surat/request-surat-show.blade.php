@@ -175,6 +175,52 @@
                 </div>
             @endif
 
+            {{-- ✅ DATA EAV: Dokumen & Persyaratan dari Form Mobile --}}
+            @if ($pengajuanSurat->detailPengajuanSurat && $pengajuanSurat->detailPengajuanSurat->count() > 0)
+                <div class="pb-6 border-b border-gray-100">
+                    <h3 class="text-sm font-semibold text-gray-600 mb-1">Dokumen &amp; Persyaratan</h3>
+                    <p class="text-xs text-gray-400 mb-4">Data yang diinput warga melalui aplikasi mobile</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        @foreach ($pengajuanSurat->detailPengajuanSurat as $detail)
+                            @php
+                                $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
+                                $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
+                                $val       = $detail->value;
+                                $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
+                            @endphp
+                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                <p class="text-xs text-gray-500 font-medium mb-2">
+                                    @if ($tipeField === 'file_image') 🖼️
+                                    @elseif ($tipeField === 'date') 📅
+                                    @elseif ($tipeField === 'number') 🔢
+                                    @else 📝
+                                    @endif
+                                    {{ $namaField }}
+                                </p>
+                                @if ($isFile && $val)
+                                    <div class="space-y-2">
+                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
+                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
+                                            <img src="{{ asset('storage/' . $val) }}"
+                                                alt="{{ $namaField }}"
+                                                class="w-full h-36 object-cover"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">📎 Lihat Berkas (klik untuk buka)</div>
+                                        </a>
+                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
+                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">🔗 Buka di tab baru</a>
+                                    </div>
+                                @elseif ($val)
+                                    <p class="text-sm font-medium text-gray-800">{{ $val }}</p>
+                                @else
+                                    <p class="text-sm text-gray-400 italic">— Tidak diisi —</p>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
+
             {{-- Informasi Respons --}}
             <div class="pb-6 border-b border-gray-100">
                 <h3 class="text-sm font-semibold text-gray-600 mb-4">Informasi Respons</h3>

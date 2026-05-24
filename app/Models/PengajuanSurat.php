@@ -78,23 +78,9 @@ class PengajuanSurat extends Model
         $this->attributes['id_jenis_surat'] = $value;
     }
 
-    // Accessor/Mutator for status to map pending <-> diajukan
-    public function getStatusAttribute($value)
-    {
-        if ($value === 'diajukan') {
-            return 'pending';
-        }
-        return $value;
-    }
-
-    public function setStatusAttribute($value)
-    {
-        if ($value === 'pending') {
-            $this->attributes['status'] = 'diajukan';
-        } else {
-            $this->attributes['status'] = $value;
-        }
-    }
+    // Status Constants
+    // Semua nilai sesuai dengan nilai di database: 'diajukan', 'diproses', 'selesai', 'ditolak'
+    // Tidak ada mapping/accessor status agar konsisten antara admin web dan API mobile
 
     /**
      * Get the user who submitted this letter application.

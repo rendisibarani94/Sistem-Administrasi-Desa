@@ -21,22 +21,24 @@ class SuratController extends Controller
 
         if ($user->role === 'admin') {
 
-            $data = PengajuanSurat::with(['jenisSurat', 'penduduk'])
+            $data = PengajuanSurat::with(['jenisSurat', 'penduduk', 'detailPengajuanSurat.persyaratanSurat'])
                 ->where('status', PengajuanSurat::DIAJUKAN)
                 ->latest()
                 ->get();
 
         } elseif ($user->role === 'kepala_desa') {
 
-            $data = PengajuanSurat::with(['jenisSurat', 'penduduk'])
+            $data = PengajuanSurat::with(['jenisSurat', 'penduduk', 'detailPengajuanSurat.persyaratanSurat'])
                 ->where('status', PengajuanSurat::DIPROSES)
                 ->latest()
                 ->get();
 
         } else {
+            // Masyarakat: tampilkan SEMUA riwayat pengajuan milik user
+            // Cari berdasarkan id_penduduk atau user.id sebagai fallback
             $pendudukId = $user->id_penduduk ?? $user->id;
 
-            $data = PengajuanSurat::with(['jenisSurat'])
+            $data = PengajuanSurat::with(['jenisSurat', 'detailPengajuanSurat.persyaratanSurat'])
                 ->where('id_penduduk', $pendudukId)
                 ->latest()
                 ->get();

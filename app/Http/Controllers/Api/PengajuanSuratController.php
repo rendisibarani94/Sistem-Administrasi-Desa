@@ -108,10 +108,13 @@ class PengajuanSuratController extends Controller
 
         try {
             // A. Insert ke tabel pengajuan_surat
+            // PENTING: Gunakan kolom asli (id_penduduk, id_jenis_surat) secara langsung
+            // agar relasi penduduk di admin web dapat terbaca dengan benar
+            $idPenduduk = $user->id_penduduk ?? $user->id;
             $pengajuan = PengajuanSurat::create([
-                'user_id' => $user->id,
-                'jenis_surat_id' => $jenisSuratId,
-                'status' => PengajuanSurat::PENDING // 'pending'
+                'id_penduduk'    => $idPenduduk,
+                'id_jenis_surat' => $jenisSuratId,
+                'status'         => 'diajukan',
             ]);
 
             // Ambil jawaban teks dan file
@@ -197,10 +200,29 @@ class PengajuanSuratController extends Controller
             // Commit jika semua proses berhasil
             DB::commit();
 
+            // F. Kirim notifikasi ke semua admin
+            $jenisSuratNama = \App\Models\JenisSurat::find($jenisSuratId)?->nama_surat ?? 'Surat';
+            \App\Models\User::where('role', 'admin')->each(function ($admin) use ($pengajuan, $jenisSuratNama, $user) {
+                \App\Models\Notifikasi::create([
+                    'user_id' => $admin->id,
+                    'judul'   => 'Pengajuan Surat Baru 📄',
+                    'pesan'   => "{$user->name} mengajukan {$jenisSuratNama}. Silakan tinjau di halaman Request Surat.",
+                    'is_read' => false,
+                ]);
+            });
+
+            // G. Kirim notifikasi konfirmasi ke pemohon
+            \App\Models\Notifikasi::create([
+                'user_id' => $user->id,
+                'judul'   => 'Pengajuan Berhasil Dikirim ✅',
+                'pesan'   => "Pengajuan {$jenisSuratNama} Anda berhasil dikirim dan sedang menunggu verifikasi admin desa.",
+                'is_read' => false,
+            ]);
+
             return response()->json([
-                'status' => true,
+                'status'  => true,
                 'message' => 'Pengajuan surat berhasil dikirim.',
-                'data' => $pengajuan->load('detailPengajuanSurat.persyaratanSurat')
+                'data'    => $pengajuan->load('detailPengajuanSurat.persyaratanSurat')
             ], 201);
 
         } catch (\Exception $e) {

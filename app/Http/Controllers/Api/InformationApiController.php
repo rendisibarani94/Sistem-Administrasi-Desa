@@ -144,7 +144,28 @@ class InformationApiController extends Controller
     public function getBerita(Request $request)
     {
         try {
-            $berita = DB::table('berita')->orderByDesc('created_at')->limit(20)->get();
+            $berita = DB::table('berita')
+                ->orderByDesc('created_at')
+                ->limit(20)
+                ->get()
+                ->map(function ($item) {
+                    $gambarUrl = null;
+                    if (!empty($item->gambar)) {
+                        $gambarUrl = asset('storage/' . $item->gambar);
+                    }
+
+                    return [
+                        'id_berita'   => (string) $item->id_berita,
+                        'judul'       => $item->judul,
+                        'deskripsi'   => $item->deskripsi,
+                        'gambar'      => $item->gambar,
+                        'gambar_url'  => $gambarUrl,
+                        'id_dibuat_oleh' => $item->id_dibuat_oleh,
+                        'created_at'  => $item->created_at ?? null,
+                        'updated_at'  => $item->updated_at ?? null,
+                    ];
+                });
+
             return response()->json(['status' => 'success', 'data' => $berita]);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'success', 'data' => []]);
@@ -158,10 +179,35 @@ class InformationApiController extends Controller
     public function getPengumuman(Request $request)
     {
         try {
-            $pengumuman = DB::table('pengumuman')->orderByDesc('created_at')->limit(20)->get();
-            return response()->json(['status' => 'success', 'data' => $pengumuman]);
+            $pengumuman = DB::table('pengumuman')
+                ->where('is_deleted', 0)
+                ->orderByDesc('created_at')
+                ->limit(50)
+                ->get(['id_pengumuman', 'judul', 'deskripsi', 'gambar', 'nama_pembuat', 'created_at'])
+                ->map(function ($item) {
+                    // Format gambar menjadi URL lengkap agar bisa langsung dipakai Flutter
+                    $gambarUrl = null;
+                    if (!empty($item->gambar)) {
+                        $gambarUrl = asset('storage/' . $item->gambar);
+                    }
+
+                    return [
+                        'id'          => (string) $item->id_pengumuman,
+                        'judul'       => $item->judul,
+                        'isi'         => $item->deskripsi,
+                        'gambar_url'  => $gambarUrl,
+                        'nama_pembuat'=> $item->nama_pembuat ?? 'Admin Desa',
+                        'created_at'  => $item->created_at,
+                    ];
+                });
+
+            return response()->json([
+                'status' => 'success',
+                'data'   => $pengumuman,
+                'total'  => $pengumuman->count(),
+            ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'success', 'data' => []]);
+            return response()->json(['status' => 'success', 'data' => [], 'total' => 0]);
         }
     }
 }
