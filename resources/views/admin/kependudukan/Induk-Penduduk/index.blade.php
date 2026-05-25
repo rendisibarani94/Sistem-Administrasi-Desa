@@ -135,30 +135,51 @@
                         <td class="px-6 py-4 whitespace-nowrap text-center font-semibold">
                             {{ $item->kedudukan_keluarga }}
                         </td>
-                        <td class="px-6 py-4 font-semibold flex space-x-4 justify-center">
+                        <td class="px-6 py-4 font-semibold flex space-x-3 justify-center items-center">
+                            <!-- Account Status / Create Account Button -->
+                            @php
+                                $userAcc = DB::table('users')->where('nik', $item->nik)->first();
+                            @endphp
+                            @if($userAcc)
+                                <div class="inline-flex items-center text-teal-700 font-bold bg-teal-50 border border-teal-200 px-2 py-0.5 rounded text-xs space-x-1" title="Email: {{ $userAcc->email }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                                      <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.13-5.58Z" clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Akun Aktif</span>
+                                </div>
+                            @else
+                                <a wire:click="openCreateAccountModal({{ $item->id_penduduk }})" class="text-sky-600 hover:text-sky-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer" title="Buatkan akun untuk warga ini">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
+                                      <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6 6 0 0 1 6-6h.75a6 6 0 0 1 6 6v.11m-12 0A1.75 1.75 0 0 0 4.75 21h8.5A1.75 1.75 0 0 0 15 19.235" />
+                                    </svg>
+                                    <span class="text-xs">Buat Akun</span>
+                                </a>
+                            @endif
+
+                            <div class="h-4 w-px bg-gray-300 mx-1"></div>
+
                             <!-- Edit Button -->
-                            <a href="{{ route('indukPenduduk.edit', $item->id_penduduk) }}" class="text-green-600 hover:text-green-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <a href="{{ route('indukPenduduk.edit', $item->id_penduduk) }}" class="text-green-600 hover:text-green-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 3.487a2.121 2.121 0 0 1 3 3L7.487 18.862l-3.75.75.75-3.75L16.862 3.487Z" />
                                 </svg>
-                                <span>Edit</span>
+                                <span class="text-xs">Edit</span>
                             </a>
 
-                            <!-- Edit Button -->
-                            <a wire:click="mutasi({{ $item->id_penduduk }})" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                <svg class="w-6 h-6 text-orange-500 hover:text-orange-800" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24" class="w-5 h-6 pt-1">
+                            <!-- Mutasi Button -->
+                            <a wire:click="mutasi({{ $item->id_penduduk }})" class="text-orange-500 hover:text-orange-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer">
+                                <svg class="w-4 h-4 text-orange-500 hover:text-orange-850" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                     <path fill-rule="evenodd" d="M5 8a4 4 0 1 1 8 0 4 4 0 0 1-8 0Zm-2 9a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1Zm13-6a1 1 0 1 0 0 2h4a1 1 0 1 0 0-2h-4Z" clip-rule="evenodd" />
                                 </svg>
-
-                                <span>Mutasi</span>
+                                <span class="text-xs">Mutasi</span>
                             </a>
 
                             <!-- Delete Button -->
-                            <a wire:click="confirmDelete({{ $item->id_penduduk }})" type="button" class="text-red-600 hover:text-red-900 font-medium transition duration-200 flex items-center space-x-1.5 cursor-pointer">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                            <a wire:click="confirmDelete({{ $item->id_penduduk }})" type="button" class="text-red-600 hover:text-red-900 font-medium transition duration-200 flex items-center space-x-1 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
-                                <span>Hapus</span>
+                                <span class="text-xs">Hapus</span>
                             </a>
                         </td>
                     </tr>
@@ -171,6 +192,68 @@
             </div>
         </div>
     </div>
+
+    {{-- Modal Buat Akun Warga --}}
+    @if($showAccountModal)
+    <div class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black opacity-40"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative w-full max-w-md mx-auto my-6 z-50">
+            <div class="relative flex flex-col w-full bg-white border-0 rounded-xl shadow-2xl outline-none focus:outline-none">
+                <!-- Header -->
+                <div class="flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        Buat Akun Masyarakat 👤
+                    </h3>
+                    <button type="button" wire:click="closeAccountModal" class="p-1 ml-auto bg-transparent border-0 text-gray-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:text-red-500 transition duration-150">
+                        ×
+                    </button>
+                </div>
+                
+                <!-- Body -->
+                <div class="relative p-6 flex-auto">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nama Lengkap</label>
+                        <input type="text" class="shadow-sm border rounded-lg w-full py-2 px-3 text-gray-600 bg-gray-100 leading-tight focus:outline-none" value="{{ $selectedPendudukName }}" disabled />
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 text-sm font-bold mb-2">NIK</label>
+                        <input type="text" class="shadow-sm border rounded-lg w-full py-2 px-3 text-gray-600 bg-gray-100 leading-tight focus:outline-none" value="{{ $selectedPendudukNik }}" disabled />
+                    </div>
+                    
+                    <form wire:submit.prevent="saveAccount">
+                        <div class="mb-4">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Email Warga <span class="text-red-500">*</span></label>
+                            <input type="email" wire:model="email" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('email') border-red-500 @enderror" placeholder="warga@domain.com" required />
+                            @error('email') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Password <span class="text-red-500">*</span></label>
+                            <input type="password" wire:model="password" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('password') border-red-500 @enderror" placeholder="Minimal 6 karakter" required />
+                            @error('password') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+                        
+                        <!-- Footer Actions -->
+                        <div class="flex items-center justify-end space-x-2 pt-4 border-t border-solid border-gray-200 rounded-b">
+                            <button type="button" wire:click="closeAccountModal" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-150">
+                                Batal
+                            </button>
+                            <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg transition duration-150 flex items-center">
+                                <svg wire:loading wire:target="saveAccount" class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                <span>Buat Akun</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
 
 </div>
 

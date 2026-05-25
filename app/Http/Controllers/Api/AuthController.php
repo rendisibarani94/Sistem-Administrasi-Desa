@@ -45,6 +45,32 @@ class AuthController extends Controller
 
     $token = $user->createToken('mobile-token')->plainTextToken;
 
+    $penduduk = $user->penduduk;
+    if (!$penduduk && $user->nik) {
+        $penduduk = \App\Models\Penduduk::where('nik', $user->nik)->first();
+        if ($penduduk) {
+            $user->update(['id_penduduk' => $penduduk->id_penduduk]);
+        }
+    }
+    
+    $alamat = '';
+    $tempatLahir = '';
+    $tanggalLahir = '';
+    $noKk = '';
+    $agama = '';
+
+    if ($penduduk) {
+        $alamat = $penduduk->alamat ?? '';
+        $tempatLahir = $penduduk->tempat_lahir ?? '';
+        $tanggalLahir = $penduduk->tanggal_lahir ? $penduduk->tanggal_lahir->format('Y-m-d') : '';
+        $agama = $penduduk->agama ?? '';
+        
+        $kartuKeluarga = $penduduk->kartuKeluarga;
+        if ($kartuKeluarga) {
+            $noKk = $kartuKeluarga->nomor_kartu_keluarga ?? '';
+        }
+    }
+
     return response()->json([
         'status' => 'success',
         'message' => 'Login berhasil',
@@ -54,7 +80,12 @@ class AuthController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'nik' => $user->nik,
-                'role' => $user->role
+                'role' => $user->role,
+                'alamat' => $alamat,
+                'tempat_lahir' => $tempatLahir,
+                'tanggal_lahir' => $tanggalLahir,
+                'no_kk' => $noKk,
+                'agama' => $agama
             ]
         ]
     ]);

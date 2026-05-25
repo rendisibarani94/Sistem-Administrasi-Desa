@@ -135,4 +135,65 @@ public function register(Request $request)
             'message' => 'User berhasil dihapus'
         ]);
     }
+
+    // ==================================================
+    // UPDATE PROFILE (NEW FOR MOBILE CLIENT)
+    // ==================================================
+    public function updateProfile(Request $request)
+    {
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Sesi tidak valid'
+            ], 401);
+        }
+
+        $request->validate([
+            'nama' => 'required|string|max:255',
+            'alamat' => 'nullable|string',
+            'tempat_lahir' => 'nullable|string',
+            'tanggal_lahir' => 'nullable|date',
+            'no_kk' => 'nullable|string',
+        ]);
+
+        // Update User name
+        $user->update([
+            'name' => $request->nama,
+        ]);
+
+        // Update Penduduk relationship
+        $penduduk = $user->penduduk;
+        if ($penduduk) {
+            $penduduk->update([
+                'nama_lengkap' => $request->nama,
+                'alamat' => $request->alamat,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tanggal_lahir' => $request->tanggal_lahir,
+            ]);
+
+            // Update Kartu Keluarga nomor_kartu_keluarga
+            if ($request->filled('no_kk')) {
+                $kartuKeluarga = $penduduk->kartuKeluarga;
+                if ($kartuKeluarga) {
+                    $kartuKeluarga->update([
+                        'nomor_kartu_keluarga' => $request->no_kk,
+                    ]);
+                } else {
+                    $newKk = \App\Models\KartuKeluarga::create([
+                        'nomor_kartu_keluarga' => $request->no_kk,
+                        'alamat_kk' => $request->alamat ?? '',
+                    ]);
+                    $penduduk->update([
+                        'id_kartu_keluarga' => $newKk->id_kartu_keluarga,
+                    ]);
+                }
+            }
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Profil berhasil diperbarui'
+        ]);
+    }
 }

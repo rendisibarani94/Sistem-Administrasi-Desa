@@ -14,6 +14,14 @@ class IndukPendudukController extends Component
     public $deleteId;
     public $search;
 
+    // Account Creation Modal States
+    public $showAccountModal = false;
+    public $selectedPendudukId;
+    public $selectedPendudukName;
+    public $selectedPendudukNik;
+    public $email;
+    public $password;
+
     public function confirmDelete($id)
     {
         $this->deleteId = $id;
@@ -75,6 +83,62 @@ class IndukPendudukController extends Component
         } else {
             return $this->redirect(route('indukPenduduk.mutasi', ['id' => $id_penduduk]));
         }
+    }
+
+    // ==================================================
+    // ACCOUNTS MANAGEMENT METHODS
+    // ==================================================
+    public function openCreateAccountModal($id_penduduk)
+    {
+        $penduduk = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->first();
+        if ($penduduk) {
+            $this->selectedPendudukId = $id_penduduk;
+            $this->selectedPendudukName = $penduduk->nama_lengkap;
+            $this->selectedPendudukNik = $penduduk->nik;
+            $this->email = '';
+            $this->password = 'password123'; // Default password
+            $this->showAccountModal = true;
+        }
+    }
+
+    public function closeAccountModal()
+    {
+        $this->showAccountModal = false;
+        $this->reset(['selectedPendudukId', 'selectedPendudukName', 'selectedPendudukNik', 'email', 'password']);
+        $this->resetErrorBag();
+    }
+
+    public function saveAccount()
+    {
+        $this->validate([
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+        ], [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.min' => 'Password minimal 6 karakter.',
+        ]);
+
+        // Insert new user account tied to selected citizen
+        DB::table('users')->insert([
+            'name' => $this->selectedPendudukName,
+            'nik' => $this->selectedPendudukNik,
+            'email' => $this->email,
+            'password' => bcrypt($this->password),
+            'role' => 'masyarakat',
+            'id_penduduk' => $this->selectedPendudukId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->dispatch('swal:success', [
+            'title' => 'Akun Berhasil Dibuat! 🎉',
+            'text' => 'Akun kependudukan untuk ' . $this->selectedPendudukName . ' telah berhasil dibuat.',
+        ]);
+
+        $this->closeAccountModal();
     }
 
     #[Layout('components.layouts.layouts')]

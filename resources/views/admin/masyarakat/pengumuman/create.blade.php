@@ -36,7 +36,7 @@
 
                 <div class="input-component">
                     <label for="judul" class="block mb-2 text-sm font-semibold text-gray-950">Judul Pengumuman Desa</label>
-                    <input type="text" id="judul" wire:model.live="judul" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('judul') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Judul Pengumuman " autocomplete="off" />
+                    <input type="text" id="judul" wire:model="judul" class="bg-gray-50 border text-gray-900 font-medium text-sm rounded-sm block w-full p-2.5 placeholder:text-slate-600 @error('judul') border-red-500 focus:ring-red-500 focus:border-red-500 @else border-gray-400 focus:ring-sky-500 focus:border-sky-500 @enderror" placeholder="Masukan Judul Pengumuman " autocomplete="off" />
                     <div class="h-0.25">
                         @error('judul') <span class="errorMsg text-red-500 font-semibold text-xs italic">{{ "*".$message }}</span> @enderror
                     </div>
@@ -46,10 +46,7 @@
                 <div class="input-component">
                     <label for="editor-container" class="block mb-2 text-sm font-semibold text-gray-950">Deskripsi Pengumuman</label>
                     <div wire:ignore>
-                        <!-- Editor container -->
-                        <div id="editor-container" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm">
-                        </div>
-                        <!-- Hidden input for Livewire binding -->
+                        <div id="editor-container" style="height: 200px;" class="bg-white border border-gray-300 rounded-sm"></div>
                         <input type="hidden" id="deskripsi-input" wire:model="deskripsi">
                     </div>
                     <div class="h-0.25">
@@ -84,7 +81,6 @@
             }
         });
 
-        // Function to initialize content
         function initializeContent() {
             const hiddenInput = document.querySelector('#deskripsi-input');
             if (hiddenInput && hiddenInput.value && quill.root.innerHTML !== hiddenInput.value) {
@@ -92,17 +88,14 @@
             }
         }
 
-        // Initialize content immediately if available
         initializeContent();
 
-        // Also initialize on Livewire updates
         Livewire.hook('message.processed', (message, component) => {
             if (component.id === @this.__id) {
                 initializeContent();
             }
         });
 
-        // Update Livewire on content change
         quill.on('text-change', function() {
             const content = quill.root.innerHTML;
             const hiddenInput = document.querySelector('#deskripsi-input');
