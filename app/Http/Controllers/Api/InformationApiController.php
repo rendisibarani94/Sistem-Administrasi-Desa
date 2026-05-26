@@ -148,10 +148,11 @@ class InformationApiController extends Controller
                 ->orderByDesc('created_at')
                 ->limit(20)
                 ->get()
-                ->map(function ($item) {
+                ->map(function ($item) use ($request) {
                     $gambarUrl = null;
                     if (!empty($item->gambar)) {
-                        $gambarUrl = asset('storage/' . $item->gambar);
+                        $baseUrl = $request->getSchemeAndHttpHost();
+                        $gambarUrl = $baseUrl . '/storage/' . $item->gambar;
                     }
 
                     return [
@@ -180,24 +181,34 @@ class InformationApiController extends Controller
     {
         try {
             $pengumuman = DB::table('pengumuman')
-                ->where('is_deleted', 0)
-                ->orderByDesc('created_at')
+                ->leftJoin('users', 'pengumuman.id_dibuat_oleh', '=', 'users.id')
+                ->where('pengumuman.is_deleted', 0)
+                ->orderByDesc('pengumuman.created_at')
                 ->limit(50)
-                ->get(['id_pengumuman', 'judul', 'deskripsi', 'gambar', 'nama_pembuat', 'created_at'])
-                ->map(function ($item) {
-                    // Format gambar menjadi URL lengkap agar bisa langsung dipakai Flutter
+                ->get([
+                    'pengumuman.id_pengumuman',
+                    'pengumuman.judul',
+                    'pengumuman.deskripsi',
+                    'pengumuman.gambar',
+                    'pengumuman.created_at',
+                    'users.name as nama_pembuat_user',
+                ])
+                ->map(function ($item) use ($request) {
+                    // Format gambar menjadi URL lengkap berdasarkan host request,
+                    // sehingga bisa diakses dari HP Android (via IP) maupun browser (via localhost)
                     $gambarUrl = null;
                     if (!empty($item->gambar)) {
-                        $gambarUrl = asset('storage/' . $item->gambar);
+                        $baseUrl = $request->getSchemeAndHttpHost();
+                        $gambarUrl = $baseUrl . '/storage/' . $item->gambar;
                     }
 
                     return [
-                        'id'          => (string) $item->id_pengumuman,
-                        'judul'       => $item->judul,
-                        'isi'         => $item->deskripsi,
-                        'gambar_url'  => $gambarUrl,
-                        'nama_pembuat'=> $item->nama_pembuat ?? 'Admin Desa',
-                        'created_at'  => $item->created_at,
+                        'id'           => (string) $item->id_pengumuman,
+                        'judul'        => $item->judul ?? '',
+                        'isi'          => $item->deskripsi ?? '',
+                        'gambar_url'   => $gambarUrl,
+                        'nama_pembuat' => $item->nama_pembuat_user ?? 'Admin Desa',
+                        'created_at'   => $item->created_at,
                     ];
                 });
 

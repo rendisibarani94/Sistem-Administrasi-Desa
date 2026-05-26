@@ -360,24 +360,6 @@
                     >
                 </div>
 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
-                        Upload PDF Scan <span class="text-gray-400 font-normal">(Opsional)</span>
-                    </label>
-                    <div class="p-3 bg-blue-50 border border-blue-200 rounded-lg mb-2 flex items-start gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-blue-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 0 1 1.063.852l-.708 2.836a.75.75 0 0 0 1.063.853l.041-.021M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9-3.75h.008v.008H12V8.25Z" />
-                        </svg>
-                        <p class="text-xs text-blue-700">Kosongkan jika belum ada scan — sistem akan <strong>generate surat otomatis</strong> dari data yang diinput warga, tinggal cetak & stempel.</p>
-                    </div>
-                    <label for="file_pdf" class="flex items-center gap-2 cursor-pointer w-full px-3 py-2.5 border border-dashed border-gray-300 rounded-lg hover:border-green-400 transition-colors text-sm text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
-                        </svg>
-                        <span id="file-name-preview">Pilih file PDF (maks 10MB)</span>
-                        <input id="file_pdf" name="file_pdf" type="file" accept=".pdf" class="hidden" onchange="updateFileName(this)">
-                    </label>
-                </div>
 
                 <div class="flex gap-3 justify-end pt-2">
                     <button type="button" onclick="closeSetujuiModal()"
@@ -386,7 +368,7 @@
                     </button>
                     <button type="submit" id="setujuiSubmitBtn"
                         class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold">
-                        ✅ Setujui & Generate Surat
+                        ✅ Setujui & Hasilkan Surat
                     </button>
                 </div>
             </form>
@@ -454,11 +436,9 @@
             // Reset field satu per satu — JANGAN gunakan form.reset() (akan menghapus CSRF token)
             document.getElementById('pemohon_setuju').value = pemohon;
             document.getElementById('nomor_surat').value = '';
-            document.getElementById('file_pdf').value = '';
-            document.getElementById('file-name-preview').textContent = 'Pilih file PDF (maks 10MB)';
 
             document.getElementById('setujuiSubmitBtn').disabled = false;
-            document.getElementById('setujuiSubmitBtn').textContent = '✅ Setujui & Generate Surat';
+            document.getElementById('setujuiSubmitBtn').textContent = '✅ Setujui & Hasilkan Surat';
             document.getElementById('setujuiModal').classList.remove('hidden');
             setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
         }
@@ -467,14 +447,6 @@
             document.getElementById('setujuiModal').classList.add('hidden');
         }
 
-        function updateFileName(input) {
-            const preview = document.getElementById('file-name-preview');
-            if (input.files && input.files[0]) {
-                preview.textContent = '📎 ' + input.files[0].name;
-            } else {
-                preview.textContent = 'Pilih file PDF (maks 10MB)';
-            }
-        }
 
         function openTolakModal(id, pemohon) {
             const base = "{{ url('/admin/layanan-surat/request') }}";
