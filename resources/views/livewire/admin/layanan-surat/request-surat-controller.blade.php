@@ -1,102 +1,100 @@
 <x-layouts.layouts>
     <x-slot:judul>
-        Request Surat
+        Data Pengajuan Surat
     </x-slot:judul>
 
-    {{-- Notifikasi --}}
-    @if (session('success'))
-        <div class="mx-4 mb-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-            </svg>
-            {{ session('success') }}
+    {{-- Full Page Container --}}
+    <div class="mx-4">
+        <div class="flex justify-between">
+            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Pengajuan Surat</h1>
         </div>
-    @endif
 
-    @if (session('error'))
-        <div class="mx-4 mb-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-            </svg>
-            {{ session('error') }}
-        </div>
-    @endif
-
-    <div class="bg-white rounded-xl shadow-sm mx-4 border border-gray-100 overflow-hidden">
-        <div class="px-6 py-6 border-b border-gray-100">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div>
-                    <h1 class="text-2xl font-semibold text-gray-800">Request Surat</h1>
-                </div>
-                <div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <a href="{{ route('admin.layanan-surat.request.create') }}"
-                        class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2 text-sm font-medium text-white transition-colors shadow-sm">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                        Tambah Request
-                    </a>
-                </div>
-            </div>
-            <nav class="mt-5 text-sm text-gray-500" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center gap-2">
-                    <li>
-                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center gap-1 hover:text-sky-600">
-                            <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+        <div class="flex justify-between mx-4">
+            <nav class="flex " aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
+                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                             </svg>
                             Dashboard
                         </a>
                     </li>
-                    <li>
-                        <svg class="w-3 h-3 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                        </svg>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Layanan Surat</span>
+                        </div>
                     </li>
-                    <li class="font-semibold text-gray-700">Request Surat</li>
                 </ol>
             </nav>
+
+            <a href="{{ route('admin.jenis-surat.index') }}" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white focus:ring-2 focus:outline-none focus:ring-sky-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12h7.5" />
+                </svg>
+                <span>Kelola Jenis Surat</span>
+            </a>
         </div>
 
-        <div class="px-6 py-5 border-b border-gray-100">
-            <div class="grid gap-3 sm:grid-cols-4">
-                <div class="rounded-lg bg-gray-50 p-4 text-sm text-gray-700">
-                    <p class="text-gray-500">Total Request</p>
-                    <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalSurat }}</p>
-                </div>
-                <div class="rounded-lg bg-amber-50 p-4 text-sm text-amber-900">
-                    <p class="text-amber-700">Menunggu</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ $totalMenunggu }}</p>
-                </div>
-                <div class="rounded-lg bg-green-50 p-4 text-sm text-green-900">
-                    <p class="text-green-700">Disetujui</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ $totalDisetujui }}</p>
-                </div>
-                <div class="rounded-lg bg-red-50 p-4 text-sm text-red-900">
-                    <p class="text-red-700">Ditolak</p>
-                    <p class="mt-2 text-2xl font-semibold">{{ $totalDitolak }}</p>
-                </div>
+        {{-- Notifikasi --}}
+        @if (session('success'))
+            <div class="my-4 flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-green-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                </svg>
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="my-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+                </svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
+        {{-- Statistics Grid --}}
+        <div class="grid gap-3 sm:grid-cols-4 my-6">
+            <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 text-sm text-gray-700 shadow-sm">
+                <p class="text-gray-500 font-medium">Total Pengajuan</p>
+                <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalSurat }}</p>
+            </div>
+            <div class="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900 shadow-sm">
+                <p class="text-amber-700 font-medium">Menunggu</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalMenunggu }}</p>
+            </div>
+            <div class="rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-900 shadow-sm">
+                <p class="text-green-700 font-medium">Disetujui</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalDisetujui }}</p>
+            </div>
+            <div class="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-900 shadow-sm">
+                <p class="text-red-700 font-medium">Ditolak</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalDitolak }}</p>
             </div>
         </div>
 
-        <div class="px-6 py-5 border-b border-gray-100">
-            <form method="GET" action="{{ route('admin.layanan-surat.request.index') }}" class="grid gap-3 sm:grid-cols-[1.5fr_1fr_1fr_1fr] items-end">
-                <div>
-                    <label for="search" class="sr-only">Cari</label>
-                    <div class="relative">
-                        <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center ps-3">
-                            <svg class="w-4 h-4 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
-                        <input id="search" name="search" type="search" value="{{ request('search') }}" placeholder="Cari nama atau jenis surat..."
-                            class="w-full rounded-lg border border-gray-300 bg-gray-50 py-3 pl-10 pr-4 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" />
+        {{-- Filter & Search Form --}}
+        <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-between">
+            <form method="GET" action="{{ route('admin.layanan-surat.request.index') }}" class="flex flex-wrap items-center gap-3 w-full">
+                <!-- Search Input -->
+                <div class="relative w-full sm:w-72">
+                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                        <svg class="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        </svg>
                     </div>
+                    <input id="search" name="search" type="search" value="{{ request('search') }}" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari nama pemohon..." />
                 </div>
-                <div>
-                    <label for="status" class="sr-only">Status</label>
+
+                <!-- Status Filter -->
+                <div class="w-full sm:w-48">
                     <select id="status" name="status" onchange="this.form.submit()"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                        class="w-full rounded-lg border border-gray-400 bg-white p-3 text-sm text-gray-900 focus:border-sky-500 focus:ring-sky-500">
                         <option value="">Semua Status</option>
                         <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Menunggu</option>
                         <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
@@ -104,11 +102,12 @@
                         <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
                 </div>
-                <div>
-                    <label for="jenis" class="sr-only">Jenis</label>
+
+                <!-- Jenis Filter -->
+                <div class="w-full sm:w-56">
                     <select id="jenis" name="jenis" onchange="this.form.submit()"
-                        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-sm text-gray-700 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500">
-                        <option value="">Semua Jenis</option>
+                        class="w-full rounded-lg border border-gray-400 bg-white p-3 text-sm text-gray-900 focus:border-sky-500 focus:ring-sky-500">
+                        <option value="">Semua Jenis Surat</option>
                         @foreach ($jenisSuratList as $jenis)
                             <option value="{{ $jenis->id_jenis_surat }}" {{ request('jenis') == $jenis->id_jenis_surat ? 'selected' : '' }}>
                                 {{ $jenis->nama_surat }}
@@ -116,32 +115,49 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="sm:mt-0">
+
+                <!-- Submit Cari Button -->
+                <div class="w-full sm:w-auto ms-auto">
                     <button type="submit"
-                        class="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 text-sm font-medium text-white transition-colors hover:bg-sky-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                        class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white font-bold py-2.5 px-6 rounded flex items-center space-x-2 w-full sm:w-auto justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803 7.5 7.5 0 0 0 15.803 15.803Z" />
                         </svg>
-                        Cari
+                        <span>Cari</span>
                     </button>
                 </div>
             </form>
         </div>
 
-        <div class="overflow-x-auto px-6 py-6">
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="bg-gray-50 border-y border-gray-100 text-xs font-medium uppercase tracking-wide text-gray-500">
-                        <th class="px-6 py-3 text-left w-10">#</th>
-                        <th class="px-6 py-3 text-left">Pemohon</th>
-                        <th class="px-6 py-3 text-left">Jenis Surat</th>
-                        <th class="px-6 py-3 text-left">Diproses Oleh</th>
-                        <th class="px-6 py-3 text-left">Tanggal</th>
-                        <th class="px-6 py-3 text-center w-32">Status</th>
-                        <th class="px-6 py-3 text-center w-40">Aksi</th>
+        {{-- Table Container --}}
+        <div class="relative overflow-x-auto shadow-md mt-4 border-b-2 border-gray-300">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed">
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-16">
+                            No
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Pemohon
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Jenis Surat
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Diproses Oleh
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Tanggal
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-32">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-44">
+                            Aksi
+                        </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($pengajuanSurat as $index => $surat)
                         <tr class="hover:bg-gray-50 transition-colors">
                             <td class="px-6 py-4 text-gray-400">
@@ -239,7 +255,7 @@
                                     @if (in_array($surat->status, ['diajukan', 'diproses']))
                                         {{-- Tombol Setujui --}}
                                         <form action="{{ route('admin.layanan-surat.request.setujui', $surat->id_pengajuan_surat) }}" method="POST"
-                                            onsubmit="return confirm('Setujui request surat dari {{ $namaPemohon }}?')">
+                                            onsubmit="return confirm('Setujui pengajuan surat dari {{ $namaPemohon }}?')">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" title="Setujui"
@@ -284,7 +300,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                     </svg>
-                                    <p class="text-sm font-medium">Belum ada data request surat.</p>
+                                    <p class="text-sm font-medium">Belum ada data pengajuan surat.</p>
                                     @if (request()->hasAny(['search', 'status', 'jenis']))
                                         <a href="{{ route('admin.layanan-surat.request.index') }}" class="text-xs text-sky-600 hover:underline">Reset filter</a>
                                     @endif
@@ -312,7 +328,7 @@
     {{-- Modal Tolak dengan Alasan --}}
     <div id="tolakModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tolak Request Surat</h3>
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tolak Pengajuan Surat</h3>
             
             <form id="tolakForm" method="POST" class="space-y-4">
                 @csrf
@@ -331,7 +347,7 @@
                         id="alasan_tolak" 
                         name="alasan_tolak" 
                         rows="4"
-                        placeholder="Jelaskan alasan penolakan request surat ini..."
+                        placeholder="Jelaskan alasan penolakan pengajuan surat ini..."
                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-700"
                         required
                         minlength="5"

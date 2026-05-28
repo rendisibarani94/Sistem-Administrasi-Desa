@@ -1,6 +1,6 @@
 <x-layouts.layouts>
     <x-slot:judul>
-        Detail Request Surat
+        Detail Pengajuan Surat
     </x-slot:judul>
 
     {{-- Notifikasi --}}
@@ -18,7 +18,7 @@
         <div class="px-6 pt-6 pb-4 border-b border-gray-100">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h1 class="text-2xl font-semibold text-gray-800">Detail Request Surat</h1>
+                    <h1 class="text-2xl font-semibold text-gray-800">Detail Pengajuan Surat</h1>
                     <nav class="mt-1" aria-label="Breadcrumb">
                         <ol class="flex items-center gap-1.5 text-sm text-gray-400">
                             <li>
@@ -32,7 +32,7 @@
                             <li class="text-gray-300">/</li>
                             <li>
                                 <a href="{{ route('admin.layanan-surat.request.index') }}" class="flex items-center gap-1 hover:text-sky-600 transition-colors">
-                                    Request Surat
+                                    Pengajuan Surat
                                 </a>
                             </li>
                             <li class="text-gray-300">/</li>
@@ -334,7 +334,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-800">Setujui Request Surat</h3>
+                <h3 class="text-lg font-bold text-gray-800">Setujui Pengajuan Surat</h3>
             </div>
             
             <form id="setujuiForm" method="POST" enctype="multipart/form-data" class="space-y-4">
@@ -384,7 +384,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
                 </div>
-                <h3 class="text-lg font-bold text-gray-800">Tolak Request Surat</h3>
+                <h3 class="text-lg font-bold text-gray-800">Tolak Pengajuan Surat</h3>
             </div>
             
             <form id="tolakForm" method="POST" class="space-y-4">

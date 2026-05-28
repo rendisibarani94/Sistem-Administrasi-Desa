@@ -1,6 +1,6 @@
 <x-layouts.layouts>
     <x-slot:judul>
-        Buat Request Surat
+        Buat Pengajuan Surat
     </x-slot:judul>
 
     {{-- Notifikasi Error --}}
@@ -25,7 +25,7 @@
         <div class="px-6 pt-6 pb-4 border-b border-gray-100">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div>
-                    <h1 class="text-2xl font-semibold text-gray-800">Buat Request Surat</h1>
+                    <h1 class="text-2xl font-semibold text-gray-800">Buat Pengajuan Surat</h1>
                     <p class="text-sm text-gray-500 mt-1">Ajukan permintaan surat keterangan atau dokumen lainnya</p>
                 </div>
                 <a href="{{ route('admin.layanan-surat.request.index') }}"
@@ -74,7 +74,7 @@
                         </svg>
                         <div>
                             <p class="text-sm font-medium text-blue-900">Informasi Penting</p>
-                            <p class="text-sm text-blue-800 mt-1">Request surat akan diproses oleh admin dalam waktu 1-3 hari kerja. Anda akan menerima notifikasi ketika status berubah.</p>
+                            <p class="text-sm text-blue-800 mt-1">Pengajuan surat akan diproses oleh admin dalam waktu 1-3 hari kerja. Anda akan menerima notifikasi ketika status berubah.</p>
                         </div>
                     </div>
                 </div>
@@ -134,7 +134,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        Ajukan Request
+                        Ajukan Pengajuan
                     </button>
                 </div>
             </form>

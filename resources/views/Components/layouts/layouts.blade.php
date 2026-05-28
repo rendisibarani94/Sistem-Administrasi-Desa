@@ -100,7 +100,7 @@
                         ],
                         [
                             'route' => 'admin.layanan-surat.request.index',
-                            'text'  => 'Request Surat',
+                            'text'  => 'Pengajuan Surat',
                         ],
                         [
                             'route' => 'admin.layanan-surat.pengaduan',

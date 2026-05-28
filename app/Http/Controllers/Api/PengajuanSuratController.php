@@ -206,7 +206,7 @@ class PengajuanSuratController extends Controller
                 \App\Models\Notifikasi::create([
                     'user_id' => $admin->id,
                     'judul'   => 'Pengajuan Surat Baru 📄',
-                    'pesan'   => "{$user->name} mengajukan {$jenisSuratNama}. Silakan tinjau di halaman Request Surat.",
+                    'pesan'   => "{$user->name} mengajukan {$jenisSuratNama}. Silakan tinjau di halaman Pengajuan Surat.",
                     'is_read' => false,
                 ]);
             });

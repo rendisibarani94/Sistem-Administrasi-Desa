@@ -1,74 +1,104 @@
 <div>
-    {{-- ══════════════════════════════════════════════════════════════
-         HEADER
-    ══════════════════════════════════════════════════════════════ --}}
-    <div class="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-            <h1 class="text-2xl font-bold text-gray-800">Master Jenis Surat</h1>
-            <p class="text-sm text-gray-500 mt-1">
-                Kelola jenis surat dan field persyaratan yang akan muncul di aplikasi mobile warga.
-            </p>
+    <x-slot:judul>
+        Data Jenis Surat
+    </x-slot:judul>
+
+    {{-- Full Page Container --}}
+    <div class="mx-4">
+        <div class="flex justify-between">
+            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Jenis Surat</h1>
         </div>
-        <button
-            wire:click="openCreateModal"
-            class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 active:bg-sky-800 px-4 py-2.5 text-sm font-semibold text-white transition-colors shadow-sm"
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+
+        <div class="flex justify-between mx-4">
+            <nav class="flex " aria-label="Breadcrumb">
+                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                    <li class="inline-flex items-center">
+                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
+                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <a href="{{ route('admin.layanan-surat.request.index') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
+                                Layanan Surat
+                            </a>
+                        </div>
+                    </li>
+                    <li aria-current="page">
+                        <div class="flex items-center">
+                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                            </svg>
+                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Jenis Surat</span>
+                        </div>
+                    </li>
+                </ol>
+            </nav>
+
+            <button wire:click="openCreateModal" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white focus:ring-2 focus:outline-none focus:ring-sky-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span>Tambah Jenis Surat</span>
+            </button>
+        </div>
+
+        {{-- Info Banner --}}
+        <div class="my-4 flex items-start gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
             </svg>
-            Tambah Jenis Surat
-        </button>
-    </div>
+            <span>
+                Jenis surat yang <strong>Aktif</strong> akan otomatis muncul di aplikasi mobile warga.
+                Tambahkan <strong>field persyaratan</strong> agar warga dapat mengisi data yang diperlukan saat mengajukan surat.
+            </span>
+        </div>
 
-    {{-- ══════════════════════════════════════════════════════════════
-         INFO BANNER
-    ══════════════════════════════════════════════════════════════ --}}
-    <div class="mb-5 flex items-start gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a.75.75 0 000 1.5h.253a.25.25 0 01.244.304l-.459 2.066A1.75 1.75 0 0010.747 15H11a.75.75 0 000-1.5h-.253a.25.25 0 01-.244-.304l.459-2.066A1.75 1.75 0 009.253 9H9z" clip-rule="evenodd" />
-        </svg>
-        <span>
-            Jenis surat yang <strong>Aktif</strong> akan otomatis muncul di aplikasi mobile warga.
-            Tambahkan <strong>field persyaratan</strong> agar warga dapat mengisi data yang diperlukan saat mengajukan surat.
-        </span>
-    </div>
-
-    {{-- ══════════════════════════════════════════════════════════════
-         SEARCH & TABLE
-    ══════════════════════════════════════════════════════════════ --}}
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-
-        {{-- Search Bar --}}
-        <div class="px-5 py-4 border-b border-gray-100">
-            <div class="relative max-w-sm">
-                <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803 7.5 7.5 0 0 0 15.803 15.803Z" />
+        {{-- Create Button & Table Search Row --}}
+        <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-end">
+            <!-- Search Input -->
+            <div class="relative w-full sm:w-72">
+                <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                    <svg class="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                 </div>
-                <input
-                    wire:model.live.debounce.300ms="search"
-                    type="search"
-                    placeholder="Cari nama surat..."
-                    class="block w-full rounded-lg border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                />
+                <input type="search" wire:model.live.debounce.300ms="search" autocomplete="off" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari Jenis Surat..." required />
             </div>
         </div>
 
-        {{-- Table --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-sm text-left">
-                <thead class="bg-gray-50 text-xs uppercase text-gray-500 tracking-wider">
+        {{-- Table Container --}}
+        <div class="relative overflow-x-auto shadow-md mt-4 border-b-2 border-gray-300">
+            <table class="min-w-full divide-y divide-gray-200 table-fixed">
+                <thead class="bg-gray-100">
                     <tr>
-                        <th class="px-5 py-3">No</th>
-                        <th class="px-5 py-3">Nama Surat</th>
-                        <th class="px-5 py-3">Deskripsi</th>
-                        <th class="px-5 py-3 text-center">Jumlah Field</th>
-                        <th class="px-5 py-3 text-center">Status</th>
-                        <th class="px-5 py-3 text-center">Aksi</th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-16">
+                            No
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Nama Surat
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
+                            Deskripsi
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-32">
+                            Jumlah Field
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-32">
+                            Status
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-44">
+                            Aksi
+                        </th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="bg-white divide-y divide-gray-200">
                     @forelse ($jenisSuratList as $index => $item)
                         <tr class="hover:bg-gray-50 transition-colors">
                             {{-- No --}}
@@ -393,4 +423,5 @@
         });
     </script>
     @endpush
+    </div>
 </div>

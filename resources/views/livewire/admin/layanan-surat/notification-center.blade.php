@@ -37,7 +37,7 @@
             <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-gray-600 text-sm font-semibold">Request Surat Baru</p>
+                        <p class="text-gray-600 text-sm font-semibold">Pengajuan Surat Baru</p>
                         <p class="text-3xl font-bold text-blue-600">{{ $countNewRequests }}</p>
                     </div>
                     <svg class="w-10 h-10 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -75,7 +75,7 @@
         <div class="border-b border-gray-200 px-4 mb-6">
             <div class="flex gap-8">
                 <button onclick="switchTab('requests')" id="requests-tab" class="py-4 px-1 border-b-2 border-sky-500 text-sky-600 font-semibold">
-                    Request Surat ({{ $countNewRequests }})
+                    Pengajuan Surat ({{ $countNewRequests }})
                 </button>
                 <button onclick="switchTab('pengaduan')" id="pengaduan-tab" class="py-4 px-1 border-b-2 border-transparent text-gray-600 hover:text-gray-900 font-semibold hover:border-gray-300">
                     Pengaduan ({{ $countNewPengaduan }})
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        {{-- Request Surat Content --}}
+        {{-- Pengajuan Surat Content --}}
         <div id="requests-content" class="px-4 mb-6">
             @forelse($newRequests as $item)
                 <div class="border border-gray-200 rounded-lg p-4 mb-4 hover:shadow-md transition-shadow">
@@ -115,7 +115,7 @@
                     <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                     </svg>
-                    <p class="mt-4 text-gray-500 font-semibold">Tidak ada request surat baru</p>
+                    <p class="mt-4 text-gray-500 font-semibold">Tidak ada pengajuan surat baru</p>
                 </div>
             @endforelse
         </div>
