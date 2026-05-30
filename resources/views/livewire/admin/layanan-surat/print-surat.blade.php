@@ -275,6 +275,11 @@
     if (is_string($df)) { $df = json_decode($df, true) ?? []; }
     if (!is_array($df)) { $df = []; }
 
+    // ===== Eager-load relasi EAV & KK jika belum ter-load =====
+    if (!$pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
+        $pengajuanSurat->load('detailPengajuanSurat.persyaratanSurat');
+    }
+
     // Robust Lookup Pemohon: cari relasi penduduk, atau cari user pemohon lalu relasi penduduknya
     $pemohon = $pengajuanSurat->penduduk;
     $userPemohon = null;
@@ -287,19 +292,67 @@
         }
     }
 
+    // ===== Load Kartu Keluarga dari relasi Penduduk =====
+    $kk = null;
+    if ($pemohon) {
+        if (!$pemohon->relationLoaded('kartuKeluarga')) {
+            $pemohon->load('kartuKeluarga');
+        }
+        $kk = $pemohon->kartuKeluarga;
+    }
+
     // ===== Helper: ambil nilai dari data_form, fallback ke penduduk =====
     $nama       = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? '-';
     $nik        = $pemohon?->nik           ?? $userPemohon?->nik ?? $df['nik']  ?? '-';
-    $noKk       = $df['no_kk'] ?? $df['nomor_kk'] ?? ($pemohon?->no_kk ?? '-');
-    $ttl        = $df['ttl']   ?? $df['tempat_lahir'] ?? '-';
-    $jk         = $df['jk']    ?? $df['jenis_kelamin'] ?? '-';
-    $pekerjaan  = $df['pekerjaan'] ?? ($pemohon?->pekerjaan ?? '-');
-    $alamat     = $df['alamat'] ?? ($pemohon?->alamat ?? '-');
+    // Ambil No KK dari relasi Kartu Keluarga (bukan kolom penduduk)
+    $noKk       = $kk?->nomor_kartu_keluarga ?? $df['no_kk'] ?? $df['nomor_kk'] ?? '-';
+    $jk         = $pemohon?->jenis_kelamin ?? $df['jk'] ?? $df['jenis_kelamin'] ?? '-';
+    $pekerjaan  = $pemohon?->pekerjaan ?? $df['pekerjaan'] ?? '-';
+    $alamat     = $pemohon?->alamat ?? $df['alamat'] ?? '-';
     $keperluan  = $df['keperluan'] ?? '-';
     $penghasilan= $df['penghasilan'] ?? '-';
     $namaAnak   = $df['nama_anak'] ?? '-';
     $ttlAnak    = $df['ttl_anak'] ?? '-';
     $namaUsaha  = $df['nama_usaha'] ?? $df['jenis_usaha'] ?? '-';
+
+    // ===== Data Kependudukan Krusial dari profil Penduduk & KK =====
+    $tempatLahir      = $pemohon?->tempat_lahir ?? $df['tempat_lahir'] ?? '-';
+    $tanggalLahirRaw  = $pemohon?->tanggal_lahir ?? null;
+    $namaAyah         = $pemohon?->nama_ayah ?? $df['nama_ayah'] ?? '-';
+    $namaIbu          = $pemohon?->nama_ibu ?? $df['nama_ibu'] ?? '-';
+    $agama            = $pemohon?->agama ?? $df['agama'] ?? '-';
+    $statusPerkawinan = $pemohon?->status_perkawinan ?? $df['status_perkawinan'] ?? '-';
+    $pendidikan       = $pemohon?->pendidikan_terakhir ?? $df['pendidikan'] ?? $df['pendidikan_terakhir'] ?? '-';
+    $kewarganegaraan  = $pemohon?->kewarganegaraan ?? $df['kewarganegaraan'] ?? 'WNI';
+    $golDarah         = $pemohon?->golongan_darah ?? $df['golongan_darah'] ?? '-';
+    $suku             = $pemohon?->suku ?? $df['suku'] ?? '-';
+    $rtKk             = $kk?->rt ?? $df['rt'] ?? '-';
+    $rwKk             = $kk?->rw ?? $df['rw'] ?? '-';
+
+    // ===== Helper: Format Tempat/Tanggal Lahir =====
+    $bulanId = [
+        1  => 'Januari',  2  => 'Februari', 3  => 'Maret',
+        4  => 'April',    5  => 'Mei',       6  => 'Juni',
+        7  => 'Juli',     8  => 'Agustus',   9  => 'September',
+        10 => 'Oktober',  11 => 'November',  12 => 'Desember',
+    ];
+
+    // Helper function: format tanggal YYYY-MM-DD ke format Indonesia
+    $formatTanggalIndonesia = function($dateValue) use ($bulanId) {
+        if (!$dateValue) return '-';
+        try {
+            $dt = \Carbon\Carbon::parse($dateValue);
+            return $dt->day . ' ' . $bulanId[$dt->month] . ' ' . $dt->year;
+        } catch (\Exception $e) {
+            return (string) $dateValue; // Kembalikan apa adanya jika gagal parse
+        }
+    };
+
+    $tanggalLahirFormatted = $tanggalLahirRaw ? $formatTanggalIndonesia($tanggalLahirRaw) : '-';
+    $ttl = $tempatLahir . ($tanggalLahirFormatted !== '-' ? ', ' . $tanggalLahirFormatted : '');
+    if ($ttl === '-' || $ttl === '-, -' || $ttl === '-,') {
+        $ttl = $df['ttl'] ?? $df['tempat_lahir'] ?? '-';
+    }
 
     // ===== Settings Desa =====
     $settingsArr = DB::table('settings')->get()->pluck('value', 'key')->toArray();
@@ -324,14 +377,8 @@
     $alamatDesa  = 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.hutabulumejan.desa.id';
     $websiteDesa = 'www.desahutabulumejan.id';
 
-    // ===== Tanggal =====
+    // ===== Tanggal Cetak =====
     $tanggalCetak = $pengajuanSurat->tanggal_selesai ?? now();
-    $bulanId = [
-        1  => 'Januari',  2  => 'Februari', 3  => 'Maret',
-        4  => 'April',    5  => 'Mei',       6  => 'Juni',
-        7  => 'Juli',     8  => 'Agustus',   9  => 'September',
-        10 => 'Oktober',  11 => 'November',  12 => 'Desember',
-    ];
     $tgl = \Carbon\Carbon::parse($tanggalCetak);
     $tanggalFormatted = $tgl->day . ' ' . $bulanId[$tgl->month] . ' ' . $tgl->year;
 
@@ -342,6 +389,128 @@
     // ===== Penandatangan =====
     $penandatangan  = $pengajuanSurat->diprosesOleh->name ?? 'Kepala Desa ' . $namaDesa;
     $jabatanTtd     = 'Kepala Desa ' . $namaDesa;
+
+    // ===== Custom Template Parser =====
+    $bodyTemplate = $pengajuanSurat->jenisSurat->body_template ?? null;
+    $renderedContent = null;
+    if ($bodyTemplate) {
+        // ── A. Placeholder Statis dari Profil Penduduk & KK ──
+        $placeholders = [
+            // Data Utama Penduduk
+            '{nama}'              => '<strong>' . strtoupper($nama) . '</strong>',
+            '{nama_lengkap}'      => '<strong>' . strtoupper($nama) . '</strong>',
+            '{nama lengkap}'      => '<strong>' . strtoupper($nama) . '</strong>',
+            '{Nama Lengkap}'      => '<strong>' . strtoupper($nama) . '</strong>',
+            '{nik}'               => $nik,
+            '{NIK}'               => $nik,
+            '{no_kk}'             => $noKk,
+            '{nomor_kk}'          => $noKk,
+            '{nomor kk}'          => $noKk,
+            '{Nomor KK}'          => $noKk,
+            '{ttl}'               => $ttl,
+            '{TTL}'               => $ttl,
+            '{tempat}'            => ucfirst($tempatLahir),
+            '{tempat_lahir}'      => ucfirst($tempatLahir),
+            '{tempat lahir}'      => ucfirst($tempatLahir),
+            '{Tempat Lahir}'      => ucfirst($tempatLahir),
+            '{tanggal_lahir}'     => $tanggalLahirFormatted,
+            '{tanggal lahir}'     => $tanggalLahirFormatted,
+            '{Tanggal Lahir}'     => $tanggalLahirFormatted,
+            '{tgl_lahir}'         => $tanggalLahirFormatted,
+            '{jenis_kelamin}'     => strtoupper($jk),
+            '{jenis kelamin}'     => strtoupper($jk),
+            '{Jenis Kelamin}'     => strtoupper($jk),
+            '{jk}'                => strtoupper($jk),
+            '{JK}'                => strtoupper($jk),
+            '{pekerjaan}'         => strtoupper($pekerjaan),
+            '{Pekerjaan}'         => strtoupper($pekerjaan),
+            '{alamat}'            => ucfirst($alamat),
+            '{Alamat}'            => ucfirst($alamat),
+
+            // Data Kependudukan Krusial
+            '{nama_ayah}'         => strtoupper($namaAyah),
+            '{nama ayah}'         => strtoupper($namaAyah),
+            '{Nama Ayah}'         => strtoupper($namaAyah),
+            '{nama_ibu}'          => '<strong>' . strtoupper($namaIbu) . '</strong>',
+            '{nama ibu}'          => '<strong>' . strtoupper($namaIbu) . '</strong>',
+            '{Nama Ibu}'          => '<strong>' . strtoupper($namaIbu) . '</strong>',
+            '{agama}'             => ucfirst($agama),
+            '{Agama}'             => ucfirst($agama),
+            '{status_perkawinan}' => ucfirst($statusPerkawinan),
+            '{status perkawinan}' => ucfirst($statusPerkawinan),
+            '{Status Perkawinan}' => ucfirst($statusPerkawinan),
+            '{pendidikan}'        => ucfirst($pendidikan),
+            '{Pendidikan}'        => ucfirst($pendidikan),
+            '{kewarganegaraan}'   => strtoupper($kewarganegaraan),
+            '{Kewarganegaraan}'   => strtoupper($kewarganegaraan),
+            '{golongan_darah}'    => strtoupper($golDarah),
+            '{golongan darah}'    => strtoupper($golDarah),
+            '{Golongan Darah}'    => strtoupper($golDarah),
+            '{gol_darah}'         => strtoupper($golDarah),
+            '{gol darah}'         => strtoupper($golDarah),
+            '{Gol Darah}'         => strtoupper($golDarah),
+            '{suku}'              => ucfirst($suku),
+            '{Suku}'              => ucfirst($suku),
+            '{rt}'                => $rtKk,
+            '{RT}'                => $rtKk,
+            '{rw}'                => $rwKk,
+            '{RW}'                => $rwKk,
+
+            // Data Surat Umum
+            '{keperluan}'         => $keperluan,
+            '{nama_desa}'         => $namaDesa,
+            '{kecamatan}'         => $kecamatan,
+            '{kabupaten}'         => $kabupaten,
+            '{tanggal_cetak}'     => $tanggalFormatted,
+            '{nomor_surat}'       => $nomorSurat,
+            '{penghasilan}'       => $penghasilan != '-' ? '<strong>Rp. ' . number_format((int)$penghasilan, 0, ',', '.') . ',-</strong>' : '-',
+            '{nama_usaha}'        => '<strong>' . strtoupper($namaUsaha) . '</strong>',
+            '{nama_anak}'         => '<strong>' . strtoupper($namaAnak) . '</strong>',
+            '{ttl_anak}'          => $ttlAnak,
+        ];
+
+        // ── B. Placeholder dari data_form (legacy/fallback) ──
+        foreach ($df as $k => $v) {
+            if (is_string($v) || is_numeric($v)) {
+                $placeholders['{' . $k . '}'] = $v;
+            }
+        }
+
+        // ── C. DINAMIS: Placeholder dari EAV Detail Pengajuan Surat (Input Mobile) ──
+        // Ini adalah bagian KRUSIAL: setiap field kustom yang dibuat admin
+        // dan diisi oleh warga di HP akan otomatis terisi di template PDF.
+        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+            $fieldName = $detail->persyaratanSurat?->nama_field ?? null;
+            $fieldType = $detail->persyaratanSurat?->tipe_field ?? 'text';
+            $rawValue  = $detail->value;
+
+            if (!$fieldName || is_null($rawValue)) continue;
+
+            // Skip file/image fields (tidak bisa ditampilkan sebagai teks di surat)
+            if ($fieldType === 'file_image') continue;
+
+            // Auto-format tanggal Indonesia jika tipe field = date
+            $displayValue = $rawValue;
+            if ($fieldType === 'date' && preg_match('/^\d{4}-\d{2}-\d{2}$/', $rawValue)) {
+                $displayValue = $formatTanggalIndonesia($rawValue);
+            }
+
+            // Petakan ke 3 variasi casing agar template admin selalu cocok:
+            // 1. {Nama Field Asli} - persis seperti yang ditulis admin saat membuat persyaratan
+            $placeholders['{' . $fieldName . '}'] = $displayValue;
+            // 2. {nama field asli} - versi huruf kecil semua
+            $placeholders['{' . strtolower($fieldName) . '}'] = $displayValue;
+            // 3. {nama_field_asli} - versi snake_case
+            $snakeKey = strtolower(str_replace(' ', '_', trim($fieldName)));
+            $placeholders['{' . $snakeKey . '}'] = $displayValue;
+        }
+
+        // ── D. Render: ganti semua placeholder di template ──
+        $renderedContent = str_replace(array_keys($placeholders), array_values($placeholders), $bodyTemplate);
+
+        // ── E. Bersihkan placeholder yang tidak terisi (jika ada tag yang tidak cocok) ──
+        $renderedContent = preg_replace('/\{[a-zA-Z0-9_\s]+\}/', '-', $renderedContent);
+    }
 @endphp
 
 <div class="page">
@@ -370,178 +539,182 @@
     </div>
     <div class="nomor-surat">
         Nomor : <u>&nbsp;&nbsp;{{ $nomorSurat }}&nbsp;&nbsp;</u>
-    </div>
+    @if ($renderedContent)
+        <div class="isi-surat">
+            {!! $renderedContent !!}
+        </div>
+    @else
+        {{-- ===== PEMBUKA ===== --}}
+        <p class="pembuka">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Yang bertanda tangan dibawah ini, Kepala Desa {{ $namaDesa }},
+            {{ $kecamatan }}, {{ $kabupaten }} menerangkan bahwa :
+        </p>
 
-    {{-- ===== PEMBUKA ===== --}}
-    <p class="pembuka">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        Yang bertanda tangan dibawah ini, Kepala Desa {{ $namaDesa }},
-        {{ $kecamatan }}, {{ $kabupaten }} menerangkan bahwa :
-    </p>
+        {{-- ===== DATA PEMOHON ===== --}}
+        <div class="data-pemohon">
+            <table>
+                <tr>
+                    <td>Nama</td>
+                    <td>:</td>
+                    <td><strong>{{ strtoupper($nama) }}</strong></td>
+                </tr>
+                @if($noKk !== '-')
+                <tr>
+                    <td>No. KK</td>
+                    <td>:</td>
+                    <td>{{ $noKk }}</td>
+                </tr>
+                @endif
+                <tr>
+                    <td>NIK</td>
+                    <td>:</td>
+                    <td>{{ $nik }}</td>
+                </tr>
+                <tr>
+                    <td>Tempat/Tgl. Lahir</td>
+                    <td>:</td>
+                    <td>{{ $ttl }}</td>
+                </tr>
+                <tr>
+                    <td>Jenis Kelamin</td>
+                    <td>:</td>
+                    <td>{{ strtoupper($jk) }}</td>
+                </tr>
+                @if(in_array($namaJenisSurat, ['Surat Keterangan Tidak Mampu', 'Surat Keterangan Usaha']))
+                <tr>
+                    <td>Pekerjaan</td>
+                    <td>:</td>
+                    <td>{{ strtoupper($pekerjaan) }}</td>
+                </tr>
+                @endif
+                <tr>
+                    <td>Alamat</td>
+                    <td>:</td>
+                    <td>{{ ucfirst($alamat) }}, Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}</td>
+                </tr>
+            </table>
+        </div>
 
-    {{-- ===== DATA PEMOHON ===== --}}
-    <div class="data-pemohon">
-        <table>
-            <tr>
-                <td>Nama</td>
-                <td>:</td>
-                <td><strong>{{ strtoupper($nama) }}</strong></td>
-            </tr>
-            @if($noKk !== '-')
-            <tr>
-                <td>No. KK</td>
-                <td>:</td>
-                <td>{{ $noKk }}</td>
-            </tr>
-            @endif
-            <tr>
-                <td>NIK</td>
-                <td>:</td>
-                <td>{{ $nik }}</td>
-            </tr>
-            <tr>
-                <td>Tempat/Tgl. Lahir</td>
-                <td>:</td>
-                <td>{{ $ttl }}</td>
-            </tr>
-            <tr>
-                <td>Jenis Kelamin</td>
-                <td>:</td>
-                <td>{{ strtoupper($jk) }}</td>
-            </tr>
-            @if(in_array($namaJenisSurat, ['Surat Keterangan Tidak Mampu', 'Surat Keterangan Usaha']))
-            <tr>
-                <td>Pekerjaan</td>
-                <td>:</td>
-                <td>{{ strtoupper($pekerjaan) }}</td>
-            </tr>
-            @endif
-            <tr>
-                <td>Alamat</td>
-                <td>:</td>
-                <td>{{ ucfirst($alamat) }}, Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}</td>
-            </tr>
-        </table>
-    </div>
+        {{-- ===== ISI SURAT (tergantung jenis) ===== --}}
+        @switch($namaJenisSurat)
 
-    {{-- ===== ISI SURAT (tergantung jenis) ===== --}}
-    @switch($namaJenisSurat)
+            @case('Surat Keterangan Domisili')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
+                </p>
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Surat Keterangan Domisili ini diberikan kepada yang bersangkutan untuk dipergunakan
+                    sebagai {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
+                </p>
+                @break
 
-        @case('Surat Keterangan Domisili')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
-                di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
-            </p>
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Surat Keterangan Domisili ini diberikan kepada yang bersangkutan untuk dipergunakan
-                sebagai {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
-            </p>
-            @break
+            @case('Surat Keterangan Tidak Mampu')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar Penduduk Desa {{ $namaDesa }} dan nama
+                    tersebut diatas merupakan keluarga <strong>Tidak Mampu</strong>.
+                </p>
+                @if($penghasilan !== '-')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Adapun penghasilan per bulan yang bersangkutan adalah kurang lebih
+                    <strong>Rp. {{ number_format((int)$penghasilan, 0, ',', '.') }},-</strong>.
+                </p>
+                @endif
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Surat Keterangan Tidak Mampu ini dibuat untuk dipergunakan sebagai
+                    {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
+                </p>
+                @break
 
-        @case('Surat Keterangan Tidak Mampu')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar Penduduk Desa {{ $namaDesa }} dan nama
-                tersebut diatas merupakan keluarga <strong>Tidak Mampu</strong>.
-            </p>
-            @if($penghasilan !== '-')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Adapun penghasilan per bulan yang bersangkutan adalah kurang lebih
-                <strong>Rp. {{ number_format((int)$penghasilan, 0, ',', '.') }},-</strong>.
-            </p>
-            @endif
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Surat Keterangan Tidak Mampu ini dibuat untuk dipergunakan sebagai
-                {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
-            </p>
-            @break
+            @case('Surat Keterangan Usaha')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar merupakan warga Desa {{ $namaDesa }} dan
+                    benar-benar mempunyai usaha dengan jenis usaha
+                    <strong>{{ strtoupper($namaUsaha) }}</strong> yang bertempat di
+                    Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
+                </p>
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Surat Keterangan Usaha ini diberikan untuk keperluan
+                    {{ $keperluan !== '-' ? strtolower($keperluan) : 'yang dibutuhkan' }}.
+                </p>
+                @break
 
-        @case('Surat Keterangan Usaha')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar merupakan warga Desa {{ $namaDesa }} dan
-                benar-benar mempunyai usaha dengan jenis usaha
-                <strong>{{ strtoupper($namaUsaha) }}</strong> yang bertempat di
-                Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
-            </p>
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Surat Keterangan Usaha ini diberikan untuk keperluan
-                {{ $keperluan !== '-' ? strtolower($keperluan) : 'yang dibutuhkan' }}.
-            </p>
-            @break
+            @case('Surat Pengantar')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
+                </p>
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Sehubungan dengan keperluan untuk <strong>{{ $keperluan }}</strong>,
+                    maka dengan ini kami menerangkan bahwa yang bersangkutan adalah warga kami dan
+                    kami merekomendasikan untuk diproses lebih lanjut sesuai ketentuan yang berlaku.
+                </p>
+                @break
 
-        @case('Surat Pengantar')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
-                di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
-            </p>
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Sehubungan dengan keperluan untuk <strong>{{ $keperluan }}</strong>,
-                maka dengan ini kami menerangkan bahwa yang bersangkutan adalah warga kami dan
-                kami merekomendasikan untuk diproses lebih lanjut sesuai ketentuan yang berlaku.
-            </p>
-            @break
+            @case('Surat Keterangan Kelahiran')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
+                    Menerangkan bahwa telah lahir seorang anak :
+                </p>
+                <div class="data-pemohon" style="margin-left: 30px;">
+                    <table>
+                        <tr>
+                            <td>Nama Anak</td>
+                            <td>:</td>
+                            <td><strong>{{ strtoupper($namaAnak) }}</strong></td>
+                        </tr>
+                        <tr>
+                            <td>Tempat/Tgl. Lahir</td>
+                            <td>:</td>
+                            <td>{{ $ttlAnak }}</td>
+                        </tr>
+                        <tr>
+                            <td>Jenis Kelamin</td>
+                            <td>:</td>
+                            <td>{{ strtoupper($df['jk_anak'] ?? $jk) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Nama Ibu</td>
+                            <td>:</td>
+                            <td>{{ strtoupper($df['nama_ibu'] ?? $nama) }}</td>
+                        </tr>
+                    </table>
+                </div>
+                @break
 
-        @case('Surat Keterangan Kelahiran')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
-                di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
-                Menerangkan bahwa telah lahir seorang anak :
-            </p>
-            <div class="data-pemohon" style="margin-left: 30px;">
-                <table>
-                    <tr>
-                        <td>Nama Anak</td>
-                        <td>:</td>
-                        <td><strong>{{ strtoupper($namaAnak) }}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>Tempat/Tgl. Lahir</td>
-                        <td>:</td>
-                        <td>{{ $ttlAnak }}</td>
-                    </tr>
-                    <tr>
-                        <td>Jenis Kelamin</td>
-                        <td>:</td>
-                        <td>{{ strtoupper($df['jk_anak'] ?? $jk) }}</td>
-                    </tr>
-                    <tr>
-                        <td>Nama Ibu</td>
-                        <td>:</td>
-                        <td>{{ strtoupper($df['nama_ibu'] ?? $nama) }}</td>
-                    </tr>
-                </table>
-            </div>
-            @break
+            @default
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
+                </p>
+                @if($keperluan !== '-')
+                <p class="isi-surat">
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    Surat keterangan ini diberikan untuk keperluan
+                    <strong>{{ strtolower($keperluan) }}</strong>.
+                </p>
+                @endif
+        @endswitch
 
-        @default
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
-                di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
-            </p>
-            @if($keperluan !== '-')
-            <p class="isi-surat">
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                Surat keterangan ini diberikan untuk keperluan
-                <strong>{{ strtolower($keperluan) }}</strong>.
-            </p>
-            @endif
-    @endswitch
-
-    {{-- ===== PENUTUP ===== --}}
-    <p class="penutup">
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        Demikianlah {{ $namaJenisSurat }} ini dibuat agar dapat dipergunakan sebagaimana mestinya.
-    </p>
+        {{-- ===== PENUTUP ===== --}}
+        <p class="penutup">
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            Demikianlah {{ $namaJenisSurat }} ini dibuat agar dapat dipergunakan sebagaimana mestinya.
+        </p>
+    @endif
 
     {{-- ===== TANDA TANGAN ===== --}}
     <div class="ttd-section">

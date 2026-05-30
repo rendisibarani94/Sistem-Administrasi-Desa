@@ -20,6 +20,7 @@ class JenisSuratController extends Component
     public ?int $editingId = null;
     public string $nama_surat   = '';
     public string $deskripsi    = '';
+    public string $body_template = '';
     public bool   $is_active    = true;
     public bool   $showModal    = false;
 
@@ -39,6 +40,7 @@ class JenisSuratController extends Component
         return [
             'nama_surat'                      => $uniqueRule,
             'deskripsi'                       => 'nullable|string',
+            'body_template'                   => 'nullable|string',
             'is_active'                       => 'boolean',
             'persyaratan'                     => 'array',
             'persyaratan.*.nama_field'        => 'required|string|max:255',
@@ -69,6 +71,7 @@ class JenisSuratController extends Component
         $this->editingId  = $jenisSurat->id_jenis_surat;
         $this->nama_surat = $jenisSurat->nama_surat;
         $this->deskripsi  = $jenisSurat->deskripsi ?? '';
+        $this->body_template = $jenisSurat->body_template ?? '';
         $this->is_active  = (bool) $jenisSurat->is_active;
 
         // Muat persyaratan yang sudah ada
@@ -124,9 +127,10 @@ class JenisSuratController extends Component
                 // --- UPDATE ---
                 $jenisSurat = JenisSurat::findOrFail($this->editingId);
                 $jenisSurat->update([
-                    'nama_surat' => $this->nama_surat,
-                    'deskripsi'  => $this->deskripsi ?: null,
-                    'is_active'  => $this->is_active,
+                    'nama_surat'    => $this->nama_surat,
+                    'deskripsi'     => $this->deskripsi ?: null,
+                    'body_template' => $this->body_template ?: null,
+                    'is_active'     => $this->is_active,
                 ]);
 
                 // Hapus persyaratan lama, lalu insert ulang
@@ -134,9 +138,10 @@ class JenisSuratController extends Component
             } else {
                 // --- CREATE ---
                 $jenisSurat = JenisSurat::create([
-                    'nama_surat' => $this->nama_surat,
-                    'deskripsi'  => $this->deskripsi ?: null,
-                    'is_active'  => $this->is_active,
+                    'nama_surat'    => $this->nama_surat,
+                    'deskripsi'     => $this->deskripsi ?: null,
+                    'body_template' => $this->body_template ?: null,
+                    'is_active'     => $this->is_active,
                 ]);
             }
 
@@ -210,6 +215,7 @@ class JenisSuratController extends Component
         $this->editingId  = null;
         $this->nama_surat = '';
         $this->deskripsi  = '';
+        $this->body_template = '';
         $this->is_active  = true;
         $this->persyaratan = [];
         $this->resetValidation();

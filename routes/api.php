@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\KartuKeluargaApiController;
 use App\Http\Controllers\Api\InformationApiController; // TAMBAHAN: Controller untuk Berita & Pengumuman
 use App\Http\Controllers\Api\PengajuanSuratController;
 
+use App\Http\Controllers\Api\FcmController;
+
 // =======================
 // PUBLIC ROUTE
 // =======================
@@ -55,6 +57,9 @@ Route::middleware(['auth:sanctum', 'cors'])->group(function () {
     // AUTH
     Route::get('/me', [AuthController::class, 'me']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // FCM TOKEN (untuk push notification)
+    Route::post('/fcm-token', [FcmController::class, 'updateToken']);
 
     // NOTIFIKASI
     Route::get('/notifikasi', [InformationApiController::class, 'getNotifikasi']);

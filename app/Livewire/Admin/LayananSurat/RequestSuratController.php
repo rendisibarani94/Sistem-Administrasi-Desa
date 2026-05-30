@@ -7,6 +7,7 @@ use App\Models\JenisSurat;
 use App\Models\Notifikasi;
 use App\Models\PengajuanSurat;
 use App\Models\User;
+use App\Services\FcmService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -309,17 +310,33 @@ class RequestSuratController extends Controller
             'pesan'   => $pesan,
             'is_read' => false,
         ]);
+
+        // Kirim push notification real-time ke HP warga via FCM
+        try {
+            (new FcmService())->sendToUser($user, $judul, $pesan);
+        } catch (\Throwable $e) {
+            \Log::warning('FCM push gagal: ' . $e->getMessage());
+        }
     }
 
     private function notifyAdmins(string $judul, string $pesan): void
     {
-        User::where('role', 'admin')->each(function (User $admin) use ($judul, $pesan) {
+        $fcm = new FcmService();
+
+        User::where('role', 'admin')->each(function (User $admin) use ($judul, $pesan, $fcm) {
             Notifikasi::create([
                 'user_id' => $admin->id,
                 'judul'   => $judul,
                 'pesan'   => $pesan,
                 'is_read' => false,
             ]);
+
+            // Kirim push notification real-time ke HP admin via FCM
+            try {
+                $fcm->sendToUser($admin, $judul, $pesan);
+            } catch (\Throwable $e) {
+                \Log::warning('FCM push ke admin gagal: ' . $e->getMessage());
+            }
         });
     }
 

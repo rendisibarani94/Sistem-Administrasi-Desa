@@ -296,7 +296,7 @@
                     wire:click="simpanCatatan('ditolak')"
                     class="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-red-600 hover:bg-red-700 active:bg-red-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
                 >
-                    Tolak Laporan
+                    Tolak
                 </button>
 
                 {{-- Selesaikan/Berhasil Button --}}
@@ -305,7 +305,7 @@
                     wire:click="simpanCatatan('selesai')"
                     class="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
                 >
-                    Selesaikan (Berhasil)
+                    Terima
                 </button>
             </div>
         </div>

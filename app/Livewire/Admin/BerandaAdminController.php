@@ -1,11 +1,12 @@
 <?php
-
+ 
 namespace App\Livewire\Admin;
-
+ 
+use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-
+ 
 class BerandaAdminController extends Component
 {
     #[Layout('components.layouts.layouts')]
@@ -20,15 +21,23 @@ class BerandaAdminController extends Component
             'tanah_desa' => DB::table('tanah_desa')->where('is_deleted', 0)->count(),
             'inventaris_desa' => DB::table('inventaris_desa')->where('is_deleted', 0)->count(),
             'agenda_surat' => DB::table('agenda_surat')->where('is_deleted', 0)->count(),
-            'penduduk' => DB::table('penduduk')->where('is_deleted', 0)->where('is_deleted', 0)->count(),
-            'kartu_keluarga' => DB::table('kartu_keluarga')->where('is_deleted', 0)->where('is_deleted', 0)->count(),
+            'penduduk' => DB::table('penduduk')->where('is_deleted', 0)->count(),
+            'kartu_keluarga' => DB::table('kartu_keluarga')->where('is_deleted', 0)->count(),
             'penduduk_sementara' => DB::table('penduduk_sementara')->where('is_deleted', 0)->count(),
             'kader_pemberdayaan' => DB::table('kader_pemberdayaan')->where('is_deleted', 0)->count(),
             'pembangunan' => DB::table('pembangunan')->where('is_deleted', 0)->count(),
+            'surat_masuk' => PengajuanSurat::where('status', 'diajukan')->count(),
         ];
 
+        // Ambil 5 pengajuan surat masuk terbaru
+        $suratMasukList = PengajuanSurat::with(['jenisSurat', 'penduduk'])
+            ->latest()
+            ->take(5)
+            ->get();
+ 
         return view('admin.beranda', [
-            'stats' => $stats
+            'stats' => $stats,
+            'suratMasukList' => $suratMasukList,
         ]);
     }
 }

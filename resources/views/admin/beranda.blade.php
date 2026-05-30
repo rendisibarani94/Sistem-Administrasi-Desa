@@ -236,3 +236,118 @@
         </a>
 
     </div>
+
+    {{-- Section: Surat Masuk Terbaru --}}
+    <div class="mt-8 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+        <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h2 class="text-base font-bold text-gray-900">Permintaan Surat Masuk Terbaru</h2>
+                <p class="text-xs text-gray-500 mt-0.5">Daftar pengajuan surat kependudukan terbaru dari warga melalui aplikasi mobile</p>
+            </div>
+            <a 
+                href="{{ route('admin.layanan-surat.request.index') }}" 
+                class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-gray-300 bg-white text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors shadow-sm"
+            >
+                Lihat Semua
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                </svg>
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead>
+                    <tr class="bg-gray-50 text-gray-500 uppercase font-semibold border-b border-gray-100">
+                        <th class="px-6 py-3 font-semibold">Pemohon</th>
+                        <th class="px-6 py-3 font-semibold">Jenis Surat</th>
+                        <th class="px-6 py-3 font-semibold">Tanggal Masuk</th>
+                        <th class="px-6 py-3 font-semibold">Status</th>
+                        <th class="px-6 py-3 font-semibold text-right">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @forelse($suratMasukList as $surat)
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            {{-- Pemohon --}}
+                            <td class="px-6 py-4">
+                                <div class="flex flex-col">
+                                    <span class="font-bold text-gray-800 text-sm">
+                                        {{ $surat->penduduk->nama_lengkap ?? ($surat->user->name ?? 'Warga') }}
+                                    </span>
+                                    <span class="text-gray-400 font-mono text-[10px] mt-0.5">
+                                        NIK: {{ $surat->penduduk->nik ?? '-' }}
+                                    </span>
+                                </div>
+                            </td>
+
+                            {{-- Jenis Surat --}}
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center rounded-lg bg-sky-50 px-2 py-1 text-xs font-semibold text-sky-700 border border-sky-100 shadow-sm">
+                                    {{ $surat->jenisSurat->nama_surat ?? 'Layanan Surat' }}
+                                </span>
+                            </td>
+
+                            {{-- Tanggal Masuk --}}
+                            <td class="px-6 py-4 text-gray-600 font-medium">
+                                {{ $surat->created_at->translatedFormat('d M Y, H:i') }} WIB
+                            </td>
+
+                            {{-- Status --}}
+                            <td class="px-6 py-4">
+                                @if($surat->status === 'diajukan')
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-semibold text-amber-700 border border-amber-100 shadow-sm">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                                        Diajukan
+                                    </span>
+                                @elseif($surat->status === 'diproses')
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2.5 py-0.5 text-xs font-semibold text-blue-700 border border-blue-100 shadow-sm">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+                                        Diproses
+                                    </span>
+                                @elseif($surat->status === 'selesai')
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 border border-emerald-100 shadow-sm">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+                                        Selesai
+                                    </span>
+                                @elseif($surat->status === 'ditolak')
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700 border border-rose-100 shadow-sm">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span>
+                                        Ditolak
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 rounded-full bg-gray-50 px-2.5 py-0.5 text-xs font-semibold text-gray-700 border border-gray-100 shadow-sm">
+                                        {{ ucfirst($surat->status) }}
+                                    </span>
+                                @endif
+                            </td>
+
+                            {{-- Aksi --}}
+                            <td class="px-6 py-4 text-right">
+                                <a 
+                                    href="{{ route('admin.layanan-surat.request.show', $surat->id_pengajuan_surat) }}" 
+                                    class="inline-flex items-center gap-1 rounded-lg border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-100 hover:text-sky-800 transition-colors shadow-sm"
+                                >
+                                    Kelola
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                                <div class="flex flex-col items-center justify-center gap-2.5">
+                                    <span class="text-2xl">📥</span>
+                                    <p class="text-sm font-semibold text-gray-500">Belum ada surat masuk</p>
+                                    <p class="text-xs text-gray-400">Semua pengajuan surat baru dari warga akan tercantum di sini.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

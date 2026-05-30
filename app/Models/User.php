@@ -22,7 +22,8 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
-        'id_penduduk'
+        'id_penduduk',
+        'fcm_token',
     ];
 
     // =========================
