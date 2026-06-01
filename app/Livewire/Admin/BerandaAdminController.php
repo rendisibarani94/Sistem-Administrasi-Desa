@@ -2,6 +2,7 @@
  
 namespace App\Livewire\Admin;
  
+use App\Models\Pengaduan;
 use App\Models\PengajuanSurat;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -27,6 +28,9 @@ class BerandaAdminController extends Component
             'kader_pemberdayaan' => DB::table('kader_pemberdayaan')->where('is_deleted', 0)->count(),
             'pembangunan' => DB::table('pembangunan')->where('is_deleted', 0)->count(),
             'surat_masuk' => PengajuanSurat::where('status', 'diajukan')->count(),
+            'pengajuan_surat' => PengajuanSurat::count(),
+            'pengaduan' => Pengaduan::count(),
+            'pengaduan_baru' => Pengaduan::where('status', 'baru')->count(),
         ];
 
         // Ambil 5 pengajuan surat masuk terbaru
