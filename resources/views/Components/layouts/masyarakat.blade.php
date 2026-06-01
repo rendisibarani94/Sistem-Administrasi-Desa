@@ -24,11 +24,11 @@
             <div class="flex items-center space-x-2 rtl:space-x-reverse w-full md:w-auto">
                 <!-- Logo and Brand Name -->
                 @php
-                    $logoUrl = $settings['logo_url'] ?? asset('images/masyarakat/beranda.png');
+                    $logoUrl = resolve_image_url($settings['logo'] ?? null, 'images/masyarakat/logo_hutabulumejan.png');
                 @endphp
                 <a href="{{ route('beranda') }}" class="flex items-center">
                     <img src="{{ $logoUrl }}" class="h-10 rounded-sm" alt="Logo Desa" />
-                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">{{ $settings['nama_desa'] }}</span>
+                    <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">{{ $settings['nama_desa'] ?? 'Nama Desa' }}</span>
                 </a>
 
                 <!-- Mobile Menu Button -->

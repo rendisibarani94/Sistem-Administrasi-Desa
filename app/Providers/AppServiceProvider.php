@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
     });
 
     $settings = DB::table('settings')->pluck('value', 'key')->toArray();
-    $settings['logo_url'] = isset($settings['logo']) && $settings['logo'] ? asset('storage/' . ltrim($settings['logo'], '/')) : null;
+    $settings['logo_url'] = resolve_image_url($settings['logo'] ?? null, 'images/masyarakat/logo_hutabulumejan.png');
     View::share('settings', $settings);
 
         $kepala_desa = DB::table('aparatur_desa')

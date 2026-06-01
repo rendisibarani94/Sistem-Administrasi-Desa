@@ -6,7 +6,7 @@
     @if(empty($profil['deskripsi_beranda']) || empty($profil['gambar_landing_page']))
     <x-placeholder title="Konten Gambar Landing Page Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
     @else
-    <section class="relative mb-15 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-2 md:px-4 py-6" style="background-image: url('{{ asset('storage/'.$profil['gambar_landing_page']) }}');">
+    <section class="relative mb-15 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-2 md:px-4 py-6" style="background-image: url('{{ resolve_image_url($profil['gambar_landing_page'] ?? null, 'images/masyarakat/beranda.png') }}');">
         <div class="absolute inset-0 z-0"></div>
         <div class="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
             <div class="max-w-4xl">
@@ -40,7 +40,7 @@
                                     <div class="flex-shrink-0 px-2 sm:px-3 w-[280px] sm:w-[320px] md:w-[350px]">
                                         <div class="card border border-sky-600 rounded-lg h-full py-4 px-3 sm:py-5 sm:px-4 md:py-6 md:px-5 flex flex-col items-center text-center">
                                             <div class="card-header mb-3 sm:mb-4">
-                                                <img :src="item.foto ? `storage/${item.foto}` : 'images/masyarakat/beranda.png'" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full object-cover" :alt="item.nama_lengkap">
+                                                <img :src="item.foto ? `storage/${item.foto}` : '{{ asset('images/masyarakat/beranda.png') }}'" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full object-cover" :alt="item.nama_lengkap">
                                             </div>
                                             <div class="card-text">
                                                 <h4 class="text-black font-bold text-center text-sm sm:text-base md:text-lg" x-text="item.nama_lengkap"></h4>
@@ -57,7 +57,7 @@
                             <div class="flex-shrink-0 px-2 sm:px-4 w-full">
                                 <div class="card border border-sky-500 rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
                                     <div class="card-header mb-4">
-                                        <img src="images/masyarakat/beranda.png" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="Default Image">
+                                        <img src="{{ asset('images/masyarakat/beranda.png') }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="Default Image">
                                     </div>
                                     <div class="card-text">
                                         <h4 class="text-black font-bold text-center text-lg sm:text-xl">Data tidak tersedia</h4>
