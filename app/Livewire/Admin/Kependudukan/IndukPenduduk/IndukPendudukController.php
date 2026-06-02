@@ -3,9 +3,12 @@
 namespace App\Livewire\Admin\Kependudukan\IndukPenduduk;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Spatie\SimpleExcel\SimpleExcelWriter;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class IndukPendudukController extends Component
 {
@@ -16,11 +19,13 @@ class IndukPendudukController extends Component
 
     // Account Creation Modal States
     public $showAccountModal = false;
+    public $isEditMode = false;
     public $selectedPendudukId;
     public $selectedPendudukName;
     public $selectedPendudukNik;
     public $email;
     public $password;
+    public $confirm_password;
 
     public function confirmDelete($id)
     {
@@ -97,6 +102,23 @@ class IndukPendudukController extends Component
             $this->selectedPendudukNik = $penduduk->nik;
             $this->email = '';
             $this->password = 'password123'; // Default password
+            $this->isEditMode = false;
+            $this->showAccountModal = true;
+        }
+    }
+
+    public function openResetPasswordModal($id_penduduk)
+    {
+        $penduduk = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->first();
+        $userAcc = DB::table('users')->where('id_penduduk', $id_penduduk)->first();
+        if ($penduduk && $userAcc) {
+            $this->selectedPendudukId = $id_penduduk;
+            $this->selectedPendudukName = $penduduk->nama_lengkap;
+            $this->selectedPendudukNik = $penduduk->nik;
+            $this->email = $userAcc->email;
+            $this->password = '';
+            $this->confirm_password = '';
+            $this->isEditMode = true;
             $this->showAccountModal = true;
         }
     }
@@ -104,38 +126,127 @@ class IndukPendudukController extends Component
     public function closeAccountModal()
     {
         $this->showAccountModal = false;
-        $this->reset(['selectedPendudukId', 'selectedPendudukName', 'selectedPendudukNik', 'email', 'password']);
+        $this->reset(['selectedPendudukId', 'selectedPendudukName', 'selectedPendudukNik', 'email', 'password', 'confirm_password', 'isEditMode']);
         $this->resetErrorBag();
     }
 
     public function saveAccount()
     {
-        $this->validate([
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-        ], [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
-            'password.required' => 'Password wajib diisi.',
-            'password.min' => 'Password minimal 6 karakter.',
-        ]);
+        if ($this->isEditMode) {
+            $this->validate([
+                'password' => 'required|min:6',
+                'confirm_password' => 'required|same:password',
+            ], [
+                'password.required' => 'Password baru wajib diisi.',
+                'password.min' => 'Password minimal 6 karakter.',
+                'confirm_password.required' => 'Konfirmasi password wajib diisi.',
+                'confirm_password.same' => 'Konfirmasi password harus sama dengan password.',
+            ]);
 
-        // Insert new user account tied to selected citizen
-        DB::table('users')->insert([
-            'name' => $this->selectedPendudukName,
-            'nik' => $this->selectedPendudukNik,
-            'email' => $this->email,
-            'password' => bcrypt($this->password),
-            'role' => 'masyarakat',
-            'id_penduduk' => $this->selectedPendudukId,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
+            // Pastikan kolom password_plain tersedia di tabel users (Self-healing schema)
+            if (!Schema::hasColumn('users', 'password_plain')) {
+                Schema::table('users', function ($table) {
+                    $table->string('password_plain')->nullable();
+                });
+            }
+
+            // Update user password and plain password
+            DB::table('users')
+                ->where('id_penduduk', $this->selectedPendudukId)
+                ->update([
+                    'password' => bcrypt($this->password),
+                    'password_plain' => $this->password,
+                    'updated_at' => now(),
+                ]);
+
+            $successTitle = 'Sandi Berhasil Diubah! 🔒';
+            $successText = 'Kata sandi untuk ' . $this->selectedPendudukName . ' telah berhasil diubah dan dicatat pada pertinggal spreadsheet.';
+        } else {
+            $this->validate([
+                'email' => 'required|email|unique:users,email',
+                'password' => 'required|min:6',
+                'confirm_password' => 'required|same:password',
+            ], [
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
+                'password.required' => 'Password wajib diisi.',
+                'password.min' => 'Password minimal 6 karakter.',
+                'confirm_password.required' => 'Konfirmasi password wajib diisi.',
+                'confirm_password.same' => 'Konfirmasi password harus sama dengan password.',
+            ]);
+
+            // Pastikan kolom password_plain tersedia di tabel users (Self-healing schema)
+            if (!Schema::hasColumn('users', 'password_plain')) {
+                Schema::table('users', function ($table) {
+                    $table->string('password_plain')->nullable();
+                });
+            }
+
+            // Insert new user account tied to selected citizen
+            DB::table('users')->insert([
+                'name' => $this->selectedPendudukName,
+                'nik' => $this->selectedPendudukNik,
+                'email' => $this->email,
+                'password' => bcrypt($this->password),
+                'password_plain' => $this->password, // Simpan password polos ke database
+                'role' => 'masyarakat',
+                'id_penduduk' => $this->selectedPendudukId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+
+            $successTitle = 'Akun Berhasil Dibuat! 🎉';
+            $successText = 'Akun kependudukan untuk ' . $this->selectedPendudukName . ' telah berhasil dibuat dan dicatat pada pertinggal spreadsheet.';
+        }
+
+        // Fetch resident info (including Dusun) for the CSV spreadsheet
+        $penduduk = DB::table('penduduk')->where('id_penduduk', $this->selectedPendudukId)->first();
+        $dusunName = '-';
+        if ($penduduk && !empty($penduduk->dusun)) {
+            $dusunName = DB::table('dusun')->where('id_dusun', $penduduk->dusun)->value('dusun') ?? $penduduk->dusun;
+        }
+
+        // Tulis pertinggal akun ke file CSV spreadsheet
+        $directory = public_path('excel');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        $filePath = $directory . '/pertinggal_akun_warga.csv';
+        $fileExists = file_exists($filePath);
+
+        $file = fopen($filePath, 'a');
+        if ($file) {
+            // Jika file baru dibuat, tulis header CSV terlebih dahulu
+            if (!$fileExists) {
+                // Tulis BOM UTF-8 agar Excel membuka karakter dengan benar
+                fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+                fputcsv($file, [
+                    'Nama Lengkap',
+                    'NIK',
+                    'Email Warga',
+                    'Password',
+                    'Confirm Password',
+                    'Dusun',
+                    'Tanggal Dibuat'
+                ], ';');
+            }
+
+            fputcsv($file, [
+                $this->selectedPendudukName,
+                "'" . $this->selectedPendudukNik, // Prefix single quote agar tidak dibulatkan di Excel
+                $this->email,
+                $this->password,
+                $this->password,
+                $dusunName,
+                now()->format('Y-m-d H:i:s')
+            ], ';');
+            fclose($file);
+        }
 
         $this->dispatch('swal:success', [
-            'title' => 'Akun Berhasil Dibuat! 🎉',
-            'text' => 'Akun kependudukan untuk ' . $this->selectedPendudukName . ' telah berhasil dibuat.',
+            'title' => $successTitle,
+            'text' => $successText,
         ]);
 
         $this->closeAccountModal();
@@ -162,5 +273,52 @@ class IndukPendudukController extends Component
                     ->paginate(5)
             ]
         );
+    }
+
+    public function exportAllAccounts(): StreamedResponse
+    {
+        // Pastikan kolom password_plain tersedia di tabel users (Self-healing schema)
+        if (!Schema::hasColumn('users', 'password_plain')) {
+            Schema::table('users', function ($table) {
+                $table->string('password_plain')->nullable();
+            });
+        }
+
+        $accounts = DB::table('users')
+            ->leftJoin('penduduk', 'users.id_penduduk', '=', 'penduduk.id_penduduk')
+            ->leftJoin('dusun', 'penduduk.dusun', '=', 'dusun.id_dusun')
+            ->select('users.name', 'users.nik', 'users.email', 'users.password_plain', 'dusun.dusun as nama_dusun', 'users.created_at')
+            ->where('users.role', 'masyarakat')
+            ->get();
+
+        $fileName = 'pertinggal-semua-akun-warga-' . now()->format('YmdHis') . '.xlsx';
+
+        return response()->streamDownload(function() use ($accounts) {
+            $writer = SimpleExcelWriter::streamDownload('php://output', 'xlsx');
+            $writer->addHeader([
+                'Nama Lengkap',
+                'NIK',
+                'Email Warga',
+                'Password',
+                'Confirm Password',
+                'Dusun',
+                'Tanggal Dibuat'
+            ]);
+
+            foreach ($accounts as $row) {
+                $plainPassword = !empty($row->password_plain) ? $row->password_plain : 'Terenkripsi (Akun Lama)';
+                $writer->addRow([
+                    $row->name,
+                    "'" . $row->nik, // Prefix single quote agar NIK tidak dibulatkan
+                    $row->email,
+                    $plainPassword,
+                    $plainPassword,
+                    $row->nama_dusun ?? '-',
+                    $row->created_at ? date('Y-m-d H:i:s', strtotime($row->created_at)) : '-',
+                ]);
+            }
+
+            $writer->close();
+        }, $fileName);
     }
 }

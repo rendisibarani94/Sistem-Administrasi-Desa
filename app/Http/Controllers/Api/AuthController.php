@@ -45,48 +45,12 @@ class AuthController extends Controller
 
     $token = $user->createToken('mobile-token')->plainTextToken;
 
-    $penduduk = $user->penduduk;
-    if (!$penduduk && $user->nik) {
-        $penduduk = \App\Models\Penduduk::where('nik', $user->nik)->first();
-        if ($penduduk) {
-            $user->update(['id_penduduk' => $penduduk->id_penduduk]);
-        }
-    }
-    
-    $alamat = '';
-    $tempatLahir = '';
-    $tanggalLahir = '';
-    $noKk = '';
-    $agama = '';
-
-    if ($penduduk) {
-        $alamat = $penduduk->alamat ?? '';
-        $tempatLahir = $penduduk->tempat_lahir ?? '';
-        $tanggalLahir = $penduduk->tanggal_lahir ? $penduduk->tanggal_lahir->format('Y-m-d') : '';
-        $agama = $penduduk->agama ?? '';
-        
-        $kartuKeluarga = $penduduk->kartuKeluarga;
-        if ($kartuKeluarga) {
-            $noKk = $kartuKeluarga->nomor_kartu_keluarga ?? '';
-        }
-    }
-
     return response()->json([
         'status' => 'success',
         'message' => 'Login berhasil',
         'data' => [
             'token' => $token,
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'nik' => $user->nik,
-                'role' => $user->role,
-                'alamat' => $alamat,
-                'tempat_lahir' => $tempatLahir,
-                'tanggal_lahir' => $tanggalLahir,
-                'no_kk' => $noKk,
-                'agama' => $agama
-            ]
+            'user' => $this->getUserDetails($user)
         ]
     ]);
 }
@@ -95,7 +59,9 @@ class AuthController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'data' => $request->user()
+            'data' => [
+                'user' => $this->getUserDetails($request->user())
+            ]
         ]);
     }
 
@@ -107,5 +73,61 @@ class AuthController extends Controller
             'status' => 'success',
             'message' => 'Logout berhasil'
         ]);
+    }
+
+    private function getUserDetails($user)
+    {
+        $penduduk = $user->penduduk;
+        if (!$penduduk && $user->nik) {
+            $penduduk = \App\Models\Penduduk::where('nik', $user->nik)->first();
+            if ($penduduk) {
+                $user->update(['id_penduduk' => $penduduk->id_penduduk]);
+            }
+        }
+        
+        $alamat = '';
+        $tempatLahir = '';
+        $tanggalLahir = '';
+        $noKk = '';
+        $agama = '';
+        $jenisKelamin = '';
+        $namaAyah = '';
+        $namaIbu = '';
+        $suku = '';
+        $noKtp = '';
+
+        if ($penduduk) {
+            $alamat = $penduduk->alamat ?? '';
+            $tempatLahir = $penduduk->tempat_lahir ?? '';
+            $tanggalLahir = $penduduk->tanggal_lahir ? $penduduk->tanggal_lahir->format('Y-m-d') : '';
+            $agama = $penduduk->agama ?? '';
+            $jenisKelamin = $penduduk->jenis_kelamin ?? '';
+            $namaAyah = $penduduk->nama_ayah ?? '';
+            $namaIbu = $penduduk->nama_ibu ?? '';
+            $suku = $penduduk->suku ?? '';
+            $noKtp = $penduduk->nik ?? '';
+
+            $kartuKeluarga = $penduduk->kartuKeluarga;
+            if ($kartuKeluarga) {
+                $noKk = $kartuKeluarga->nomor_kartu_keluarga ?? '';
+            }
+        }
+
+        return [
+            'id' => $user->id,
+            'name' => $user->name,
+            'nik' => $user->nik,
+            'role' => $user->role,
+            'alamat' => $alamat,
+            'tempat_lahir' => $tempatLahir,
+            'tanggal_lahir' => $tanggalLahir,
+            'no_kk' => $noKk,
+            'agama' => $agama,
+            'jenis_kelamin' => $jenisKelamin,
+            'nama_ayah' => $namaAyah,
+            'nama_ibu' => $namaIbu,
+            'suku' => $suku,
+            'no_ktp' => $noKtp,
+        ];
     }
 }

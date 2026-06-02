@@ -1,4 +1,5 @@
 <div>
+    <style>[x-cloak] { display: none !important; }</style>
     <x-slot:judul>
         Induk Penduduk
     </x-slot:judul>
@@ -79,6 +80,24 @@
                     </svg>
                     <span>Penduduk Pindah</span>
                 </a>
+
+                <!-- Unduh Pertinggal Akun Button -->
+                @if(file_exists(public_path('excel/pertinggal_akun_warga.csv')))
+                <a href="{{ asset('excel/pertinggal_akun_warga.csv') }}" download class="cursor-pointer bg-green-600 hover:bg-green-700 text-white focus:ring-2 focus:outline-none focus:ring-green-500 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto" title="Unduh spreadsheet pertinggal pembuatan akun baru (dengan password polos)">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
+                    </svg>
+                    <span>Unduh Pertinggal Akun (.csv)</span>
+                </a>
+                @endif
+
+                <!-- Ekspor Semua Akun Warga Button -->
+                <button wire:click="exportAllAccounts" type="button" class="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-500 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto" title="Unduh spreadsheet seluruh akun warga yang ada di database">
+                    <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
+                    </svg>
+                    <span>Ekspor Semua Akun (Excel)</span>
+                </button>
             </div>
 
             <!-- Search Input -->
@@ -141,11 +160,16 @@
                                 $userAcc = DB::table('users')->where('nik', $item->nik)->first();
                             @endphp
                             @if($userAcc)
-                                <div class="inline-flex items-center text-teal-700 font-bold bg-teal-50 border border-teal-200 px-2 py-0.5 rounded text-xs space-x-1" title="Email: {{ $userAcc->email }}">
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
-                                      <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.13-5.58Z" clip-rule="evenodd" />
-                                    </svg>
-                                    <span>Akun Aktif</span>
+                                <div class="flex flex-col items-center space-y-1">
+                                    <div class="inline-flex items-center text-teal-700 font-bold bg-teal-50 border border-teal-200 px-2 py-0.5 rounded text-xs space-x-1" title="Email: {{ $userAcc->email }}">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                                          <path fill-rule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.13-5.58Z" clip-rule="evenodd" />
+                                        </svg>
+                                        <span>Akun Aktif</span>
+                                    </div>
+                                    <a wire:click="openResetPasswordModal({{ $item->id_penduduk }})" class="text-orange-600 hover:text-orange-950 font-bold text-[10px] underline cursor-pointer" title="Ubah kata sandi akun ini">
+                                        Ubah Sandi
+                                    </a>
                                 </div>
                             @else
                                 <a wire:click="openCreateAccountModal({{ $item->id_penduduk }})" class="text-sky-600 hover:text-sky-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer" title="Buatkan akun untuk warga ini">
@@ -205,7 +229,7 @@
                 <!-- Header -->
                 <div class="flex items-start justify-between p-5 border-b border-solid border-gray-200 rounded-t">
                     <h3 class="text-xl font-bold text-gray-900">
-                        Buat Akun Masyarakat 👤
+                        {{ $isEditMode ? 'Ubah Sandi Akun 🔒' : 'Buat Akun Masyarakat 👤' }}
                     </h3>
                     <button type="button" wire:click="closeAccountModal" class="p-1 ml-auto bg-transparent border-0 text-gray-500 float-right text-3xl leading-none font-semibold outline-none focus:outline-none hover:text-red-500 transition duration-150">
                         ×
@@ -226,13 +250,44 @@
                     <form wire:submit.prevent="saveAccount">
                         <div class="mb-4">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Email Warga <span class="text-red-500">*</span></label>
-                            <input type="email" wire:model="email" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('email') border-red-500 @enderror" placeholder="warga@domain.com" required />
+                            <input type="email" wire:model="email" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('email') border-red-500 @enderror @if($isEditMode) bg-gray-100 text-gray-500 cursor-not-allowed @endif" placeholder="warga@domain.com" required @if($isEditMode) disabled @endif />
                             @error('email') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
-                        <div class="mb-6">
+
+                        <!-- Password Field with Show/Hide -->
+                        <div class="mb-4" x-data="{ showPw: false }">
                             <label class="block text-gray-700 text-sm font-bold mb-2">Password <span class="text-red-500">*</span></label>
-                            <input type="password" wire:model="password" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('password') border-red-500 @enderror" placeholder="Minimal 6 karakter" required />
+                            <div class="relative">
+                                <input :type="showPw ? 'text' : 'password'" wire:model="password" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('password') border-red-500 @enderror" placeholder="{{ $isEditMode ? 'Masukkan sandi baru' : 'Minimal 6 karakter' }}" required />
+                                <button type="button" @click="showPw = !showPw" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-sky-700 focus:outline-none">
+                                    <svg x-show="!showPw" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <svg x-show="showPw" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
                             @error('password') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Confirm Password Field with Show/Hide -->
+                        <div class="mb-6" x-data="{ showConfirmPw: false }">
+                            <label class="block text-gray-700 text-sm font-bold mb-2">Konfirmasi Password <span class="text-red-500">*</span></label>
+                            <div class="relative">
+                                <input :type="showConfirmPw ? 'text' : 'password'" wire:model="confirm_password" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 pr-10 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('confirm_password') border-red-500 @enderror" placeholder="{{ $isEditMode ? 'Ulangi sandi baru' : 'Minimal 6 karakter' }}" required />
+                                <button type="button" @click="showConfirmPw = !showConfirmPw" class="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-sky-700 focus:outline-none">
+                                    <svg x-show="!showConfirmPw" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                    <svg x-show="showConfirmPw" x-cloak class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            @error('confirm_password') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
                         </div>
                         
                         <!-- Footer Actions -->
@@ -245,7 +300,7 @@
                                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                 </svg>
-                                <span>Buat Akun</span>
+                                <span>{{ $isEditMode ? 'Simpan Sandi' : 'Buat Akun' }}</span>
                             </button>
                         </div>
                     </form>
