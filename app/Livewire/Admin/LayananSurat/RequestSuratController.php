@@ -95,6 +95,19 @@ class RequestSuratController extends Controller
 
         $user = Auth::user();
         $jenisSurat = JenisSurat::find($validated['id_jenis_surat']);
+
+        // Prevent duplicate pending requests
+        $pengajuanAktif = PengajuanSurat::where('id_penduduk', $user->id_penduduk)
+            ->where('id_jenis_surat', $validated['id_jenis_surat'])
+            ->whereIn('status', ['diajukan', 'diproses'])
+            ->first();
+
+        if ($pengajuanAktif) {
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Anda sudah memiliki pengajuan surat jenis ini yang sedang diproses atau menunggu persetujuan.');
+        }
         
         $pengajuanSurat = PengajuanSurat::create([
             'id_penduduk' => $user->id_penduduk,
@@ -144,8 +157,8 @@ class RequestSuratController extends Controller
         $this->authorizeAdmin();
 
         $validated = $request->validate([
-            'nomor_surat' => 'required|string|max:100',
-            'file_pdf'    => 'nullable|file|mimes:pdf|max:10240',  // opsional sekarang
+            'nomor_surat'     => 'required|string|max:100',
+            'file_pdf'        => 'nullable|file|mimes:pdf|max:10240',  // opsional sekarang
         ]);
 
         $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
@@ -163,15 +176,21 @@ class RequestSuratController extends Controller
                 $pengajuanSurat->tanggal_selesai = now();
                 $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
 
-                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul'))->render();
+                // Render HTML with isPdf set to true so base64 images and DomPDF compatible layouts are used
+                $isPdf = true;
+                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
 
                 // Pastikan folder ada
                 $dir = storage_path('app/surat');
                 if (!is_dir($dir)) { mkdir($dir, 0755, true); }
 
-                $filename = 'surat/' . date('Ymd') . '_' . $id . '_' . str_replace('/', '-', $validated['nomor_surat']) . '.html';
-                $htmlPath = storage_path('app/' . $filename);
-                file_put_contents($htmlPath, $html);
+                $filename = 'surat/' . date('Ymd') . '_' . $id . '_' . str_replace('/', '-', $validated['nomor_surat']) . '.pdf';
+                $pdfPath = storage_path('app/' . $filename);
+
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+                $pdf->setPaper('a4', 'portrait');
+                $pdf->save($pdfPath);
+
                 $filePath = $filename;
             } catch (\Throwable $e) {
                 \Log::error('Gagal generate surat: ' . $e->getMessage());
@@ -179,11 +198,15 @@ class RequestSuratController extends Controller
             }
         }
 
+        // Ambil Kepala Desa aktif
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         $pengajuanSurat->update([
             'status'           => 'selesai',
             'nomor_surat'      => $validated['nomor_surat'],
             'file_pdf'         => $filePath,
-            'id_diproses_oleh' => Auth::user()->id,
+            'id_diproses_oleh' => $idKades,
             'tanggal_respons'  => now(),
             'tanggal_selesai'  => now(),
         ]);
@@ -213,10 +236,14 @@ class RequestSuratController extends Controller
 
         $pengajuanSurat = PengajuanSurat::with(['jenisSurat'])->findOrFail($id);
 
+        // Ambil Kepala Desa aktif
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         $pengajuanSurat->update([
             'status'           => 'ditolak',
             'alasan_tolak'     => $validated['alasan_tolak'],
-            'id_diproses_oleh' => Auth::user()->id,
+            'id_diproses_oleh' => $idKades,
             'tanggal_respons'  => now(),
         ]);
 
@@ -252,7 +279,40 @@ class RequestSuratController extends Controller
             return redirect()->back()->with('error', 'File PDF tidak tersedia.');
         }
 
-        return response()->download(storage_path('app/' . $pengajuanSurat->file_pdf));
+        $filePath = storage_path('app/' . $pengajuanSurat->file_pdf);
+
+        // Jika filenya adalah HTML (data lama), konversi on-the-fly ke PDF
+        if (str_ends_with($pengajuanSurat->file_pdf, '.html')) {
+            // Generate PDF on-the-fly
+            $isPdf = true;
+            
+            try {
+                $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
+            } catch (\Throwable $e) {
+                if (file_exists($filePath)) {
+                    $html = file_get_contents($filePath);
+                } else {
+                    return redirect()->back()->with('error', 'File tidak ditemukan di server.');
+                }
+            }
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+            $pdf->setPaper('a4', 'portrait');
+
+            $downloadName = basename($pengajuanSurat->file_pdf, '.html') . '.pdf';
+            return response()->streamDownload(function () use ($pdf) {
+                echo $pdf->output();
+            }, $downloadName, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        }
+
+        if (!file_exists($filePath)) {
+            return redirect()->back()->with('error', 'File tidak ditemukan di server.');
+        }
+
+        return response()->download($filePath);
     }
 
     /**

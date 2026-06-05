@@ -35,6 +35,19 @@ class LayananSuratApiController extends Controller
             ], 422);
         }
 
+        // Prevent duplicate pending requests
+        $pengajuanAktif = PengajuanSurat::where('id_penduduk', $pendudukId)
+            ->where('id_jenis_surat', $jenisSurat->id_jenis_surat)
+            ->whereIn('status', ['diajukan', 'diproses'])
+            ->first();
+
+        if ($pengajuanAktif) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Anda sudah memiliki pengajuan surat jenis ini yang sedang diproses atau menunggu persetujuan.'
+            ], 422);
+        }
+
         $surat = PengajuanSurat::create([
             'id_penduduk' => $pendudukId,
             'id_jenis_surat' => $jenisSurat->id_jenis_surat,

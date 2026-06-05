@@ -31,9 +31,29 @@ class PengaduanSuratController extends Component
             });
         }
 
+        if (request('status')) {
+            if (request('status') === 'terbaca') {
+                $query->whereIn('status', ['baru', 'diproses']);
+            } else {
+                $query->where('status', request('status'));
+            }
+        }
+
+        // Hitung statistik untuk grid
+        $totalPengaduan = Pengaduan::count();
+        $totalTerbaca = Pengaduan::whereIn('status', ['baru', 'diproses'])->count();
+        $totalDisetujui = Pengaduan::where('status', 'selesai')->count();
+        $totalDitolak = Pengaduan::where('status', 'ditolak')->count();
+
         $pengaduan = $query->get();
 
-        return view('livewire.admin.layanan-surat.pengaduan-surat-controller', compact('pengaduan'));
+        return view('livewire.admin.layanan-surat.pengaduan-surat-controller', compact(
+            'pengaduan',
+            'totalPengaduan',
+            'totalTerbaca',
+            'totalDisetujui',
+            'totalDitolak'
+        ));
     }
 
     public function showDetail($id)
@@ -64,11 +84,19 @@ class PengaduanSuratController extends Component
         if ($this->selectedPengaduan) {
             $pengaduan = Pengaduan::find($this->selectedPengaduan->id_pengaduan);
             if ($pengaduan) {
+                // Guard: jika sudah final (ditolak/selesai), tidak bisa diubah lagi
+                if (in_array($pengaduan->status, ['ditolak', 'selesai'])) {
+                    session()->flash('success', 'Pengaduan ini sudah diproses dan tidak dapat diubah lagi.');
+                    $this->closeDetailModal();
+                    return;
+                }
+
                 $pengaduan->status = $status;
                 $pengaduan->catatan_admin = $this->catatanAdmin;
                 $pengaduan->save();
 
-                session()->flash('success', 'Status pengaduan berhasil diperbarui!');
+                $label = $status === 'selesai' ? 'disetujui' : 'ditolak';
+                session()->flash('success', "Pengaduan berhasil {$label}!");
                 $this->closeDetailModal();
             }
         }

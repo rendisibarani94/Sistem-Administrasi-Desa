@@ -107,11 +107,11 @@ class PengajuanSurat extends Model
     }
 
     /**
-     * Get the user who processed this.
+     * Get the Kepala Desa who processed this.
      */
     public function diprosesOleh()
     {
-        return $this->belongsTo(User::class, 'id_diproses_oleh');
+        return $this->belongsTo(KepalaDesa::class, 'id_diproses_oleh', 'id_kepala_desa');
     }
 
     /**

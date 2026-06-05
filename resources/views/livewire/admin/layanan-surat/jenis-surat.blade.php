@@ -1,3 +1,7 @@
+@php
+    $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+    $activeKadesNama = $activeKades ? $activeKades->nama : 'Haposan Simanjuntak';
+@endphp
 <div>
     <x-slot:judul>
         Data Jenis Surat
@@ -17,7 +21,7 @@
                             <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                             </svg>
-                            Dashboard
+                            <span translate="no">Dashboard</span>
                         </a>
                     </li>
                     <li>
@@ -200,16 +204,54 @@
     @if ($showModal)
     <div
         class="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/50 px-4 py-8"
-        x-data x-on:keydown.escape.window="$wire.closeModal()"
+        x-data="{
+            isDirty: false,
+            confirmClose() {
+                if (!this.isDirty) { $wire.closeModal(); return; }
+                Swal.fire({
+                    title: 'Apakah menyimpan perubahan?',
+                    text: 'Ada perubahan yang belum disimpan. Apakah Anda ingin menyimpan sebelum menutup?',
+                    icon: 'question',
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: 'Simpan',
+                    denyButtonText: 'Tidak simpan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#0284c7',
+                    denyButtonColor: '#6b7280',
+                    cancelButtonColor: '#ef4444',
+                }).then((result) => {
+                    if (result.isConfirmed) { $wire.simpan(); }
+                    else if (result.isDenied) { this.isDirty = false; $wire.closeModal(); }
+                });
+            },
+            confirmSimpan() {
+                Swal.fire({
+                    title: 'Apakah anda sudah yakin?',
+                    text: 'Pastikan semua data sudah benar sebelum menyimpan.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#0284c7',
+                    cancelButtonColor: '#6b7280',
+                    confirmButtonText: 'Ya, simpan!',
+                    cancelButtonText: 'Cek lagi',
+                }).then((result) => {
+                    if (result.isConfirmed) { $wire.simpan(); }
+                });
+            }
+        }"
+        @input="isDirty = true"
+        @click.self="confirmClose()"
+        x-on:keydown.escape.window="confirmClose()"
     >
-        <div class="relative w-full max-w-5xl rounded-2xl bg-white shadow-xl">
+        <div class="relative w-full max-w-7xl rounded-2xl bg-white shadow-xl">
 
             {{-- Modal Header --}}
             <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <h2 class="text-lg font-bold text-gray-800">
                     {{ $editingId ? 'Edit Jenis Surat' : 'Tambah Jenis Surat Baru' }}
                 </h2>
-                <button wire:click="closeModal" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <button type="button" @click="confirmClose()" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
@@ -217,8 +259,9 @@
             </div>
 
             {{-- Modal Body --}}
-            <div class="px-6 py-5 grid grid-cols-1 lg:grid-cols-12 gap-6 max-h-[78vh] overflow-y-auto">
-                {{-- Left Column: Form inputs (col-span-7) --}}
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 p-6 max-h-[78vh] overflow-y-auto">
+
+                {{-- Left Column (Form Inputs) --}}
                 <div class="lg:col-span-7 space-y-5">
 
                 {{-- Nama Surat --}}
@@ -231,6 +274,7 @@
                         type="text"
                         placeholder="Contoh: Surat Keterangan Domisili"
                         class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nama_surat') border-red-400 bg-red-50 @enderror"
+                        @input="trackChange()"
                     />
                     @error('nama_surat')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -239,177 +283,84 @@
 
                 {{-- Deskripsi --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi <span class="text-gray-400 font-normal">(opsional)</span></label>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                        Deskripsi <span class="text-red-500">*</span>
+                    </label>
                     <textarea
                         wire:model="deskripsi"
                         rows="2"
                         placeholder="Jelaskan kegunaan surat ini..."
-                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none"
+                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none @error('deskripsi') border-red-400 bg-red-50 @enderror"
                     ></textarea>
+                    @error('deskripsi')
+                        <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
 
                 {{-- Template Isi Surat (Quill Editor) --}}
-                <div class="space-y-2">
-                    <label class="block text-sm font-semibold text-gray-700">
-                        Template Isi Surat <span class="text-gray-400 font-normal">(opsional)</span>
-                    </label>
-                    <p class="text-xs text-gray-500">
-                        Sesuaikan isi surat di bawah ini. Kosongkan untuk menggunakan format bawaan sistem. Gunakan tag dinamis (placeholders) untuk otomatis mengganti dengan data riil pemohon.
-                    {{-- Template Builder Tools Helper --}}
-                    <div class="space-y-3 p-3.5 bg-sky-50/50 border border-sky-100 rounded-xl mb-2.5">
-                        <div class="flex items-center justify-between border-b border-sky-100 pb-2">
-                            <div class="space-y-0.5">
-                                <span class="text-xs font-bold text-sky-950 block">Alat Bantu Pembuat Template</span>
-                                <span class="text-[9px] text-gray-500 block">Klik tag di bawah untuk langsung memasukkannya ke dalam kursor editor</span>
-                            </div>
-                            <button 
-                                type="button" 
-                                onclick="loadDefaultTemplate()" 
-                                class="inline-flex items-center gap-1.5 rounded-lg bg-sky-600 hover:bg-sky-700 px-3 py-1.5 text-[10px] font-bold text-white transition-colors shadow-sm"
-                            >
-                                ⚡ Muat Format Surat Standar
-                            </button>
-                        </div>
-                        
-                        <div class="space-y-2">
-                            {{-- Kelompok A: Data Utama Penduduk & KK --}}
-                            <div>
-                                <span class="text-[9px] font-semibold text-sky-900 block mb-1">📋 Data Utama Penduduk & KK:</span>
-                                <div class="flex flex-wrap gap-1">
-                                    <button type="button" onclick="insertTag('{nama}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nama}</button>
-                                    <button type="button" onclick="insertTag('{nik}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nik}</button>
-                                    <button type="button" onclick="insertTag('{no_kk}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{no_kk}</button>
-                                    <button type="button" onclick="insertTag('{jenis_kelamin}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{jenis_kelamin}</button>
-                                    <button type="button" onclick="insertTag('{jk}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{jk}</button>
-                                    <button type="button" onclick="insertTag('{tempat}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{tempat}</button>
-                                    <button type="button" onclick="insertTag('{tanggal_lahir}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{tanggal_lahir}</button>
-                                    <button type="button" onclick="insertTag('{ttl}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{ttl}</button>
-                                    <button type="button" onclick="insertTag('{pekerjaan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{pekerjaan}</button>
-                                    <button type="button" onclick="insertTag('{alamat}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{alamat}</button>
-                                    <button type="button" onclick="insertTag('{rt}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{rt}</button>
-                                    <button type="button" onclick="insertTag('{rw}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{rw}</button>
-                                </div>
-                            </div>
-                            
-                            {{-- Kelompok B: Keluarga & Hubungan --}}
-                            <div>
-                                <span class="text-[9px] font-semibold text-sky-900 block mb-1">👨‍👩‍👧 Keluarga & Hubungan:</span>
-                                <div class="flex flex-wrap gap-1">
-                                    <button type="button" onclick="insertTag('{nama_ayah}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nama_ayah}</button>
-                                    <button type="button" onclick="insertTag('{nama_ibu}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nama_ibu}</button>
-                                    <button type="button" onclick="insertTag('{nama_anak}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nama_anak}</button>
-                                    <button type="button" onclick="insertTag('{ttl_anak}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{ttl_anak}</button>
-                                </div>
-                            </div>
-
-                            {{-- Kelompok C: Kependudukan Tambahan --}}
-                            <div>
-                                <span class="text-[9px] font-semibold text-sky-900 block mb-1">🔍 Kependudukan Tambahan:</span>
-                                <div class="flex flex-wrap gap-1">
-                                    <button type="button" onclick="insertTag('{agama}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{agama}</button>
-                                    <button type="button" onclick="insertTag('{status_perkawinan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{status_perkawinan}</button>
-                                    <button type="button" onclick="insertTag('{pendidikan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{pendidikan}</button>
-                                    <button type="button" onclick="insertTag('{kewarganegaraan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{kewarganegaraan}</button>
-                                    <button type="button" onclick="insertTag('{golongan_darah}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{golongan_darah}</button>
-                                    <button type="button" onclick="insertTag('{gol_darah}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{gol_darah}</button>
-                                    <button type="button" onclick="insertTag('{suku}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{suku}</button>
-                                </div>
-                            </div>
-
-                            {{-- Kelompok D: Data Surat & Lainnya --}}
-                            <div>
-                                <span class="text-[9px] font-semibold text-sky-900 block mb-1">📝 Data Surat & Usaha:</span>
-                                <div class="flex flex-wrap gap-1">
-                                    <button type="button" onclick="insertTag('{keperluan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{keperluan}</button>
-                                    <button type="button" onclick="insertTag('{penghasilan}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{penghasilan}</button>
-                                    <button type="button" onclick="insertTag('{nama_usaha}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nama_usaha}</button>
-                                    <button type="button" onclick="insertTag('{tanggal_cetak}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{tanggal_cetak}</button>
-                                    <button type="button" onclick="insertTag('{nomor_surat}')" class="px-1.5 py-0.5 bg-white border border-gray-200 rounded hover:bg-sky-100 text-sky-800 font-mono text-[9px] shadow-sm font-semibold">{nomor_surat}</button>
-                                </div>
-                            </div>
-                        </div>
+                <div class="space-y-3"
+                     x-data="{
+                         value: @entangle('body_template'),
+                         quill: null,
+                         insertTag(tag) {
+                             if (!this.quill) return;
+                             this.quill.focus();
+                             const range = this.quill.getSelection();
+                             if (range) {
+                                 this.quill.insertText(range.index, tag);
+                                 this.quill.setSelection(range.index + tag.length);
+                             } else {
+                                 const length = this.quill.getLength();
+                                 this.quill.insertText(length - 1, tag);
+                                 this.quill.setSelection(length - 1 + tag.length);
+                             }
+                             // Update the wire entangle value
+                             this.value = this.quill.root.innerHTML;
+                         }
+                     }"
+                >
+                    <div class="flex justify-between items-center">
+                        <label class="block text-sm font-semibold text-gray-700">
+                            Template Isi Surat <span class="text-gray-400 font-normal">(opsional)</span>
+                        </label>
+                        <button type="button" wire:click="loadDefaultTemplate" class="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1">
+                            🔄 Gunakan Format Default
+                        </button>
                     </div>
 
-                    <script>
-                        window.insertTag = function(tag) {
-                            const quill = Quill.find(document.querySelector('.ql-container'));
-                            if (quill) {
-                                quill.focus();
-                                const range = quill.getSelection();
-                                if (range) {
-                                    quill.insertText(range.index, tag);
-                                    quill.setSelection(range.index + tag.length);
-                                } else {
-                                    quill.insertText(quill.getLength() - 1, tag);
-                                }
-                                // Dispatch input event for Alpine
-                                quill.root.dispatchEvent(new Event('input', { bubbles: true }));
-                            }
-                        };
-
-                        window.loadDefaultTemplate = function() {
-                            const quill = Quill.find(document.querySelector('.ql-container'));
-                            if (quill) {
-                                const defaultHtml = `
-                                    <p>Yang bertanda tangan di bawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan bahwa:</p>
-                                    <p>&nbsp;</p>
-                                    <table style="width: 100%; border-collapse: collapse; margin-left: 15px;">
-                                        <tbody>
-                                            <tr>
-                                                <td style="width: 25%; padding: 2px 0;">Nama Lengkap</td>
-                                                <td style="width: 2%; padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;"><strong>{nama}</strong></td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">NIK</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{nik}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">No. KK</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{no_kk}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">Tempat/Tgl Lahir</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{ttl}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">Jenis Kelamin</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{jenis_kelamin}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">Pekerjaan</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{pekerjaan}</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="padding: 2px 0;">Alamat</td>
-                                                <td style="padding: 2px 0;">:</td>
-                                                <td style="padding: 2px 0;">{alamat}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <p>&nbsp;</p>
-                                    <p>Adalah benar merupakan warga Desa Hutabulu Mejan yang berkelakuan baik dan...</p>
-                                    <p>&nbsp;</p>
-                                    <p>Demikianlah surat keterangan ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
-                                `;
-                                quill.root.innerHTML = defaultHtml;
-                                quill.root.dispatchEvent(new Event('input', { bubbles: true }));
-                            }
-                        };
-                    </script>
+                    {{-- Tag Helper Section --}}
+                    <div class="rounded-xl border border-blue-100 bg-blue-50/50 p-4 space-y-2.5">
+                        <p class="text-xs text-blue-800 flex items-center gap-1.5 font-medium">
+                            <span class="inline-flex items-center justify-center bg-blue-100 text-blue-700 rounded-full w-5 h-5 text-[10px]">💡</span>
+                            <span>Tips: Klik tag di bawah ini untuk memasukkan data warga secara otomatis ke dalam surat.</span>
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <button type="button" @click="insertTag('{nama}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                                <span>{nama}</span>
+                                <span class="text-[10px] text-blue-400 font-normal">(Nama Pemohon)</span>
+                            </button>
+                            <button type="button" @click="insertTag('{nik}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                                <span>{nik}</span>
+                                <span class="text-[10px] text-blue-400 font-normal">(NIK)</span>
+                            </button>
+                            <button type="button" @click="insertTag('{alamat}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                                <span>{alamat}</span>
+                                <span class="text-[10px] text-blue-400 font-normal">(Alamat Warga)</span>
+                            </button>
+                            <button type="button" @click="insertTag('{keperluan}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                                <span>{keperluan}</span>
+                                <span class="text-[10px] text-blue-400 font-normal">(Keperluan Surat)</span>
+                            </button>
+                            <button type="button" @click="insertTag('{nomor_surat}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                                <span>{nomor_surat}</span>
+                                <span class="text-[10px] text-blue-400 font-normal">(Nomor Surat)</span>
+                            </button>
+                        </div>
+                    </div>
 
                     {{-- WYSIWYG Quill Container --}}
                     <div wire:ignore 
                          class="bg-white rounded-lg border border-gray-300"
-                         x-data="{
-                             value: @entangle('body_template'),
-                             quill: null
-                         }"
                          x-init="
                              quill = new Quill($refs.editor, {
                                  theme: 'snow',
@@ -428,8 +379,11 @@
                              quill.root.innerHTML = value || '';
                              
                              // Watch Quill changes -> update Livewire
-                             quill.on('text-change', () => {
+                             quill.on('text-change', (delta, oldDelta, source) => {
                                  value = quill.root.innerHTML;
+                                 if (source === 'user') {
+                                     $el.dispatchEvent(new Event('input', { bubbles: true }));
+                                 }
                              });
                              
                              // Watch Livewire changes -> update Quill (when editing modal is opened)
@@ -439,11 +393,9 @@
                                  }
                              });
                          "
-                    >
-                        <div x-ref="editor" style="height: 180px;" class="text-sm"></div>
-                    </div>
-
-
+                     >
+                         <div x-ref="editor" style="height: 320px;" class="text-sm"></div>
+                     </div>
                 </div>
 
                 {{-- Status Aktif --}}
@@ -451,6 +403,7 @@
                     <button
                         type="button"
                         wire:click="$set('is_active', !{{ $is_active ? 'true' : 'false' }})"
+                        @click="isDirty = true"
                         class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
                             {{ $is_active ? 'bg-sky-600' : 'bg-gray-200' }}"
                         role="switch"
@@ -480,6 +433,7 @@
                         <button
                             type="button"
                             wire:click="tambahField"
+                            @click="isDirty = true"
                             class="inline-flex items-center gap-1.5 rounded-lg border border-dashed border-sky-400 bg-sky-50 px-3 py-1.5 text-xs font-semibold text-sky-700 hover:bg-sky-100 transition-colors"
                         >
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -548,6 +502,7 @@
                                     <button
                                         type="button"
                                         wire:click="hapusField({{ $idx }})"
+                                        @click="isDirty = true"
                                         class="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors mt-0.5"
                                         title="Hapus field ini"
                                     >
@@ -563,53 +518,54 @@
 
                 </div> {{-- End Left Column --}}
 
-                {{-- Right Column: Citizen Form Preview (col-span-5) --}}
-                <div class="lg:col-span-5 space-y-4">
-                    <div class="sticky top-0 bg-gray-50 rounded-2xl border border-gray-200 p-4 shadow-sm"
-                         x-data="{
-                             value: @entangle('body_template'),
-                             nama_surat: @entangle('nama_surat'),
-                             deskripsi: @entangle('deskripsi'),
-                             parseTemplate(template) {
-                                 if (!template) {
-                                     return `
-                                         <p class='text-justify mb-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan bahwa:</p>
-                                         <div class='pl-4 my-2 text-[8px] leading-normal'>
-                                             <table class='w-full text-left'>
-                                                 <tr><td class='w-20'>Nama</td><td class='w-2'>:</td><td><strong>WARGA CONTOH</strong></td></tr>
-                                                 <tr><td>NIK</td><td>:</td><td>1234567890123456</td></tr>
-                                                 <tr><td>Alamat</td><td>:</td><td>Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba</td></tr>
-                                             </table>
-                                         </div>
-                                         <p class='text-justify my-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili di wilayah Desa Hutabulu Mejan.</p>
-                                         <p class='text-justify mt-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikianlah surat keterangan ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
-                                     `;
-                                 }
-                                 let parsed = template;
-                                 const placeholders = {
-                                     '{nama}': '<strong>WARGA CONTOH</strong>',
-                                     '{nik}': '1234567890123456',
-                                     '{no_kk}': '1234567890123456',
-                                     '{ttl}': 'Toba, 01 Januari 2000',
-                                     '{jenis_kelamin}': 'Laki-laki',
-                                     '{pekerjaan}': 'Wiraswasta',
-                                     '{alamat}': 'Desa Hutabulu Mejan, Kec. Balige, Kab. Toba',
-                                     '{keperluan}': 'Keperluan Administratif',
-                                     '{nama_desa}': 'Hutabulu Mejan',
-                                     '{kecamatan}': 'Balige',
-                                     '{kabupaten}': 'Toba',
-                                     '{penghasilan}': 'Rp. 3.000.000,-',
-                                     '{nama_usaha}': 'Toko Klontong',
-                                     '{nama_anak}': 'Anak Contoh',
-                                     '{ttl_anak}': 'Toba, 01 Januari 2010',
-                                 };
-                                 for (const [k, v] of Object.entries(placeholders)) {
-                                     parsed = parsed.replaceAll(k, v);
-                                 }
-                                 return parsed;
+                {{-- Right Column (Real-time Preview) --}}
+                <div class="lg:col-span-5 bg-gray-50 rounded-2xl p-4 border border-gray-200 flex flex-col justify-between"
+                     x-data="{
+                         value: @entangle('body_template'),
+                         nama_surat: @entangle('nama_surat'),
+                         deskripsi: @entangle('deskripsi'),
+                         parseTemplate(template) {
+                             if (!template) {
+                                 return `
+                                     <p class='text-justify mb-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan bahwa:</p>
+                                     <div class='pl-4 my-2 text-[8px] leading-normal'>
+                                         <table class='w-full text-left' style='border-collapse: collapse;'>
+                                             <tr><td style='width: 30%; text-align: left; padding: 1px 0;'>Nama</td><td style='width: 5%; text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'><strong>WARGA CONTOH</strong></td></tr>
+                                             <tr><td style='text-align: left; padding: 1px 0;'>NIK</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>1234567890123456</td></tr>
+                                             <tr><td style='text-align: left; padding: 1px 0;'>Alamat</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba</td></tr>
+                                         </table>
+                                     </div>
+                                     <p class='text-justify my-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili di wilayah Desa Hutabulu Mejan.</p>
+                                     <p class='text-justify mt-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikianlah surat keterangan ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
+                                 `;
                              }
-                         }"
-                    >
+                             let parsed = template;
+                             const placeholders = {
+                                 '{nama}': '<strong>WARGA CONTOH</strong>',
+                                 '{nik}': '1234567890123456',
+                                 '{no_kk}': '1234567890123456',
+                                 '{ttl}': 'Toba, 01 Januari 2000',
+                                 '{jenis_kelamin}': 'Laki-laki',
+                                 '{pekerjaan}': 'Wiraswasta',
+                                 '{alamat}': 'Desa Hutabulu Mejan, Kec. Balige, Kab. Toba',
+                                 '{keperluan}': 'Keperluan Administratif',
+                                 '{nama_desa}': 'Hutabulu Mejan',
+                                 '{kecamatan}': 'Balige',
+                                 '{kabupaten}': 'Toba',
+                                 '{penghasilan}': 'Rp. 3.000.000,-',
+                                 '{nama_usaha}': 'Toko Klontong',
+                                 '{nama_anak}': 'Anak Contoh',
+                                 '{ttl_anak}': 'Toba, 01 Januari 2010',
+                                 '{jenis_kelamin}': 'Laki-laki',
+                             };
+                             for (const [k, v] of Object.entries(placeholders)) {
+                                 parsed = parsed.replaceAll(k, v);
+                             }
+                             return parsed;
+                         }
+                     }"
+                >
+                    <div>
                         <div class="flex items-center gap-2 mb-3 pb-2 border-b border-gray-200">
                             <span class="flex h-2.5 w-2.5 rounded-full bg-sky-500 animate-pulse"></span>
                             <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider">Pratinjau Kertas Hasil PDF</h4>
@@ -621,16 +577,20 @@
                             {{-- Paper content --}}
                             <div>
                                 {{-- Kop Surat --}}
-                                <div class="flex items-center gap-1 border-b-[1.5px] border-black pb-1 mb-2">
-                                    {{-- Mock Logo --}}
-                                    <div class="w-8 h-8 rounded-full border border-black flex items-center justify-center text-[5px] shrink-0 font-sans font-bold">LOGO</div>
+                                <div class="flex items-center justify-between border-b-[1.5px] border-black pb-1 mb-2 gap-2">
+                                    {{-- Logo Kabupaten Toba on the left --}}
+                                    <img src="/images/logo_toba.svg" alt="Logo Kab Toba" class="w-7 h-9 object-contain shrink-0">
+                                    
                                     {{-- Kop Text --}}
                                     <div class="flex-1 text-center leading-normal">
-                                        <div class="text-[5px] uppercase font-sans font-semibold">Pemerintah Kabupaten Toba</div>
-                                        <div class="text-[5px] uppercase font-sans font-semibold">Kecamatan Balige</div>
+                                        <div class="text-[5px] uppercase font-sans font-bold">Pemerintah Kabupaten Toba</div>
+                                        <div class="text-[5px] uppercase font-sans font-bold">Kecamatan Balige</div>
                                         <div class="text-[7px] uppercase font-sans font-extrabold">Desa Hutabulu Mejan</div>
                                         <div class="text-[4px] font-sans text-gray-600">Jl. Hutabulu Mejan, Kode Pos : 22312</div>
                                     </div>
+
+                                    {{-- Logo Desa Hutabulu Mejan on the right --}}
+                                    <div class="w-7 h-9 shrink-0"></div>
                                 </div>
 
                                 {{-- Judul & Nomor Surat --}}
@@ -649,11 +609,11 @@
                                 <div class="text-right w-28 text-[7px] leading-normal">
                                     <div class="mb-8">
                                         <div>Dikeluarkan di : Desa Hutabulu Mejan</div>
-                                        <div>Pada Tanggal &nbsp;&nbsp;: 30 Mei 2026</div>
+                                        <div>Pada Tanggal &nbsp;&nbsp;: 3 Juni 2026</div>
                                         <div class="mt-1 font-bold">KEPALA DESA HUTABULU MEJAN</div>
                                     </div>
                                     <div>
-                                        <span class="font-bold underline uppercase">ERICHSON BERUTU</span>
+                                        <span class="font-bold underline uppercase">{{ strtoupper($activeKadesNama) }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -667,14 +627,14 @@
             <div class="flex items-center justify-end gap-3 border-t border-gray-100 px-6 py-4">
                 <button
                     type="button"
-                    wire:click="closeModal"
-                    class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+                    @click="confirmClose()"
+                    class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
                 >
                     Batal
                 </button>
                 <button
                     type="button"
-                    wire:click="simpan"
+                    @click="confirmSimpan()"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-70 cursor-not-allowed"
                     class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm"

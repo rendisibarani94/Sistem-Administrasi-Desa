@@ -24,17 +24,19 @@
         {{-- Header --}}
         <div class="px-6 pt-6 pb-4 border-b border-gray-100">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <div>
-                    <h1 class="text-2xl font-semibold text-gray-800">Buat Pengajuan Surat</h1>
-                    <p class="text-sm text-gray-500 mt-1">Ajukan permintaan surat keterangan atau dokumen lainnya</p>
+                <div class="flex items-center gap-4">
+                    <a href="{{ route('admin.layanan-surat.request.index') }}"
+                        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                        Kembali
+                    </a>
+                    <div>
+                        <h1 class="text-2xl font-semibold text-gray-800">Buat Pengajuan Surat</h1>
+                        <p class="text-sm text-gray-500 mt-1">Ajukan permintaan surat keterangan atau dokumen lainnya</p>
+                    </div>
                 </div>
-                <a href="{{ route('admin.layanan-surat.request.index') }}"
-                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                    Kembali
-                </a>
             </div>
         </div>
 

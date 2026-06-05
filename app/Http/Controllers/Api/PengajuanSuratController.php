@@ -103,6 +103,21 @@ class PengajuanSuratController extends Controller
         // Ambil semua daftar persyaratan untuk jenis surat ini
         $daftarPersyaratan = PersyaratanSurat::where('jenis_surat_id', $jenisSuratId)->get();
 
+        $idPenduduk = $user->id_penduduk ?? $user->id;
+
+        // Prevent duplicate pending requests
+        $pengajuanAktif = PengajuanSurat::where('id_penduduk', $idPenduduk)
+            ->where('id_jenis_surat', $jenisSuratId)
+            ->whereIn('status', ['diajukan', 'diproses'])
+            ->first();
+
+        if ($pengajuanAktif) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Anda sudah memiliki pengajuan surat jenis ini yang sedang diproses atau menunggu persetujuan.'
+            ], 422);
+        }
+
         // 2. Mulai DB Transaction
         DB::beginTransaction();
 

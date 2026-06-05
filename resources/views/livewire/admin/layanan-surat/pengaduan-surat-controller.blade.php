@@ -5,41 +5,39 @@
 
     {{-- Full Page Container --}}
     <div class="mx-4">
-        <div class="flex justify-between">
-            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Pengaduan Warga</h1>
-        </div>
-
-        <div class="flex justify-between mx-4">
-            <nav class="flex " aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
-                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                            </svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            <a href="{{ route('admin.layanan-surat.request.index') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
-                                Layanan Surat
+        {{-- Header & Breadcrumb --}}
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-6 mb-6 gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold text-gray-900">Data Pengaduan Warga</h1>
+                <nav class="flex mt-2" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-sky-600">
+                                <svg class="w-3.5 h-3.5 me-2.5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                                </svg>
+                                Dashboard
                             </a>
-                        </div>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Pengaduan</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 6 10">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m1 9 4-4-4-4"/>
+                                </svg>
+                                <span class="text-sm font-medium text-gray-700">Pelayanan Masyarakat</span>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 6 10">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m1 9 4-4-4-4"/>
+                                </svg>
+                                <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Pengaduan</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
         </div>
 
         {{-- Success/Error Alert --}}
@@ -52,17 +50,57 @@
             </div>
         @endif
 
+        {{-- Statistics Grid --}}
+        <div class="grid gap-3 sm:grid-cols-4 my-6">
+            <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 text-sm text-gray-700 shadow-sm">
+                <p class="text-gray-500 font-medium">Total Pengaduan</p>
+                <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalPengaduan }}</p>
+            </div>
+            <div class="rounded-lg bg-blue-50 border border-blue-200 p-4 text-sm text-blue-900 shadow-sm">
+                <p class="text-blue-700 font-medium">Terbaca</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalTerbaca }}</p>
+            </div>
+            <div class="rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-900 shadow-sm">
+                <p class="text-green-700 font-medium">Disetujui</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalDisetujui }}</p>
+            </div>
+            <div class="rounded-lg bg-red-50 border border-red-200 p-4 text-sm text-red-900 shadow-sm">
+                <p class="text-red-700 font-medium">Ditolak</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalDitolak }}</p>
+            </div>
+        </div>
+
         {{-- Filter & Search Form --}}
-        <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-end">
-            <form method="GET" action="{{ route('admin.layanan-surat.pengaduan') }}" class="flex flex-wrap items-center gap-3 w-full sm:w-auto">
+        <div class="flex flex-wrap justify-between items-center border border-gray-300 rounded-lg my-6 p-4 gap-4 bg-gray-50 shadow-sm">
+            <form method="GET" action="{{ route('admin.layanan-surat.pengaduan') }}" class="flex flex-wrap items-center gap-3 w-full">
                 <!-- Search Input -->
                 <div class="relative w-full sm:w-72">
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input id="search" name="search" type="search" value="{{ request('search') }}" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari judul, isi, atau pengirim..." />
+                    <input id="search" name="search" type="search" value="{{ request('search') }}" class="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500" placeholder="Cari judul, isi, atau pengirim..." />
+                </div>
+
+                <!-- Status Filter select -->
+                <div class="w-full sm:w-48">
+                    <select name="status" id="status" onchange="this.form.submit()" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
+                        <option value="">Semua Status</option>
+                        <option value="terbaca" {{ request('status') === 'terbaca' ? 'selected' : '' }}>Terbaca</option>
+                        <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Disetujui</option>
+                        <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    </select>
+                </div>
+
+                <!-- Submit Cari Button -->
+                <div class="w-full sm:w-auto ms-auto">
+                    <button type="submit" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white font-bold py-2.5 px-6 rounded-lg flex items-center space-x-2 w-full sm:w-auto justify-center shadow-sm transition-colors text-sm">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803 7.5 7.5 0 0 0 15.803 15.803Z" />
+                        </svg>
+                        <span>Cari</span>
+                    </button>
                 </div>
             </form>
         </div>
@@ -145,16 +183,14 @@
                             <td class="px-6 py-4 text-center whitespace-nowrap">
                                 @php
                                     $statusStyle = match($item->status) {
-                                        'baru' => 'bg-amber-100 text-amber-700',
-                                        'diproses' => 'bg-blue-100 text-blue-700',
+                                        'baru', 'diproses' => 'bg-blue-100 text-blue-700',
                                         'selesai' => 'bg-green-100 text-green-700',
                                         'ditolak' => 'bg-red-100 text-red-700',
                                         default => 'bg-gray-100 text-gray-700',
                                     };
                                     $statusLabel = match($item->status) {
-                                        'baru' => 'Menunggu',
-                                        'diproses' => 'Terbaca',
-                                        'selesai' => 'Berhasil',
+                                        'baru', 'diproses' => 'Terbaca',
+                                        'selesai' => 'Disetujui',
                                         'ditolak' => 'Ditolak',
                                         default => ucfirst($item->status),
                                     };
@@ -273,7 +309,8 @@
                                 wire:model="catatanAdmin"
                                 rows="3"
                                 placeholder="Tuliskan respon resmi, solusi, atau instruksi dari desa..."
-                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none text-gray-700"
+                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none text-gray-700 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                                {{ in_array($selectedPengaduan->status, ['ditolak', 'selesai']) ? 'disabled' : '' }}
                             ></textarea>
                         </div>
                     </div>
@@ -281,34 +318,91 @@
             </div>
 
             {{-- Modal Footer --}}
-            <div class="flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50 px-6 py-4">
+            <div class="relative flex items-center justify-end gap-2 border-t border-gray-100 bg-gray-50 px-6 py-4">
+                @if(in_array($selectedPengaduan->status, ['ditolak', 'selesai']))
+                    {{-- Status final — Tampil di Tengah sebagai teks biasa tanpa kotak button --}}
+                    <div class="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1.5 text-sm font-bold {{ $selectedPengaduan->status === 'ditolak' ? 'text-red-600' : 'text-emerald-600' }}">
+                        @if($selectedPengaduan->status === 'ditolak')
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                            </svg>
+                            Pengaduan Telah Ditolak
+                        @else
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                            </svg>
+                            Pengaduan Berhasil Disetujui
+                        @endif
+                    </div>
+                @endif
+
                 <button
                     type="button"
                     wire:click="closeDetailModal"
                     class="rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
                 >
-                    Batal
-                </button>
-                
-                {{-- Tolak Button --}}
-                <button
-                    type="button"
-                    wire:click="simpanCatatan('ditolak')"
-                    class="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-red-600 hover:bg-red-700 active:bg-red-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
-                >
-                    Tolak
+                    Tutup
                 </button>
 
-                {{-- Selesaikan/Berhasil Button --}}
-                <button
-                    type="button"
-                    wire:click="simpanCatatan('selesai')"
-                    class="cursor-pointer inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
-                >
-                    Terima
-                </button>
+                @if(!in_array($selectedPengaduan->status, ['ditolak', 'selesai']))
+                    {{-- Tolak Button --}}
+                    <button
+                        type="button"
+                        onclick="confirmTolak()"
+                        class="cursor-pointer rounded-lg bg-red-600 hover:bg-red-700 active:bg-red-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                    >
+                        Tolak
+                    </button>
+
+                    {{-- Terima/Selesaikan Button --}}
+                    <button
+                        type="button"
+                        onclick="confirmSetujui()"
+                        class="cursor-pointer rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                    >
+                        Setujui
+                    </button>
+                @endif
             </div>
         </div>
     </div>
     @endif
+
+    @push('scripts')
+    <script>
+        function confirmSetujui() {
+            Swal.fire({
+                title: 'Konfirmasi Setujui',
+                text: 'Apakah Anda yakin ingin menyetujui pengaduan ini?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#059669', // Emerald 600
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Setujui!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.simpanCatatan('selesai');
+                }
+            });
+        }
+
+        function confirmTolak() {
+            Swal.fire({
+                title: 'Konfirmasi Tolak',
+                text: 'Apakah Anda yakin ingin menolak pengaduan ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc2626', // Red 600
+                cancelButtonColor: '#ef4444',
+                confirmButtonText: 'Ya, Tolak!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    @this.simpanCatatan('ditolak');
+                }
+            });
+        }
+    </script>
+    @endpush
 </div>

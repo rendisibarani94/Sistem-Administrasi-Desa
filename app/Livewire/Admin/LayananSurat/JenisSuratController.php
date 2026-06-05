@@ -33,13 +33,14 @@ class JenisSuratController extends Component
 
     protected function rules(): array
     {
+        // Validasi unique, abaikan record yang sedang di-edit
         $uniqueRule = $this->editingId
             ? 'required|string|max:255|unique:jenis_surat,nama_surat,' . $this->editingId . ',id_jenis_surat'
             : 'required|string|max:255|unique:jenis_surat,nama_surat';
 
         return [
             'nama_surat'                      => $uniqueRule,
-            'deskripsi'                       => 'nullable|string',
+            'deskripsi'                       => 'required|string',
             'body_template'                   => 'nullable|string',
             'is_active'                       => 'boolean',
             'persyaratan'                     => 'array',
@@ -51,6 +52,7 @@ class JenisSuratController extends Component
 
     protected array $messages = [
         'nama_surat.required'                    => 'Nama surat wajib diisi.',
+        'deskripsi.required'                     => 'Deskripsi wajib diisi.',
         'persyaratan.*.nama_field.required'      => 'Nama field persyaratan wajib diisi.',
         'persyaratan.*.tipe_field.in'            => 'Tipe field tidak valid.',
     ];
@@ -62,12 +64,28 @@ class JenisSuratController extends Component
     public function openCreateModal(): void
     {
         $this->resetForm();
+        $this->loadDefaultTemplate();
         $this->showModal = true;
+    }
+
+    public function loadDefaultTemplate(): void
+    {
+        $this->body_template = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan dengan sebenarnya bahwa:</p>' .
+            '<p><br></p>' .
+            '<p>Nama Lengkap : <strong>{nama}</strong></p>' .
+            '<p>NIK / No. KTP : {nik}</p>' .
+            '<p>Tempat, Tgl Lahir : {ttl}</p>' .
+            '<p>Jenis Kelamin : {jenis_kelamin}</p>' .
+            '<p>Alamat : {alamat}</p>' .
+            '<p>Keperluan : {keperluan}</p>' .
+            '<p><br></p>' .
+            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bahwa nama tersebut di atas adalah benar warga Desa Hutabulu Mejan yang berdomisili di alamat tersebut dan berkelakuan baik.</p>' .
+            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikian surat keterangan ini diperbuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>';
     }
 
     public function openEditModal(int $id): void
     {
-        $jenisSurat = JenisSurat::withTrashed()->findOrFail($id);
+        $jenisSurat = JenisSurat::findOrFail($id);
         $this->editingId  = $jenisSurat->id_jenis_surat;
         $this->nama_surat = $jenisSurat->nama_surat;
         $this->deskripsi  = $jenisSurat->deskripsi ?? '';
@@ -197,13 +215,34 @@ class JenisSuratController extends Component
     {
         if (!$this->deleteId) return;
 
+        $jenisSurat = JenisSurat::find($this->deleteId);
+        if (!$jenisSurat) {
+            $this->deleteId = null;
+            session()->flash('error', 'Jenis surat tidak ditemukan.');
+            return;
+        }
+
+        // Cek apakah ada pengajuan yang masih aktif (diajukan/diproses)
+        $pengajuanAktif = \App\Models\PengajuanSurat::where('id_jenis_surat', $this->deleteId)
+            ->whereIn('status', ['diajukan', 'diproses'])
+            ->count();
+
+        if ($pengajuanAktif > 0) {
+            $this->deleteId = null;
+            session()->flash('error', "Tidak dapat menghapus: masih ada {$pengajuanAktif} pengajuan aktif untuk jenis surat ini.");
+            return;
+        }
+
         DB::transaction(function () {
+            // Hapus semua persyaratan surat terkait (hard delete)
             PersyaratanSurat::where('jenis_surat_id', $this->deleteId)->delete();
-            JenisSurat::findOrFail($this->deleteId)->delete();
+
+            // Hapus jenis surat (hard delete / permanen dari database)
+            JenisSurat::where('id_jenis_surat', $this->deleteId)->delete();
         });
 
         $this->deleteId = null;
-        session()->flash('success', 'Jenis surat berhasil dihapus.');
+        session()->flash('success', 'Jenis surat berhasil dihapus permanen dari database.');
     }
 
     // ─────────────────────────────────────────────────────────

@@ -292,7 +292,7 @@
                         
                         <!-- Footer Actions -->
                         <div class="flex items-center justify-end space-x-2 pt-4 border-t border-solid border-gray-200 rounded-b">
-                            <button type="button" wire:click="closeAccountModal" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg transition duration-150">
+                            <button type="button" wire:click="closeAccountModal" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition duration-150">
                                 Batal
                             </button>
                             <button type="submit" class="bg-sky-700 hover:bg-sky-800 text-white font-bold py-2 px-4 rounded-lg transition duration-150 flex items-center">
@@ -323,7 +323,7 @@
                 , icon: parameters[0].icon
                 , showCancelButton: true
                 , confirmButtonColor: '#d33'
-                , cancelButtonColor: '#3085d6'
+                , cancelButtonColor: '#ef4444'
                 , confirmButtonText: parameters[0].confirmButtonText
                 , cancelButtonText: parameters[0].cancelButtonText
                 , reverseButtons: true

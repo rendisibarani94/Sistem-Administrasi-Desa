@@ -26,9 +26,6 @@
 
         /* ===== KOP SURAT ===== */
         .kop {
-            display: flex;
-            align-items: center;
-            gap: 12px;
             padding-bottom: 6px;
             margin-bottom: 6px;
         }
@@ -115,14 +112,17 @@
         }
 
         /* ===== BODY ===== */
-        .pembuka {
+        .pembuka, p.isi-surat, .isi-surat p, .penutup {
             text-align: justify;
-            margin-bottom: 10px;
+            text-indent: 40px;
             line-height: 1.6;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 12pt;
         }
 
         .data-pemohon {
-            margin: 10px 0 10px 10px;
+            margin: 12px 0 12px 40px;
         }
 
         .data-pemohon table {
@@ -131,42 +131,34 @@
         }
 
         .data-pemohon table td {
-            padding: 2px 4px;
+            padding: 4px 4px;
             vertical-align: top;
             font-size: 12pt;
+            line-height: 1.5;
         }
 
         .data-pemohon table td:first-child {
-            width: 160px;
+            width: 150px;
             font-weight: normal;
         }
 
         .data-pemohon table td:nth-child(2) {
-            width: 10px;
+            width: 15px;
             text-align: center;
         }
 
         .data-pemohon table td:last-child {
             font-weight: normal;
+            text-align: justify;
         }
 
         .isi-surat {
-            text-align: justify;
-            margin: 10px 0;
-            line-height: 1.6;
-        }
-
-        .penutup {
-            text-align: justify;
-            margin: 10px 0;
-            line-height: 1.6;
+            margin: 12px 0;
         }
 
         /* ===== TANDA TANGAN ===== */
         .ttd-section {
             margin-top: 16px;
-            display: flex;
-            justify-content: flex-end;
         }
 
         .ttd-box {
@@ -186,6 +178,9 @@
 
         .ttd-ruang {
             height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .ttd-nama {
@@ -241,13 +236,21 @@
 
         /* ===== PRINT STYLES ===== */
         @media print {
-            .no-print { display: none !important; }
-            body { background: white; }
-            .page {
-                width: 210mm;
+            @page {
                 margin: 0;
-                padding: 15mm 20mm 20mm 25mm;
-                box-shadow: none;
+            }
+            .no-print { display: none !important; }
+            body {
+                background: white;
+                margin: 0 !important;
+                padding: 15mm 20mm 20mm 25mm !important;
+            }
+            .page {
+                width: auto !important;
+                height: auto !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                box-shadow: none !important;
             }
         }
 
@@ -259,6 +262,28 @@
             }
         }
     </style>
+    @if(isset($isPdf) && $isPdf)
+    <style>
+        @page {
+            margin: 0;
+        }
+        body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 15mm 20mm 20mm 25mm !important;
+        }
+        .page {
+            width: auto !important;
+            height: auto !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+        .no-print {
+            display: none !important;
+        }
+    </style>
+    @endif
 </head>
 <body>
 
@@ -270,6 +295,34 @@
 </div>
 
 @php
+    // ===== Base64 Images for PDF generation (prevents Artisan Serve deadlocks) =====
+    $logoTobaBase64 = null;
+    $logoDesaBase64 = null;
+    $ttdBase64 = null;
+
+    // ===== Settings Desa =====
+    $settingsArr = DB::table('settings')->get()->pluck('value', 'key')->toArray();
+    $namaDesa    = $settingsArr['nama_desa'] ?? 'Hutabulu Mejan';
+    $logoPath    = $settingsArr['logo'] ?? null;
+
+    if (isset($isPdf) && $isPdf) {
+        // Encode Logo Toba (use PNG for DomPDF to preserve color and scaling)
+        $tobaPath = public_path('images/logo_toba.png');
+        if (file_exists($tobaPath)) {
+            $logoTobaBase64 = 'data:image/png;base64,' . base64_encode(file_get_contents($tobaPath));
+        }
+
+        // Encode Logo Desa
+        if ($logoPath) {
+            $desaPath = file_exists(public_path($logoPath)) ? public_path($logoPath) : storage_path('app/public/' . $logoPath);
+            if (file_exists($desaPath)) {
+                $ext = pathinfo($desaPath, PATHINFO_EXTENSION);
+                $mime = ($ext === 'svg') ? 'image/svg+xml' : 'image/' . $ext;
+                $logoDesaBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($desaPath));
+            }
+        }
+    }
+
     // ===== Parse data_form =====
     $df = $pengajuanSurat->data_form;
     if (is_string($df)) { $df = json_decode($df, true) ?? []; }
@@ -308,7 +361,19 @@
     $noKk       = $kk?->nomor_kartu_keluarga ?? $df['no_kk'] ?? $df['nomor_kk'] ?? '-';
     $jk         = $pemohon?->jenis_kelamin ?? $df['jk'] ?? $df['jenis_kelamin'] ?? '-';
     $pekerjaan  = $pemohon?->pekerjaan ?? $df['pekerjaan'] ?? '-';
-    $alamat     = $pemohon?->alamat ?? $df['alamat'] ?? '-';
+
+    // Cari alamat spesifik yang diinput oleh warga di form pengajuan (EAV atau data_form)
+    $inputtedAlamat = null;
+    if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
+        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+            $fieldName = strtolower($detail->persyaratanSurat?->nama_field ?? '');
+            if (str_contains($fieldName, 'alamat')) {
+                $inputtedAlamat = $detail->value;
+                break;
+            }
+        }
+    }
+    $alamat     = $inputtedAlamat ?? $df['alamat'] ?? $df['alamat_lengkap'] ?? $pemohon?->alamat ?? '-';
     $keperluan  = $df['keperluan'] ?? '-';
     $penghasilan= $df['penghasilan'] ?? '-';
     $namaAnak   = $df['nama_anak'] ?? '-';
@@ -354,17 +419,11 @@
         $ttl = $df['ttl'] ?? $df['tempat_lahir'] ?? '-';
     }
 
-    // ===== Settings Desa =====
-    $settingsArr = DB::table('settings')->get()->pluck('value', 'key')->toArray();
-    $namaDesa    = $settingsArr['nama_desa'] ?? 'Hutabulu Mejan';
-    $logoPath    = $settingsArr['logo'] ?? null;
-    // Logo bisa disimpan sebagai path public (images/logo/...) atau storage (storage/images/...)
+    // Logo Desa URL (for web view)
     if ($logoPath) {
-        // Cek apakah file ada di public path langsung
         if (file_exists(public_path($logoPath))) {
             $logoUrl = asset($logoPath);
         } else {
-            // Coba storage path
             $logoUrl = asset('storage/' . $logoPath);
         }
     } else {
@@ -374,8 +433,8 @@
     // Info kop surat (bisa disesuaikan)
     $kabupaten   = 'KABUPATEN TOBA';
     $kecamatan   = 'KECAMATAN BALIGE';
-    $alamatDesa  = 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.hutabulumejan.desa.id';
-    $websiteDesa = 'www.desahutabulumejan.id';
+    $alamatDesa  = 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.desahutabulumejan.id';
+    $websiteDesa = '';
 
     // ===== Tanggal Cetak =====
     $tanggalCetak = $pengajuanSurat->tanggal_selesai ?? now();
@@ -387,7 +446,34 @@
     $nomorSurat     = $pengajuanSurat->nomor_surat ?? '...... / ........';
 
     // ===== Penandatangan =====
-    $penandatangan  = $pengajuanSurat->diprosesOleh->name ?? 'Kepala Desa ' . $namaDesa;
+    $namaKepalaDesa = null;
+    $nipKepalaDesa = null;
+    $fileTtdKepalaDesa = null;
+    try {
+        $kepalaDesa = \App\Models\KepalaDesa::where('is_active', true)->first();
+        if ($kepalaDesa) {
+            $namaKepalaDesa = $kepalaDesa->nama;
+            $nipKepalaDesa = $kepalaDesa->nip;
+            $fileTtdKepalaDesa = $kepalaDesa->file_ttd;
+            
+            if (isset($isPdf) && $isPdf && $fileTtdKepalaDesa) {
+                $ttdPath = storage_path('app/public/' . $fileTtdKepalaDesa);
+                if (file_exists($ttdPath)) {
+                    $ext = pathinfo($ttdPath, PATHINFO_EXTENSION);
+                    $mime = ($ext === 'svg') ? 'image/svg+xml' : 'image/' . $ext;
+                    $ttdBase64 = 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($ttdPath));
+                }
+            }
+        }
+    } catch (\Throwable $e) {}
+
+    // Fallback: cek settings
+    if (!$namaKepalaDesa) {
+        $namaKepalaDesa = $settingsArr['kepala_desa_nama'] ?? null;
+    }
+
+    // Fallback akhir: nama admin yang approve
+    $penandatangan  = $namaKepalaDesa ?? ($pengajuanSurat->diprosesOleh->name ?? 'Kepala Desa ' . $namaDesa);
     $jabatanTtd     = 'Kepala Desa ' . $namaDesa;
 
     // ===== Custom Template Parser =====
@@ -467,6 +553,12 @@
             '{nama_usaha}'        => '<strong>' . strtoupper($namaUsaha) . '</strong>',
             '{nama_anak}'         => '<strong>' . strtoupper($namaAnak) . '</strong>',
             '{ttl_anak}'          => $ttlAnak,
+
+            // Data Kepala Desa
+            '{nip_kades}'         => $nipKepalaDesa,
+            '{nip_kepala_desa}'   => $nipKepalaDesa,
+            '{nama_kades}'        => $namaKepalaDesa,
+            '{nama_kepala_desa}'  => $namaKepalaDesa,
         ];
 
         // ── B. Placeholder dari data_form (legacy/fallback) ──
@@ -516,22 +608,23 @@
 <div class="page">
 
     {{-- ===== KOP SURAT ===== --}}
-    <div class="kop">
-        @if($logoUrl)
-            <img src="{{ $logoUrl }}" alt="Logo Desa" class="kop-logo">
-        @else
-            <div class="kop-logo-placeholder">LOGO<br>DESA</div>
-        @endif
-        <div class="kop-text">
-            <div class="instansi-atas">PEMERINTAH {{ $kabupaten }}</div>
-            <div class="instansi-tengah">{{ $kecamatan }}</div>
-            <div class="nama-desa">DESA {{ strtoupper($namaDesa) }}</div>
-            <div class="alamat-desa">{{ $alamatDesa }}</div>
-            <div class="alamat-desa">{{ $websiteDesa }}</div>
-        </div>
-    </div>
-    <hr class="garis-kop">
-    <hr class="garis-kop-tipis">
+    <table class="kop" style="width: 100%; border-collapse: collapse; margin-bottom: 4px; border: none;">
+        <tr style="border: none;">
+            <td style="width: 100px; vertical-align: middle; padding: 0; border: none; text-align: left;">
+                <img src="{{ $logoTobaBase64 ?? asset('images/logo_toba.png') }}" alt="Logo Kab Toba" width="90" height="110" style="width: 90px; height: 110px; display: block; border: none;">
+            </td>
+            <td style="text-align: center; vertical-align: middle; padding: 0 10px; border: none; line-height: 1.3;">
+                <div class="instansi-atas" style="font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH {{ $kabupaten }}</div>
+                <div class="instansi-tengah" style="font-family: Arial, sans-serif; font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">{{ $kecamatan }}</div>
+                <div class="nama-desa" style="font-family: Arial, sans-serif; font-size: 18pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">DESA {{ strtoupper($namaDesa) }}</div>
+                <div class="alamat-desa" style="font-family: 'Times New Roman', Times, serif; font-size: 10pt; margin-top: 4px; font-style: italic;">{{ $alamatDesa }}</div>
+            </td>
+            <td style="width: 100px; vertical-align: middle; padding: 0; border: none; text-align: right;">
+                <div style="width: 90px; height: 110px;"></div>
+            </td>
+        </tr>
+    </table>
+    <div style="border-top: 3.5px solid #000; border-bottom: 1.5px solid #000; height: 3.5px; margin: 8px 0 16px 0; padding: 0;"></div>
 
     {{-- ===== JUDUL SURAT ===== --}}
     <div class="judul-surat">
@@ -539,6 +632,7 @@
     </div>
     <div class="nomor-surat">
         Nomor : <u>&nbsp;&nbsp;{{ $nomorSurat }}&nbsp;&nbsp;</u>
+    </div>
     @if ($renderedContent)
         <div class="isi-surat">
             {!! $renderedContent !!}
@@ -546,7 +640,6 @@
     @else
         {{-- ===== PEMBUKA ===== --}}
         <p class="pembuka">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Yang bertanda tangan dibawah ini, Kepala Desa {{ $namaDesa }},
             {{ $kecamatan }}, {{ $kabupaten }} menerangkan bahwa :
         </p>
@@ -591,7 +684,7 @@
                 <tr>
                     <td>Alamat</td>
                     <td>:</td>
-                    <td>{{ ucfirst($alamat) }}, Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}</td>
+                    <td>{{ ucfirst($alamat) }}</td>
                 </tr>
             </table>
         </div>
@@ -601,12 +694,10 @@
 
             @case('Surat Keterangan Domisili')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
                     di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Surat Keterangan Domisili ini diberikan kepada yang bersangkutan untuk dipergunakan
                     sebagai {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
                 </p>
@@ -614,19 +705,16 @@
 
             @case('Surat Keterangan Tidak Mampu')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar Penduduk Desa {{ $namaDesa }} dan nama
                     tersebut diatas merupakan keluarga <strong>Tidak Mampu</strong>.
                 </p>
                 @if($penghasilan !== '-')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Adapun penghasilan per bulan yang bersangkutan adalah kurang lebih
                     <strong>Rp. {{ number_format((int)$penghasilan, 0, ',', '.') }},-</strong>.
                 </p>
                 @endif
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Surat Keterangan Tidak Mampu ini dibuat untuk dipergunakan sebagai
                     {{ $keperluan !== '-' ? strtolower($keperluan) : 'keperluan yang dibutuhkan' }}.
                 </p>
@@ -634,14 +722,12 @@
 
             @case('Surat Keterangan Usaha')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar merupakan warga Desa {{ $namaDesa }} dan
                     benar-benar mempunyai usaha dengan jenis usaha
                     <strong>{{ strtoupper($namaUsaha) }}</strong> yang bertempat di
                     Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Surat Keterangan Usaha ini diberikan untuk keperluan
                     {{ $keperluan !== '-' ? strtolower($keperluan) : 'yang dibutuhkan' }}.
                 </p>
@@ -649,12 +735,10 @@
 
             @case('Surat Pengantar')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
                     di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Sehubungan dengan keperluan untuk <strong>{{ $keperluan }}</strong>,
                     maka dengan ini kami menerangkan bahwa yang bersangkutan adalah warga kami dan
                     kami merekomendasikan untuk diproses lebih lanjut sesuai ketentuan yang berlaku.
@@ -663,7 +747,6 @@
 
             @case('Surat Keterangan Kelahiran')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
                     di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                     Menerangkan bahwa telah lahir seorang anak :
@@ -696,13 +779,11 @@
 
             @default
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
                     di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 @if($keperluan !== '-')
                 <p class="isi-surat">
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     Surat keterangan ini diberikan untuk keperluan
                     <strong>{{ strtolower($keperluan) }}</strong>.
                 </p>
@@ -711,25 +792,40 @@
 
         {{-- ===== PENUTUP ===== --}}
         <p class="penutup">
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             Demikianlah {{ $namaJenisSurat }} ini dibuat agar dapat dipergunakan sebagaimana mestinya.
         </p>
     @endif
 
     {{-- ===== TANDA TANGAN ===== --}}
-    <div class="ttd-section">
-        <div class="ttd-box">
-            <div class="ttd-info">
-                <p>Dikeluarkan di : Desa {{ $namaDesa }}</p>
-                <p>Pada Tanggal &nbsp;&nbsp;: {{ $tanggalFormatted }}</p>
-            </div>
-            <p style="margin-bottom:4px;">{{ $jabatanTtd }}</p>
-            <div class="ttd-ruang"></div>
-            <div>
-                <span class="ttd-nama">{{ strtoupper($penandatangan) }}</span>
-            </div>
-        </div>
-    </div>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 16px; border: none;">
+        <tr style="border: none;">
+            <td style="width: 60%; border: none;"></td>
+            <td style="width: 40%; border: none; padding: 0; vertical-align: top;">
+                <div class="ttd-box" style="text-align: left; min-width: 220px; float: right;">
+                    <div class="ttd-info" style="text-align: left; margin-bottom: 8px;">
+                        <p style="line-height: 1.6; font-size: 12pt;">Dikeluarkan di : Desa {{ $namaDesa }}</p>
+                        <p style="line-height: 1.6; font-size: 12pt;">Pada Tanggal &nbsp;&nbsp;: {{ $tanggalFormatted }}</p>
+                    </div>
+                    <div style="width: 220px; text-align: center;">
+                        <p style="margin-bottom: 4px; font-size: 12pt; line-height: 1.6;">{{ $jabatanTtd }},</p>
+                        <div class="ttd-ruang" style="height: 70px; display: block; margin-bottom: 4px; text-align: center;">
+                            @if($ttdBase64 || $fileTtdKepalaDesa)
+                                <img src="{{ $ttdBase64 ?? asset('storage/' . $fileTtdKepalaDesa) }}" alt="Tanda Tangan" style="max-height: 65px; max-width: 180px; object-fit: contain; display: inline-block;" />
+                            @endif
+                        </div>
+                        <div>
+                            <span class="ttd-nama" style="font-weight: bold; font-size: 12pt; border-top: 1px solid #000; padding-top: 4px; display: block; text-align: center;">{{ strtoupper($penandatangan) }}</span>
+                        </div>
+                        @if($nipKepalaDesa)
+                        <div style="font-size: 11pt; text-align: center; margin-top: 2px; font-family: 'Times New Roman', Times, serif;">
+                            NIP. {{ $nipKepalaDesa }}
+                        </div>
+                        @endif
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
 </div>
 

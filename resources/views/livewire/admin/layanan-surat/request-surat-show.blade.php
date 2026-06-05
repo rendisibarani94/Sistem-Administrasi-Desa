@@ -16,7 +16,16 @@
     <div class="bg-white rounded-xl shadow-sm mx-4 border border-gray-100 overflow-hidden">
         {{-- Header --}}
         <div class="px-6 pt-6 pb-4 border-b border-gray-100">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div class="space-y-4">
+                <div>
+                    <a href="{{ route('admin.layanan-surat.request.index') }}"
+                        class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+                        </svg>
+                        Kembali
+                    </a>
+                </div>
                 <div>
                     <h1 class="text-2xl font-semibold text-gray-800">Detail Pengajuan Surat</h1>
                     <nav class="mt-1" aria-label="Breadcrumb">
@@ -26,7 +35,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
                                     </svg>
-                                    Dashboard
+                                    <span translate="no">Dashboard</span>
                                 </a>
                             </li>
                             <li class="text-gray-300">/</li>
@@ -40,13 +49,6 @@
                         </ol>
                     </nav>
                 </div>
-                <a href="{{ route('admin.layanan-surat.request.index') }}"
-                    class="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
-                    </svg>
-                    Kembali
-                </a>
             </div>
         </div>
 
@@ -146,57 +148,68 @@
                 </div>
             </div>
 
-            {{-- Data Form (jika ada) --}}
-            @if (count($dataForm) > 0)
+            {{-- Data Pengajuan --}}
+            @if (count($dataForm) > 0 || ($pengajuanSurat->detailPengajuanSurat && $pengajuanSurat->detailPengajuanSurat->count() > 0))
+                @php
+                    $renderedKeys = [];
+                @endphp
                 <div class="pb-6 border-b border-gray-100">
                     <h3 class="text-sm font-semibold text-gray-600 mb-4">Data Pengajuan</h3>
-                    <div class="bg-gray-50 rounded-lg p-4 space-y-3">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Data Form Web --}}
                         @foreach ($dataForm as $key => $value)
-                            <div class="flex gap-3">
-                                <div class="flex-1">
-                                    <p class="text-xs text-gray-500 mb-1">{{ ucfirst(str_replace('_', ' ', $key)) }}</p>
-                                    @if(is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value)))
-                                        <div class="mt-1">
-                                            <a href="{{ asset('storage/' . $value) }}" target="_blank" class="inline-flex items-center gap-1.5 text-xs text-sky-600 hover:text-sky-800 font-semibold underline">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                </svg>
-                                                Lihat Berkas / Foto
-                                            </a>
-                                        </div>
-                                    @else
-                                        <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
-                                    @endif
-                                </div>
+                            @php
+                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
+                                $renderedKeys[$normalized] = true;
+                                $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
+                                
+                                $label = ucfirst(str_replace('_', ' ', $key));
+                                if (strtolower($label) === 'nik') {
+                                    $label = 'NIK';
+                                }
+                            @endphp
+                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $label }}</p>
+                                @if($isFile && $value)
+                                    <div class="space-y-2">
+                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
+                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
+                                            <img src="{{ asset('storage/' . $value) }}"
+                                                alt="{{ ucfirst(str_replace('_', ' ', $key)) }}"
+                                                class="w-full h-36 object-cover"
+                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
+                                        </a>
+                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
+                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
+                                    </div>
+                                @else
+                                    <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
+                                @endif
                             </div>
                         @endforeach
-                    </div>
-                </div>
-            @endif
 
-            {{-- ✅ DATA EAV: Dokumen & Persyaratan dari Form Mobile --}}
-            @if ($pengajuanSurat->detailPengajuanSurat && $pengajuanSurat->detailPengajuanSurat->count() > 0)
-                <div class="pb-6 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-600 mb-1">Dokumen &amp; Persyaratan</h3>
-                    <p class="text-xs text-gray-400 mb-4">Data yang diinput warga melalui aplikasi mobile</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Data EAV Mobile --}}
                         @foreach ($pengajuanSurat->detailPengajuanSurat as $detail)
                             @php
                                 $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
+                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
+                                if (isset($renderedKeys[$normalized])) {
+                                    continue;
+                                }
+                                $renderedKeys[$normalized] = true;
+
                                 $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
                                 $val       = $detail->value;
                                 $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
+
+                                $labelField = $namaField;
+                                if (strtolower($labelField) === 'nik') {
+                                    $labelField = 'NIK';
+                                }
                             @endphp
                             <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                <p class="text-xs text-gray-500 font-medium mb-2">
-                                    @if ($tipeField === 'file_image') 🖼️
-                                    @elseif ($tipeField === 'date') 📅
-                                    @elseif ($tipeField === 'number') 🔢
-                                    @else 📝
-                                    @endif
-                                    {{ $namaField }}
-                                </p>
+                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $labelField }}</p>
                                 @if ($isFile && $val)
                                     <div class="space-y-2">
                                         <a href="{{ asset('storage/' . $val) }}" target="_blank"
@@ -205,10 +218,10 @@
                                                 alt="{{ $namaField }}"
                                                 class="w-full h-36 object-cover"
                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">📎 Lihat Berkas (klik untuk buka)</div>
+                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
                                         </a>
                                         <a href="{{ asset('storage/' . $val) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">🔗 Buka di tab baru</a>
+                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
                                     </div>
                                 @elseif ($val)
                                     <p class="text-sm font-medium text-gray-800">{{ $val }}</p>
@@ -228,7 +241,11 @@
                     <div>
                         <p class="text-xs text-gray-500 mb-1">Diproses Oleh</p>
                         <p class="text-sm font-medium text-gray-800">
-                            {{ $pengajuanSurat->diprosesOleh?->name ?? 'Belum diproses' }}
+                            @if (in_array(strtolower($pengajuanSurat->status), ['selesai', 'ditolak']))
+                                {{ $pengajuanSurat->diprosesOleh?->nama ?? (\App\Models\KepalaDesa::where('is_active', true)->first()?->nama ?? 'Kepala Desa') }}
+                            @else
+                                Belum diproses
+                            @endif
                         </p>
                     </div>
                     <div>
@@ -263,17 +280,17 @@
             </div>
 
             {{-- Aksi --}}
-            @if (auth()->user()->role === 'admin' && in_array($pengajuanSurat->status, ['diajukan', 'diproses']))
+            @if (auth()->user()->role === 'admin' && $pengajuanSurat->status === 'diajukan')
                 <div class="flex flex-col sm:flex-row gap-3">
                     <button type="button"
                         data-id="{{ $pengajuanSurat->id_pengajuan_surat }}"
                         data-pemohon="{{ $namaFallback }}"
                         onclick="openSetujuiModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
                         class="w-full sm:w-auto inline-flex items-center gap-2 rounded-lg bg-green-600 hover:bg-green-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                         </svg>
-                        Setujui
+                        Setujui Pengajuan
                     </button>
 
                     <button type="button" 
@@ -281,10 +298,10 @@
                         data-pemohon="{{ $namaFallback }}"
                         onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
                         class="w-full sm:w-auto inline-flex items-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                         </svg>
-                        Tolak
+                        Tolak Pengajuan
                     </button>
 
                     {{-- Tombol Cetak Surat (preview sebelum disetujui) --}}
@@ -360,15 +377,14 @@
                     >
                 </div>
 
-
                 <div class="flex gap-3 justify-end pt-2">
                     <button type="button" onclick="closeSetujuiModal()"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-semibold">
                         Batal
                     </button>
                     <button type="submit" id="setujuiSubmitBtn"
                         class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold">
-                        ✅ Setujui & Hasilkan Surat
+                        Setujui 
                     </button>
                 </div>
             </form>
@@ -415,12 +431,12 @@
 
                 <div class="flex gap-3 justify-end pt-2">
                     <button type="button" onclick="closeTolakModal()"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm">
+                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-semibold">
                         Batal
                     </button>
                     <button type="submit" id="tolakSubmitBtn"
                         class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold">
-                        ❌ Tolak Pengajuan
+                        Tolak Pengajuan
                     </button>
                 </div>
             </form>
@@ -438,7 +454,7 @@
             document.getElementById('nomor_surat').value = '';
 
             document.getElementById('setujuiSubmitBtn').disabled = false;
-            document.getElementById('setujuiSubmitBtn').textContent = '✅ Setujui & Hasilkan Surat';
+            document.getElementById('setujuiSubmitBtn').textContent = 'Setujui & Hasilkan Surat';
             document.getElementById('setujuiModal').classList.remove('hidden');
             setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
         }
@@ -455,7 +471,7 @@
             document.getElementById('pemohon').value = pemohon;
             document.getElementById('alasan_tolak').value = '';
             document.getElementById('tolakSubmitBtn').disabled = false;
-            document.getElementById('tolakSubmitBtn').textContent = '❌ Tolak Pengajuan';
+            document.getElementById('tolakSubmitBtn').textContent = 'Tolak Pengajuan';
 
             document.getElementById('tolakModal').classList.remove('hidden');
             setTimeout(() => document.getElementById('alasan_tolak').focus(), 150);

@@ -142,9 +142,12 @@ class SuratController extends Controller
             ], 400);
         }
 
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         $surat->update([
             'status' => PengajuanSurat::DIPROSES,
-            'id_diproses_oleh' => $user->id,
+            'id_diproses_oleh' => $idKades,
             'tanggal_respons' => now()
         ]);
 
@@ -188,10 +191,13 @@ class SuratController extends Controller
             ], 400);
         }
 
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         $surat->update([
             'status' => PengajuanSurat::DITOLAK,
             'alasan_tolak' => $request->alasan,
-            'id_diproses_oleh' => $user->id,
+            'id_diproses_oleh' => $idKades,
             'tanggal_respons' => now()
         ]);
 
@@ -247,9 +253,12 @@ class SuratController extends Controller
             ], 400);
         }
 
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         $surat->update([
             'status' => PengajuanSurat::SELESAI,
-            'id_diproses_oleh' => $user->id,
+            'id_diproses_oleh' => $idKades,
             'tanggal_respons' => now(),
             'tanggal_selesai' => now()
         ]);
@@ -304,14 +313,18 @@ class SuratController extends Controller
 
     // =====================================================
     // SECURE PDF DOWNLOAD
+    // Generate PDF on-the-fly dari Blade template (sama dengan web/admin)
     // =====================================================
     public function download($id)
     {
         $user = Auth::user();
-        $surat = PengajuanSurat::findOrFail($id);
+        $surat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh', 'detailPengajuanSurat.persyaratanSurat'])->findOrFail($id);
 
         // Allow if user is admin, or the resident who submitted the request
-        if ($user->role !== 'admin' && $surat->id_penduduk !== $user->id_penduduk) {
+        $milikSendiri = ($surat->id_penduduk == $user->id)
+            || ($user->id_penduduk && $surat->id_penduduk == $user->id_penduduk);
+
+        if ($user->role !== 'admin' && !$milikSendiri) {
             return response()->json([
                 'status' => false,
                 'message' => 'Akses ditolak'
@@ -325,22 +338,44 @@ class SuratController extends Controller
             ], 400);
         }
 
-        if (!$surat->file_pdf) {
-            return response()->json([
-                'status' => false,
-                'message' => 'File PDF tidak tersedia'
-            ], 404);
+        $isPdf = true;
+        $pengajuanSurat = $surat;
+        $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+
+        // Jika ada file PDF upload manual (bukan HTML), langsung serve file tersebut
+        if ($surat->file_pdf && !str_ends_with($surat->file_pdf, '.html')) {
+            $filePath = storage_path('app/' . $surat->file_pdf);
+            if (file_exists($filePath)) {
+                $nomorSurat = $surat->nomor_surat ?? $surat->id_pengajuan_surat;
+                $downloadName = date('Ymd') . '_' . str_replace('/', '-', $nomorSurat) . '.pdf';
+                return response()->download($filePath, $downloadName, [
+                    'Content-Type' => 'application/pdf',
+                ]);
+            }
         }
 
-        $filePath = storage_path('app/' . $surat->file_pdf);
-        if (!file_exists($filePath)) {
+        // Generate PDF on-the-fly dari Blade template yang SAMA dengan web/admin
+        // Ini memastikan hasil PDF mobile IDENTIK dengan PDF di halaman web
+        try {
+            $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
+
+            $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+            $pdf->setPaper('a4', 'portrait');
+
+            $nomorSurat = $surat->nomor_surat ?? $surat->id_pengajuan_surat;
+            $downloadName = date('Ymd') . '_' . str_replace('/', '-', $nomorSurat) . '.pdf';
+
+            return response()->streamDownload(function () use ($pdf) {
+                echo $pdf->output();
+            }, $downloadName, [
+                'Content-Type' => 'application/pdf',
+            ]);
+        } catch (\Throwable $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'File PDF tidak ditemukan di server'
-            ], 404);
+                'message' => 'Gagal generate PDF: ' . $e->getMessage()
+            ], 500);
         }
-
-        return response()->download($filePath);
     }
 
     // =====================================================

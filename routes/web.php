@@ -107,6 +107,8 @@ use App\Livewire\Admin\LayananSurat\JenisSuratController;
 
 use App\Livewire\Admin\LayananSurat\PengaduanSuratController;
 use App\Livewire\Admin\LayananSurat\NotifikasiSuratController;
+use App\Livewire\Admin\Master\KepalaDesaController;
+use App\Livewire\Admin\ManajemenAkun\ManajemenAkunController;
 // Authentication Routes
 Route::middleware('guest')->group(function () {
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -120,6 +122,7 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/', BerandaAdminController::class)->name('beranda.admin');
 
 Route::get('/dusun', DusunController::class)->name('dusun');
+Route::get('/kepala-desa', KepalaDesaController::class)->name('admin.master.kepala-desa');
 
 Route::get('/induk-penduduk', IndukPendudukController::class)->name('indukPenduduk');
 Route::get('/induk-penduduk/pindah', IndukPendudukPindahController::class)->name('indukPenduduk.pindah');
@@ -157,6 +160,9 @@ Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->gr
 Route::get('/layanan-surat/jenis-surat', JenisSuratController::class)->name('admin.jenis-surat.index');
 Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');
 Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan-surat.notifikasi');
+
+// Manajemen Akun Warga Mobile
+Route::get('/manajemen-akun', ManajemenAkunController::class)->name('admin.manajemen-akun');
 // Administrasi Umum
 Route::get('/keputusan-kepala-desa', KeputusanKepalaDesaController::class)->name('keputusanKepalaDesa');
 Route::get('/keputusan-kepala-desa/create', KeputusanKepalaDesaCreateController::class)->name('keputusanKepalaDesa.create');

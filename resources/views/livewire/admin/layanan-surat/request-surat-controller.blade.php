@@ -5,38 +5,48 @@
 
     {{-- Full Page Container --}}
     <div class="mx-4">
-        <div class="flex justify-between">
-            <h1 class="text-3xl font-semibold mt-6 mb-6">Data Pengajuan Surat</h1>
-        </div>
+        {{-- Header & Breadcrumb --}}
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-6 mb-6 gap-4">
+            <div>
+                <h1 class="text-3xl font-semibold text-gray-900">Data Pengajuan Surat</h1>
+                <nav class="flex mt-2" aria-label="Breadcrumb">
+                    <ol class="inline-flex items-center space-x-1 md:space-x-2">
+                        <li class="inline-flex items-center">
+                            <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-sky-600">
+                                <svg class="w-3.5 h-3.5 me-2.5 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
+                                </svg>
+                                Dashboard
+                            </a>
+                        </li>
+                        <li>
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 6 10">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m1 9 4-4-4-4"/>
+                                </svg>
+                                <span class="text-sm font-medium text-gray-700">Pelayanan Masyarakat</span>
+                            </div>
+                        </li>
+                        <li aria-current="page">
+                            <div class="flex items-center">
+                                <svg class="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 6 10">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="m1 9 4-4-4-4"/>
+                                </svg>
+                                <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Pengajuan Surat</span>
+                            </div>
+                        </li>
+                    </ol>
+                </nav>
+            </div>
 
-        <div class="flex justify-between mx-4">
-            <nav class="flex " aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                    <li class="inline-flex items-center">
-                        <a href="{{ route('beranda.admin') }}" class="inline-flex items-center text-sm font-base text-black hover:text-sky-600 ">
-                            <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                            </svg>
-                            Dashboard
-                        </a>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                            </svg>
-                            <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Layanan Surat</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
-
-            <a href="{{ route('admin.jenis-surat.index') }}" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white focus:ring-2 focus:outline-none focus:ring-sky-600 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12h7.5" />
-                </svg>
-                <span>Kelola Jenis Surat</span>
-            </a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.jenis-surat.index') }}" class="cursor-pointer bg-sky-700 hover:bg-sky-800 text-white font-bold py-2.5 px-4 rounded-lg shadow-sm transition-colors text-sm flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 1 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 18H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 1 0-3 0M3.75 12h7.5" />
+                    </svg>
+                    <span>Kelola Jenis Surat</span>
+                </a>
+            </div>
         </div>
 
         {{-- Notifikasi --}}
@@ -79,7 +89,7 @@
         </div>
 
         {{-- Filter & Search Form --}}
-        <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-between">
+        <div class="flex flex-wrap justify-between items-center border border-gray-300 rounded-lg my-6 p-4 gap-4 bg-gray-50 shadow-sm">
             <form method="GET" action="{{ route('admin.layanan-surat.request.index') }}" class="flex flex-wrap items-center gap-3 w-full">
                 <!-- Search Input -->
                 <div class="relative w-full sm:w-72">
@@ -97,7 +107,6 @@
                         class="w-full rounded-lg border border-gray-400 bg-white p-3 text-sm text-gray-900 focus:border-sky-500 focus:ring-sky-500">
                         <option value="">Semua Status</option>
                         <option value="diajukan" {{ request('status') == 'diajukan' ? 'selected' : '' }}>Menunggu</option>
-                        <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
                         <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Disetujui</option>
                         <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
@@ -185,6 +194,7 @@
 
                                         $namaPemohon = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? 'N A';
                                         $nikPemohon  = $pemohon?->nik ?? $userPemohon?->nik ?? $df['nik'] ?? '';
+                                        $alamatFallback = $pemohon?->alamat ?? $df['alamat'] ?? '-';
                                         $nameParts   = explode(' ', $namaPemohon);
                                         $initials    = strtoupper(substr($nameParts[0] ?? 'N', 0, 1)) . strtoupper(substr($nameParts[1] ?? 'A', 0, 1));
                                     @endphp
@@ -254,17 +264,14 @@
 
                                     @if (in_array($surat->status, ['diajukan', 'diproses']))
                                         {{-- Tombol Setujui --}}
-                                        <form action="{{ route('admin.layanan-surat.request.setujui', $surat->id_pengajuan_surat) }}" method="POST"
-                                            onsubmit="return confirm('Setujui pengajuan surat dari {{ $namaPemohon }}?')">
-                                            @csrf
-                                            @method('PATCH')
-                                            <button type="submit" title="Setujui"
-                                                class="inline-flex items-center justify-center rounded-lg border border-green-200 bg-green-50 p-1.5 text-green-600 hover:bg-green-100 hover:text-green-700 transition-colors">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                                </svg>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                            data-id="{{ $surat->id_pengajuan_surat }}"
+                                            data-pemohon="{{ $namaPemohon }}"
+                                            onclick="openSetujuiModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
+                                            title="Setuju"
+                                            class="inline-flex items-center justify-center rounded-lg border border-green-200 bg-green-50 px-2.5 py-1.5 text-xs font-semibold text-green-600 hover:bg-green-100 hover:text-green-700 transition-colors">
+                                            Setuju
+                                        </button>
 
                                         {{-- Tombol Tolak --}}
                                         <button 
@@ -273,10 +280,8 @@
                                             data-pemohon="{{ $namaPemohon }}"
                                             onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
                                             title="Tolak"
-                                            class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-                                            </svg>
+                                            class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">
+                                            Tolak
                                         </button>
                                     @endif
 
@@ -325,6 +330,52 @@
 
     </div>
 
+    {{-- Modal Setujui --}}
+    <div id="setujuiModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4">Setujui Pengajuan Surat</h3>
+            
+            <form id="setujuiForm" method="POST" class="space-y-4">
+                @csrf
+                @method('PATCH')
+                
+                <div>
+                    <label for="pemohon_setuju" class="block text-sm font-medium text-gray-700 mb-1">Pemohon</label>
+                    <input type="text" id="pemohon_setuju" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
+                </div>
+
+                <div>
+                    <label for="nomor_surat" class="block text-sm font-medium text-gray-700 mb-1">
+                        Nomor Surat <span class="text-red-500">*</span>
+                    </label>
+                    <input 
+                        type="text" 
+                        id="nomor_surat" 
+                        name="nomor_surat" 
+                        placeholder="Contoh: 213/23/421" 
+                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 text-gray-700" 
+                        required
+                    >
+                </div>
+
+                <div class="flex gap-3 justify-end mt-6">
+                    <button 
+                        type="button"
+                        onclick="closeSetujuiModal()"
+                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors">
+                        Batal
+                    </button>
+                    <button 
+                        type="submit"
+                        id="setujuiSubmitBtn"
+                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        Setujui & Hasilkan Surat
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     {{-- Modal Tolak dengan Alasan --}}
     <div id="tolakModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
@@ -360,11 +411,12 @@
                     <button 
                         type="button"
                         onclick="closeTolakModal()"
-                        class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors">
                         Batal
                     </button>
                     <button 
                         type="submit"
+                        id="tolakSubmitBtn"
                         class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
                         Tolak
                     </button>
@@ -374,13 +426,32 @@
     </div>
 
     <script>
+        function openSetujuiModal(id, pemohon) {
+            const form = document.getElementById('setujuiForm');
+            const setujuiTemplate = "{{ route('admin.layanan-surat.request.setujui', ['__ID__']) }}";
+            form.action = setujuiTemplate.replace('__ID__', encodeURIComponent(id));
+            document.getElementById('pemohon_setuju').value = pemohon;
+            document.getElementById('nomor_surat').value = '';
+            document.getElementById('setujuiSubmitBtn').disabled = false;
+            document.getElementById('setujuiSubmitBtn').textContent = 'Setujui & Hasilkan Surat';
+            document.getElementById('setujuiModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
+        }
+
+        function closeSetujuiModal() {
+            document.getElementById('setujuiModal').classList.add('hidden');
+        }
+
         function openTolakModal(id, pemohon) {
             const form = document.getElementById('tolakForm');
             const tolakTemplate = "{{ route('admin.layanan-surat.request.tolak', ['__ID__']) }}";
             form.action = tolakTemplate.replace('__ID__', encodeURIComponent(id));
             document.getElementById('pemohon').value = pemohon;
             document.getElementById('alasan_tolak').value = '';
+            document.getElementById('tolakSubmitBtn').disabled = false;
+            document.getElementById('tolakSubmitBtn').textContent = 'Tolak';
             document.getElementById('tolakModal').classList.remove('hidden');
+            setTimeout(() => document.getElementById('alasan_tolak').focus(), 150);
         }
 
         function closeTolakModal() {
@@ -388,10 +459,25 @@
         }
 
         // Close modal ketika klik di luar modal
-        document.getElementById('tolakModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeTolakModal();
-            }
+        ['setujuiModal', 'tolakModal'].forEach(id => {
+            document.getElementById(id).addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (id === 'setujuiModal') closeSetujuiModal();
+                    if (id === 'tolakModal') closeTolakModal();
+                }
+            });
+        });
+
+        // Loading states
+        document.getElementById('setujuiForm').addEventListener('submit', function() {
+            const btn = document.getElementById('setujuiSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Memproses...';
+        });
+        document.getElementById('tolakForm').addEventListener('submit', function() {
+            const btn = document.getElementById('tolakSubmitBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Memproses...';
         });
     </script>
 </x-layouts.layouts>
