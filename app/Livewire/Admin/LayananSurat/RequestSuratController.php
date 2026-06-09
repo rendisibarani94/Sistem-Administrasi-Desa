@@ -215,7 +215,7 @@ class RequestSuratController extends Controller
         $this->notifyUser(
             $pengajuanSurat->id_penduduk,
             'Pengajuan Surat Disetujui ✅',
-            "Surat {$pengajuanSurat->jenisSurat->nama_surat} Anda telah disetujui dengan nomor: {$validated['nomor_surat']}. Silakan unduh melalui aplikasi."
+            "Surat {$pengajuanSurat->jenisSurat->nama_surat} Anda telah disetujui dengan nomor: {$validated['nomor_surat']}. Silakan unduh melalui menu Riwayat Layanan."
         );
 
         return redirect()

@@ -354,13 +354,13 @@
         $kk = $pemohon->kartuKeluarga;
     }
 
-    // ===== Helper: ambil nilai dari data_form, fallback ke penduduk =====
-    $nama       = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? '-';
-    $nik        = $pemohon?->nik           ?? $userPemohon?->nik ?? $df['nik']  ?? '-';
+    // ===== Helper: ambil nilai dari data_form (edited/form value), fallback ke penduduk profile =====
+    $nama       = $df['nama'] ?? $df['nama_lengkap'] ?? $pemohon?->nama_lengkap ?? $userPemohon?->name ?? '-';
+    $nik        = $df['nik'] ?? $pemohon?->nik           ?? $userPemohon?->nik ?? '-';
     // Ambil No KK dari relasi Kartu Keluarga (bukan kolom penduduk)
-    $noKk       = $kk?->nomor_kartu_keluarga ?? $df['no_kk'] ?? $df['nomor_kk'] ?? '-';
-    $jk         = $pemohon?->jenis_kelamin ?? $df['jk'] ?? $df['jenis_kelamin'] ?? '-';
-    $pekerjaan  = $pemohon?->pekerjaan ?? $df['pekerjaan'] ?? '-';
+    $noKk       = $df['no_kk'] ?? $df['nomor_kk'] ?? $kk?->nomor_kartu_keluarga ?? '-';
+    $jk         = $df['jk'] ?? $df['jenis_kelamin'] ?? $pemohon?->jenis_kelamin ?? '-';
+    $pekerjaan  = $df['pekerjaan'] ?? $pemohon?->pekerjaan ?? '-';
 
     // Cari alamat spesifik yang diinput oleh warga di form pengajuan (EAV atau data_form)
     $inputtedAlamat = null;
@@ -381,18 +381,46 @@
     $namaUsaha  = $df['nama_usaha'] ?? $df['jenis_usaha'] ?? '-';
 
     // ===== Data Kependudukan Krusial dari profil Penduduk & KK =====
-    $tempatLahir      = $pemohon?->tempat_lahir ?? $df['tempat_lahir'] ?? '-';
-    $tanggalLahirRaw  = $pemohon?->tanggal_lahir ?? null;
-    $namaAyah         = $pemohon?->nama_ayah ?? $df['nama_ayah'] ?? '-';
-    $namaIbu          = $pemohon?->nama_ibu ?? $df['nama_ibu'] ?? '-';
-    $agama            = $pemohon?->agama ?? $df['agama'] ?? '-';
-    $statusPerkawinan = $pemohon?->status_perkawinan ?? $df['status_perkawinan'] ?? '-';
-    $pendidikan       = $pemohon?->pendidikan_terakhir ?? $df['pendidikan'] ?? $df['pendidikan_terakhir'] ?? '-';
-    $kewarganegaraan  = $pemohon?->kewarganegaraan ?? $df['kewarganegaraan'] ?? 'WNI';
-    $golDarah         = $pemohon?->golongan_darah ?? $df['golongan_darah'] ?? '-';
-    $suku             = $pemohon?->suku ?? $df['suku'] ?? '-';
-    $rtKk             = $kk?->rt ?? $df['rt'] ?? '-';
-    $rwKk             = $kk?->rw ?? $df['rw'] ?? '-';
+    // Cari tempat lahir spesifik yang diinput warga (EAV)
+    $inputtedTempatLahir = null;
+    if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
+        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+            $fieldName = strtolower($detail->persyaratanSurat?->nama_field ?? '');
+            if (str_contains($fieldName, 'tempat lahir') || str_contains($fieldName, 'tmp lahir')) {
+                if (!str_contains($fieldName, 'tanggal') && !str_contains($fieldName, 'tgl')) {
+                    $inputtedTempatLahir = $detail->value;
+                    break;
+                }
+            }
+        }
+    }
+    $tempatLahir      = $inputtedTempatLahir ?? $df['tempat_lahir'] ?? $df['tmp_lahir'] ?? $pemohon?->tempat_lahir ?? '-';
+    
+    // Cari tanggal lahir dari data_form / detail pengajuan (EAV)
+    $inputtedTanggalLahir = null;
+    if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
+        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+            $fieldName = strtolower($detail->persyaratanSurat?->nama_field ?? '');
+            if ((str_contains($fieldName, 'tanggal lahir') || str_contains($fieldName, 'tgl lahir')) &&
+                !str_contains($fieldName, 'tempat') &&
+                !str_contains($fieldName, 'tmp')) {
+                $inputtedTanggalLahir = $detail->value;
+                break;
+            }
+        }
+    }
+    $tanggalLahirRaw  = $inputtedTanggalLahir ?? $df['tanggal_lahir'] ?? $df['tgl_lahir'] ?? $pemohon?->tanggal_lahir ?? null;
+    
+    $namaAyah         = $df['nama_ayah'] ?? $pemohon?->nama_ayah ?? '-';
+    $namaIbu          = $df['nama_ibu'] ?? $pemohon?->nama_ibu ?? '-';
+    $agama            = $df['agama'] ?? $pemohon?->agama ?? '-';
+    $statusPerkawinan = $df['status_perkawinan'] ?? $pemohon?->status_perkawinan ?? '-';
+    $pendidikan       = $df['pendidikan'] ?? $df['pendidikan_terakhir'] ?? $pemohon?->pendidikan_terakhir ?? '-';
+    $kewarganegaraan  = $df['kewarganegaraan'] ?? $pemohon?->kewarganegaraan ?? 'WNI';
+    $golDarah         = $df['golongan_darah'] ?? $df['gol_darah'] ?? $pemohon?->golongan_darah ?? '-';
+    $suku             = $df['suku'] ?? $pemohon?->suku ?? '-';
+    $rtKk             = $df['rt'] ?? $kk?->rt ?? '-';
+    $rwKk             = $df['rw'] ?? $kk?->rw ?? '-';
 
     // ===== Helper: Format Tempat/Tanggal Lahir =====
     $bulanId = [
@@ -413,8 +441,43 @@
         }
     };
 
+    // Cari apakah ada field TTL gabungan yang diinput warga (EAV atau data_form)
+    $inputtedTtl = null;
+    if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
+        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+            $fieldName = strtolower($detail->persyaratanSurat?->nama_field ?? '');
+            if ($fieldName === 'ttl' ||
+                $fieldName === 'tmpttl' ||
+                (str_contains($fieldName, 'tempat') && (str_contains($fieldName, 'tanggal') || str_contains($fieldName, 'tgl'))) ||
+                str_contains($fieldName, 'tempat, tgl') ||
+                str_contains($fieldName, 'tempat/tgl')) {
+                $inputtedTtl = $detail->value;
+                break;
+            }
+        }
+    }
+
+    if (!$inputtedTtl) {
+        foreach ($df as $k => $v) {
+            $kLower = strtolower($k);
+            if ($kLower === 'ttl' ||
+                $kLower === 'tmpttl' ||
+                (str_contains($kLower, 'tempat') && (str_contains($kLower, 'tanggal') || str_contains($kLower, 'tgl'))) ||
+                str_contains($kLower, 'tempat_tgl') ||
+                str_contains($kLower, 'tempat/tgl')) {
+                $inputtedTtl = $v;
+                break;
+            }
+        }
+    }
+
     $tanggalLahirFormatted = $tanggalLahirRaw ? $formatTanggalIndonesia($tanggalLahirRaw) : '-';
-    $ttl = $tempatLahir . ($tanggalLahirFormatted !== '-' ? ', ' . $tanggalLahirFormatted : '');
+    
+    if ($inputtedTtl) {
+        $ttl = $inputtedTtl;
+    } else {
+        $ttl = $tempatLahir . ($tanggalLahirFormatted !== '-' ? ', ' . $tanggalLahirFormatted : '');
+    }
     if ($ttl === '-' || $ttl === '-, -' || $ttl === '-,') {
         $ttl = $df['ttl'] ?? $df['tempat_lahir'] ?? '-';
     }
