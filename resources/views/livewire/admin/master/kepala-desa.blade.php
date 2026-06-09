@@ -48,6 +48,15 @@
             </div>
         @endif
 
+        @if (session('error'))
+            <div class="my-4 flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+                </svg>
+                {{ session('error') }}
+            </div>
+        @endif
+
         {{-- Toolbar --}}
         <div class="flex justify-between items-center my-6">
             <p class="text-sm text-gray-500">Data kepala desa yang aktif akan digunakan sebagai penandatangan surat resmi desa.</p>
@@ -96,13 +105,16 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @if ($kd->is_active)
-                                    <span class="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
+                                    <button wire:click="confirmNonAktif({{ $kd->id_kepala_desa }})"
+                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-green-100 border border-green-200 px-2.5 py-1 text-xs font-semibold text-green-700 hover:bg-green-200 hover:text-green-800 transition-colors"
+                                        title="Klik untuk menonaktifkan">
                                         <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
                                         Aktif
-                                    </span>
+                                    </button>
                                 @else
-                                    <button wire:click="setAktif({{ $kd->id_kepala_desa }})"
-                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-red-50 border border-red-200 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors">
+                                    <button wire:click="confirmSetAktif({{ $kd->id_kepala_desa }})"
+                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-red-50 border border-red-200 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+                                        title="Klik untuk mengaktifkan">
                                         <span class="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
                                         Non Aktif
                                     </button>
@@ -228,9 +240,24 @@
                     <input wire:model="is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
                     <label for="is_active" class="text-sm font-medium text-gray-700">Jadikan sebagai kepala desa aktif (penandatangan surat)</label>
                 </div>
+                @error('is_active')
+                    <p class="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                        ⛔ {{ $message }}
+                    </p>
+                @enderror
                 @if ($is_active && !$editingId)
                     <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
                         ⚠️ Data kepala desa aktif lainnya akan dinonaktifkan secara otomatis.
+                    </p>
+                @endif
+                @if ($editingId && $is_active)
+                    <p class="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                        ℹ️ Data pengajuan surat yang sudah diproses oleh kepala desa sebelumnya <strong>tidak akan berubah</strong> — historis tetap terhubung ke kepala desa yang memproses saat itu.
+                    </p>
+                @endif
+                @if ($editingId && !$is_active)
+                    <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                        ⚠️ Jika dinonaktifkan, pastikan ada kepala desa lain yang aktif agar surat desa tetap dapat diproses.
                     </p>
                 @endif
             </div>
@@ -263,8 +290,9 @@
     </div>
     @endif
 
-    {{-- Confirm Delete SweetAlert listener --}}
+    {{-- SweetAlert listeners --}}
     <script>
+        // Konfirmasi Hapus
         window.addEventListener('swal:confirm', event => {
             const data = event.detail[0] ?? event.detail;
             Swal.fire({
@@ -272,14 +300,64 @@
                 text: data.text ?? '',
                 icon: data.icon ?? 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#dc2626',
-                cancelButtonColor: '#ef4444',
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#dc2626',
                 confirmButtonText: data.confirmButtonText ?? 'Ya',
                 cancelButtonText: data.cancelButtonText ?? 'Batal',
             }).then(result => {
                 if (result.isConfirmed) {
                     @this.call('delete');
                 }
+            });
+        });
+
+        // Konfirmasi Aktifkan
+        window.addEventListener('swal:confirmAktifkan', event => {
+            const data = event.detail[0] ?? event.detail;
+            Swal.fire({
+                title: data.title ?? 'Konfirmasi',
+                text: data.text ?? '',
+                icon: data.icon ?? 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#16a34a',
+                cancelButtonColor: '#dc2626',
+                confirmButtonText: data.confirmButtonText ?? 'Ya, Aktifkan!',
+                cancelButtonText: data.cancelButtonText ?? 'Batal',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    @this.call('setAktif');
+                }
+            });
+        });
+
+        // Konfirmasi Non-Aktifkan
+        window.addEventListener('swal:confirmNonAktif', event => {
+            const data = event.detail[0] ?? event.detail;
+            Swal.fire({
+                title: data.title ?? 'Konfirmasi',
+                text: data.text ?? '',
+                icon: data.icon ?? 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#dc2626',
+                confirmButtonText: data.confirmButtonText ?? 'Ya, Nonaktifkan!',
+                cancelButtonText: data.cancelButtonText ?? 'Batal',
+            }).then(result => {
+                if (result.isConfirmed) {
+                    @this.call('setNonAktif');
+                }
+            });
+        });
+
+        // Error Alert
+        window.addEventListener('swal:error', event => {
+            const data = event.detail[0] ?? event.detail;
+            Swal.fire({
+                title: data.title ?? 'Error',
+                text: data.text ?? '',
+                icon: data.icon ?? 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Mengerti',
             });
         });
     </script>

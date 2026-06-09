@@ -22,6 +22,7 @@ class KepalaDesaController extends Component
     public $editingId = null;
     public $showModal = false;
     public $deleteId = null;
+    public $statusChangeId = null;
 
     protected function rules(): array
     {
@@ -92,6 +93,26 @@ class KepalaDesaController extends Component
             // Update
             $kd = KepalaDesa::findOrFail($this->editingId);
 
+            // ── Validasi: tidak boleh menonaktifkan satu-satunya kepala desa aktif ──
+            if ($kd->is_active && !$this->is_active) {
+                $adaAktifLain = KepalaDesa::where('is_active', true)
+                    ->where('id_kepala_desa', '!=', $this->editingId)
+                    ->exists();
+
+                if (!$adaAktifLain) {
+                    $this->addError('is_active',
+                        'Tidak dapat menonaktifkan kepala desa ini. Harus ada minimal satu kepala desa yang aktif sebagai penandatangan surat.');
+                    return;
+                }
+            }
+
+            // ── Jika diaktifkan, nonaktifkan kepala desa aktif lainnya ──
+            if ($this->is_active && !$kd->is_active) {
+                KepalaDesa::where('is_active', true)
+                    ->where('id_kepala_desa', '!=', $this->editingId)
+                    ->update(['is_active' => false]);
+            }
+
             // Hapus TTD lama jika upload baru
             if ($ttdPath && $kd->file_ttd) {
                 Storage::disk('public')->delete($kd->file_ttd);
@@ -124,12 +145,71 @@ class KepalaDesaController extends Component
         $this->closeModal();
     }
 
-    public function setAktif(int $id): void
+    // ── Konfirmasi Aktifkan (dari tombol "Non Aktif") ──
+    public function confirmSetAktif(int $id): void
     {
+        $kd = KepalaDesa::findOrFail($id);
+        $this->statusChangeId = $id;
+        $this->dispatch('swal:confirmAktifkan', [
+            'title'             => 'Aktifkan Kepala Desa?',
+            'text'              => "Apakah Anda yakin ingin mengaktifkan \"{$kd->nama}\" sebagai kepala desa aktif? Kepala desa yang saat ini aktif akan dinonaktifkan secara otomatis.",
+            'icon'              => 'question',
+            'confirmButtonText' => 'Ya, Aktifkan!',
+            'cancelButtonText'  => 'Batal',
+        ]);
+    }
+
+    // ── Konfirmasi Non-Aktifkan (dari badge "Aktif") ──
+    public function confirmNonAktif(int $id): void
+    {
+        $kd = KepalaDesa::findOrFail($id);
+
+        $this->statusChangeId = $id;
+        $this->dispatch('swal:confirmNonAktif', [
+            'title'             => 'Nonaktifkan Kepala Desa?',
+            'text'              => "Apakah Anda yakin ingin menonaktifkan \"{$kd->nama}\"? Data pengajuan surat yang sudah diproses oleh kepala desa ini tidak akan berubah.",
+            'icon'              => 'warning',
+            'confirmButtonText' => 'Ya, Nonaktifkan!',
+            'cancelButtonText'  => 'Batal',
+        ]);
+    }
+
+    public function setAktif(): void
+    {
+        if (!$this->statusChangeId) return;
+
         // Nonaktifkan semua lalu aktifkan yang dipilih
+        // Catatan: Data surat yang sudah diproses oleh kepala desa sebelumnya
+        // tetap menyimpan referensi ke kepala desa lama (id_diproses_oleh)
+        // sehingga historis tidak berubah.
         KepalaDesa::where('is_active', true)->update(['is_active' => false]);
-        KepalaDesa::findOrFail($id)->update(['is_active' => true]);
-        session()->flash('success', 'Kepala desa aktif berhasil diubah.');
+        KepalaDesa::findOrFail($this->statusChangeId)->update(['is_active' => true]);
+        $this->statusChangeId = null;
+        session()->flash('success', 'Kepala desa aktif berhasil diubah. Data pengajuan yang sudah diproses sebelumnya tetap terhubung ke kepala desa lama.');
+    }
+
+    public function setNonAktif(): void
+    {
+        if (!$this->statusChangeId) return;
+
+        // Validasi: tidak boleh menonaktifkan satu-satunya kepala desa aktif
+        $adaAktifLain = KepalaDesa::where('is_active', true)
+            ->where('id_kepala_desa', '!=', $this->statusChangeId)
+            ->exists();
+
+        if (!$adaAktifLain) {
+            $this->statusChangeId = null;
+            $this->dispatch('swal:error', [
+                'title' => 'Tidak Dapat Menonaktifkan',
+                'text'  => 'Tidak dapat menonaktifkan kepala desa ini karena harus ada minimal satu kepala desa aktif sebagai penandatangan surat.',
+                'icon'  => 'error',
+            ]);
+            return;
+        }
+
+        KepalaDesa::findOrFail($this->statusChangeId)->update(['is_active' => false]);
+        $this->statusChangeId = null;
+        session()->flash('success', 'Kepala desa berhasil dinonaktifkan.');
     }
 
     public function confirmDelete(int $id): void
@@ -149,6 +229,20 @@ class KepalaDesaController extends Component
         if ($this->deleteId) {
             $kd = KepalaDesa::find($this->deleteId);
             if ($kd) {
+                // Validasi: tidak boleh hapus kepala desa yang sedang aktif
+                // jika tidak ada kepala desa aktif lain
+                if ($kd->is_active) {
+                    $adaAktifLain = KepalaDesa::where('is_active', true)
+                        ->where('id_kepala_desa', '!=', $this->deleteId)
+                        ->exists();
+
+                    if (!$adaAktifLain) {
+                        $this->deleteId = null;
+                        session()->flash('error', 'Tidak dapat menghapus kepala desa aktif. Tetapkan kepala desa lain sebagai aktif terlebih dahulu.');
+                        return;
+                    }
+                }
+
                 if ($kd->file_ttd) {
                     Storage::disk('public')->delete($kd->file_ttd);
                 }

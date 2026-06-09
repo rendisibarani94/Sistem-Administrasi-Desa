@@ -41,7 +41,7 @@ class JenisSuratController extends Component
         return [
             'nama_surat'                      => $uniqueRule,
             'deskripsi'                       => 'required|string',
-            'body_template'                   => 'nullable|string',
+            'body_template'                   => 'required|string',
             'is_active'                       => 'boolean',
             'persyaratan'                     => 'array',
             'persyaratan.*.nama_field'        => 'required|string|max:255',
@@ -53,6 +53,7 @@ class JenisSuratController extends Component
     protected array $messages = [
         'nama_surat.required'                    => 'Nama surat wajib diisi.',
         'deskripsi.required'                     => 'Deskripsi wajib diisi.',
+        'body_template.required'                 => 'Template isi surat wajib diisi.',
         'persyaratan.*.nama_field.required'      => 'Nama field persyaratan wajib diisi.',
         'persyaratan.*.tipe_field.in'            => 'Tipe field tidak valid.',
     ];
@@ -64,23 +65,7 @@ class JenisSuratController extends Component
     public function openCreateModal(): void
     {
         $this->resetForm();
-        $this->loadDefaultTemplate();
         $this->showModal = true;
-    }
-
-    public function loadDefaultTemplate(): void
-    {
-        $this->body_template = '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan dengan sebenarnya bahwa:</p>' .
-            '<p><br></p>' .
-            '<p>Nama Lengkap : <strong>{nama}</strong></p>' .
-            '<p>NIK / No. KTP : {nik}</p>' .
-            '<p>Tempat, Tgl Lahir : {ttl}</p>' .
-            '<p>Jenis Kelamin : {jenis_kelamin}</p>' .
-            '<p>Alamat : {alamat}</p>' .
-            '<p>Keperluan : {keperluan}</p>' .
-            '<p><br></p>' .
-            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Bahwa nama tersebut di atas adalah benar warga Desa Hutabulu Mejan yang berdomisili di alamat tersebut dan berkelakuan baik.</p>' .
-            '<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikian surat keterangan ini diperbuat dengan sebenarnya untuk dapat dipergunakan sebagaimana mestinya.</p>';
     }
 
     public function openEditModal(int $id): void

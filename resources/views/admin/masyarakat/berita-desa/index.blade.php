@@ -127,8 +127,8 @@
                 , text: parameters[0].text
                 , icon: parameters[0].icon
                 , showCancelButton: true
-                , confirmButtonColor: '#d33'
-                , cancelButtonColor: '#3085d6'
+                , confirmButtonColor: '#3085d6'
+                , cancelButtonColor: '#dc2626'
                 , confirmButtonText: parameters[0].confirmButtonText
                 , cancelButtonText: parameters[0].cancelButtonText
                 , reverseButtons: true

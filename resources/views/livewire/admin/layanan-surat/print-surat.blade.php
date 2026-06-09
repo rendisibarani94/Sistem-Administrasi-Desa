@@ -513,7 +513,14 @@
     $nipKepalaDesa = null;
     $fileTtdKepalaDesa = null;
     try {
-        $kepalaDesa = \App\Models\KepalaDesa::where('is_active', true)->first();
+        // Gunakan kepala desa yang memproses surat ini
+        $kepalaDesa = $pengajuanSurat->diprosesOleh;
+        
+        // Jika belum diproses/tidak ada, gunakan kepala desa aktif
+        if (!$kepalaDesa) {
+            $kepalaDesa = \App\Models\KepalaDesa::where('is_active', true)->first();
+        }
+        
         if ($kepalaDesa) {
             $namaKepalaDesa = $kepalaDesa->nama;
             $nipKepalaDesa = $kepalaDesa->nip;
