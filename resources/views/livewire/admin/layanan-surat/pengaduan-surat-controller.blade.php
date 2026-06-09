@@ -377,7 +377,7 @@
                 icon: 'question',
                 showCancelButton: true,
                 confirmButtonColor: '#059669', // Emerald 600
-                cancelButtonColor: '#ef4444',
+                cancelButtonColor: '#dc2626',
                 confirmButtonText: 'Ya, Setujui!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
@@ -393,8 +393,8 @@
                 text: 'Apakah Anda yakin ingin menolak pengaduan ini?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#dc2626', // Red 600
-                cancelButtonColor: '#ef4444',
+                confirmButtonColor: '#3085d6', // Red 600
+                cancelButtonColor: '#dc2626',
                 confirmButtonText: 'Ya, Tolak!',
                 cancelButtonText: 'Batal'
             }).then((result) => {

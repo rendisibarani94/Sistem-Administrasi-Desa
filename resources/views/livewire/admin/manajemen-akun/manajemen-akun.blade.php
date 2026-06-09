@@ -331,8 +331,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#ef4444',
-                    cancelButtonColor: '#6b7280',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#dc2626',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -349,8 +349,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#d97706', // Amber 600
-                    cancelButtonColor: '#6b7280',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#dc2626',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -367,8 +367,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#d97706', // Amber 600
-                    cancelButtonColor: '#6b7280',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#dc2626',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -385,8 +385,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#dc2626', // Red 600
-                    cancelButtonColor: '#6b7280',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#dc2626',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {

@@ -166,6 +166,10 @@ class RequestSuratController extends Controller
 
         $filePath = null;
 
+        // Ambil Kepala Desa aktif
+        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+
         if ($request->hasFile('file_pdf')) {
             // Admin upload PDF manual (scan yang sudah ditandatangani)
             $filePath = $request->file('file_pdf')->store('surat');
@@ -174,6 +178,10 @@ class RequestSuratController extends Controller
             try {
                 $pengajuanSurat->nomor_surat = $validated['nomor_surat'];
                 $pengajuanSurat->tanggal_selesai = now();
+                $pengajuanSurat->id_diproses_oleh = $idKades;
+                if ($activeKades) {
+                    $pengajuanSurat->setRelation('diprosesOleh', $activeKades);
+                }
                 $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
 
                 // Render HTML with isPdf set to true so base64 images and DomPDF compatible layouts are used
@@ -197,10 +205,6 @@ class RequestSuratController extends Controller
                 // Lanjutkan tanpa file
             }
         }
-
-        // Ambil Kepala Desa aktif
-        $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
-        $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
 
         $pengajuanSurat->update([
             'status'           => 'selesai',

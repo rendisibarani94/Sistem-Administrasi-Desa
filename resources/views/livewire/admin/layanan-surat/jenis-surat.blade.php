@@ -321,11 +321,8 @@
                 >
                     <div class="flex justify-between items-center">
                         <label class="block text-sm font-semibold text-gray-700">
-                            Template Isi Surat <span class="text-gray-400 font-normal">(opsional)</span>
+                            Template Isi Surat <span class="text-red-500">*</span>
                         </label>
-                        <button type="button" wire:click="loadDefaultTemplate" class="text-xs font-semibold text-sky-600 hover:text-sky-700 flex items-center gap-1">
-                            🔄 Gunakan Format Default
-                        </button>
                     </div>
 
                     {{-- Tag Helper Section --}}
@@ -360,7 +357,7 @@
 
                     {{-- WYSIWYG Quill Container --}}
                     <div wire:ignore 
-                         class="bg-white rounded-lg border border-gray-300"
+                         class="bg-white rounded-lg border @error('body_template') border-red-400 bg-red-50 @else border-gray-300 @enderror"
                          x-init="
                              quill = new Quill($refs.editor, {
                                  theme: 'snow',
@@ -396,6 +393,9 @@
                      >
                          <div x-ref="editor" style="height: 320px;" class="text-sm"></div>
                      </div>
+                     @error('body_template')
+                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                     @enderror
                 </div>
 
                 {{-- Status Aktif --}}
