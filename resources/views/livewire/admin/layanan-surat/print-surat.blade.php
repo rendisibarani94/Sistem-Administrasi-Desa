@@ -289,7 +289,6 @@
 
 {{-- ===== TOMBOL PRINT (tidak ikut tercetak) ===== --}}
 <div class="no-print">
-    <button class="btn-back" onclick="window.history.back()">← Kembali</button>
     <span>📄 Preview Surat — Siap Cetak</span>
     <button onclick="window.print()">🖨️ Cetak Sekarang</button>
 </div>

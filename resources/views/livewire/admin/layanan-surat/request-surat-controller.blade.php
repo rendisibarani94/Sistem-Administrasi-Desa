@@ -263,11 +263,70 @@
                                     </a>
 
                                     @if (in_array($surat->status, ['diajukan', 'diproses']))
+                                        @php
+                                            // Extract form fields for setujui modal
+                                            $rowFormFields = [];
+                                            $rowNormalizedFields = [];
+                                            $rowDataForm = $surat->data_form;
+                                            if (is_string($rowDataForm)) {
+                                                $rowDataForm = json_decode($rowDataForm, true) ?? [];
+                                            }
+                                            if (is_array($rowDataForm)) {
+                                                foreach ($rowDataForm as $key => $value) {
+                                                    $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
+                                                    if (!$isFile && $value) {
+                                                        $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
+                                                        if (isset($rowNormalizedFields[$normalized])) {
+                                                            continue;
+                                                        }
+                                                        $rowNormalizedFields[$normalized] = true;
+
+                                                        $label = ucfirst(str_replace('_', ' ', $key));
+                                                        if (strtolower($label) === 'nik') {
+                                                            $label = 'NIK';
+                                                        }
+                                                        $rowFormFields[$label] = $value;
+                                                    }
+                                                }
+                                            }
+                                            if ($surat->detailPengajuanSurat) {
+                                                foreach ($surat->detailPengajuanSurat as $detail) {
+                                                    $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
+                                                    $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
+                                                    $val = $detail->value;
+                                                    $isFile = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
+                                                    if (!$isFile && $val) {
+                                                        $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
+                                                        if (isset($rowNormalizedFields[$normalized])) {
+                                                            continue;
+                                                        }
+                                                        $rowNormalizedFields[$normalized] = true;
+
+                                                        $label = $namaField;
+                                                        if (strtolower($label) === 'nik') {
+                                                            $label = 'NIK';
+                                                        }
+                                                        $rowFormFields[$label] = $val;
+                                                    }
+                                                }
+                                            }
+                                        @endphp
                                         {{-- Tombol Setujui --}}
                                         <button type="button"
                                             data-id="{{ $surat->id_pengajuan_surat }}"
                                             data-pemohon="{{ $namaPemohon }}"
-                                            onclick="openSetujuiModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
+                                            data-jenis="{{ $surat->jenisSurat->nama_surat ?? '-' }}"
+                                            data-tanggal="{{ $surat->created_at->format('d M Y') }}"
+                                            data-admin="{{ \App\Models\KepalaDesa::where('is_active', true)->first()?->nama ?? 'Kepala Desa' }}"
+                                            data-fields="{{ json_encode($rowFormFields) }}"
+                                            onclick="openSetujuiModal(
+                                                this.getAttribute('data-id'),
+                                                this.getAttribute('data-pemohon'),
+                                                this.getAttribute('data-jenis'),
+                                                this.getAttribute('data-tanggal'),
+                                                this.getAttribute('data-admin'),
+                                                this.getAttribute('data-fields')
+                                            )"
                                             title="Setuju"
                                             class="inline-flex items-center justify-center rounded-lg border border-green-200 bg-green-50 px-2.5 py-1.5 text-xs font-semibold text-green-600 hover:bg-green-100 hover:text-green-700 transition-colors">
                                             Setuju
@@ -332,43 +391,104 @@
 
     {{-- Modal Setujui --}}
     <div id="setujuiModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Setujui Pengajuan Surat</h3>
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-3">
+                    <div class="flex h-10 w-10 items-center justify-center rounded-full bg-green-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Setujui Pengajuan Surat</h3>
+                </div>
+                <button type="button" onclick="closeSetujuiModal()" class="text-gray-400 hover:text-gray-600 focus:outline-none">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Banner info -->
+            <div class="mb-4 flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50 p-3 text-xs text-blue-800">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 shrink-0 text-blue-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m11.25 11.25.041-.02a.75.75 0 1 1 1.053 1.053l-.042.02.042.02a.75.75 0 1 1-1.053-1.053l.042-.02ZM12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18Zm0-12.75h.008v.008H12v-.008Z" />
+                </svg>
+                <div>
+                    <strong class="font-semibold block mb-0.5">Isi nomor dan kode surat saja.</strong>
+                    <span class="text-blue-600">Jenis surat, bulan, dan tahun akan digenerate otomatis oleh sistem.</span>
+                </div>
+            </div>
+
+            <!-- Data Pengajuan -->
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-200 text-xs mb-4">
+                <h4 class="font-bold text-gray-500 uppercase tracking-wider mb-2">Data Pengajuan</h4>
+                <div id="form_fields_container" class="grid grid-cols-2 gap-x-4 gap-y-2">
+                    <!-- Dynamic fields go here -->
+                </div>
+            </div>
             
-            <form id="setujuiForm" method="POST" class="space-y-4">
+            <form id="setujuiForm" method="POST" enctype="multipart/form-data" class="space-y-4">
                 @csrf
                 @method('PATCH')
-                
-                <div>
-                    <label for="pemohon_setuju" class="block text-sm font-medium text-gray-700 mb-1">Pemohon</label>
-                    <input type="text" id="pemohon_setuju" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
+
+                <!-- Input Nomor dan Kode Surat -->
+                <div class="grid grid-cols-2 gap-4 items-start">
+                    <div>
+                        <label for="no_surat_part" class="block text-xs font-bold text-gray-700 mb-1">
+                            Nomor Surat <span class="text-red-500">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="no_surat_part" 
+                            placeholder="Contoh: 140" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 text-gray-700 text-sm focus:outline-none" 
+                            required
+                        >
+                        <p class="text-[10px] text-gray-400 mt-1">Hanya isi nomor surat</p>
+                    </div>
+                    <div>
+                        <label for="kode_surat_part" class="block text-xs font-bold text-gray-700 mb-1">
+                            Kode Surat <span class="text-red-500">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="kode_surat_part" 
+                            placeholder="Contoh: SKM" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 text-gray-700 text-sm focus:outline-none" 
+                            required
+                        >
+                        <p class="text-[10px] text-gray-400 mt-1">Hanya isi kode surat</p>
+                    </div>
                 </div>
 
+                <!-- Preview Nomor Surat -->
                 <div>
-                    <label for="nomor_surat" class="block text-sm font-medium text-gray-700 mb-1">
-                        Nomor Surat <span class="text-red-500">*</span>
-                    </label>
-                    <input 
-                        type="text" 
-                        id="nomor_surat" 
-                        name="nomor_surat" 
-                        placeholder="Contoh: 213/23/421" 
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 text-gray-700" 
-                        required
-                    >
+                    <span class="block text-[10px] font-bold text-gray-500 uppercase mb-1">Preview Nomor Surat (Akan Digenerate Otomatis)</span>
+                    <div class="bg-gray-50 rounded-lg border border-gray-200 p-3.5 text-center font-mono text-base tracking-wider text-gray-800 relative overflow-hidden" id="preview_nomor_surat_box">
+                        <span id="preview_nomor_surat_text">140/SKM/HM/2008/VI/2026</span>
+                    </div>
                 </div>
 
-                <div class="flex gap-3 justify-end mt-6">
-                    <button 
-                        type="button"
-                        onclick="closeSetujuiModal()"
-                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors">
+                <input type="hidden" id="nomor_surat" name="nomor_surat">
+
+                <!-- Warning Note -->
+                <div class="flex items-start gap-2.5 rounded-lg bg-amber-50 border border-amber-100 p-3 text-[11px] text-amber-800 leading-normal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-amber-500 mt-0.5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.008v.008H12v-.008Z" />
+                    </svg>
+                    <div>
+                        <strong class="font-semibold block mb-0.5">Pastikan nomor dan kode surat sudah benar.</strong>
+                        Nomor surat akan digunakan pada dokumen yang dihasilkan sistem.
+                    </div>
+                </div>
+
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeSetujuiModal()"
+                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold">
                         Batal
                     </button>
-                    <button 
-                        type="submit"
-                        id="setujuiSubmitBtn"
-                        class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                    <button type="submit" id="setujuiSubmitBtn"
+                        class="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-semibold">
                         Setujui & Hasilkan Surat
                     </button>
                 </div>
@@ -426,36 +546,104 @@
     </div>
 
     <script>
-        function openSetujuiModal(id, pemohon) {
-            const form = document.getElementById('setujuiForm');
-            const setujuiTemplate = "{{ route('admin.layanan-surat.request.setujui', ['__ID__']) }}";
-            form.action = setujuiTemplate.replace('__ID__', encodeURIComponent(id));
-            document.getElementById('pemohon_setuju').value = pemohon;
+        let isSetujuiConfirmed = false;
+        let isTolakConfirmed = false;
+
+        function openSetujuiModal(id, pemohon, jenisSurat, tanggal, adminName, fieldsJson) {
+            isSetujuiConfirmed = false;
+            // Gunakan url() helper — tidak enkode karakter apa pun
+            const base = "{{ url('/admin/layanan-surat/request') }}";
+            document.getElementById('setujuiForm').action = base + '/' + id + '/setujui';
+
+            // Populate Form Fields
+            const fieldsContainer = document.getElementById('form_fields_container');
+            fieldsContainer.innerHTML = '';
+            
+            let fields = {};
+            try {
+                fields = JSON.parse(fieldsJson);
+            } catch (e) {
+                console.error(e);
+            }
+
+            const keys = Object.keys(fields);
+            if (keys.length > 0) {
+                keys.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between border-b border-gray-100 pb-1';
+                    
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'text-gray-500';
+                    labelSpan.textContent = key;
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'font-semibold text-gray-800 text-right truncate pl-2 max-w-[220px]';
+                    valueSpan.textContent = fields[key];
+                    valueSpan.title = fields[key];
+                    
+                    item.appendChild(labelSpan);
+                    item.appendChild(valueSpan);
+                    fieldsContainer.appendChild(item);
+                });
+            } else {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'col-span-2 text-center text-gray-400 italic py-1';
+                emptyMsg.textContent = 'Tidak ada data pengajuan';
+                fieldsContainer.appendChild(emptyMsg);
+            }
+
+            // Reset inputs
+            document.getElementById('no_surat_part').value = '';
+            document.getElementById('kode_surat_part').value = '';
             document.getElementById('nomor_surat').value = '';
+
+            updateNomorSuratPreview();
+
             document.getElementById('setujuiSubmitBtn').disabled = false;
             document.getElementById('setujuiSubmitBtn').textContent = 'Setujui & Hasilkan Surat';
             document.getElementById('setujuiModal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
+            setTimeout(() => document.getElementById('no_surat_part').focus(), 150);
         }
 
         function closeSetujuiModal() {
             document.getElementById('setujuiModal').classList.add('hidden');
+            isSetujuiConfirmed = false;
         }
 
+        function updateNomorSuratPreview() {
+            const noSurat = document.getElementById('no_surat_part').value || '___';
+            const kodeSurat = document.getElementById('kode_surat_part').value || '___';
+            
+            const now = new Date();
+            const romanMonths = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
+            const currentMonth = romanMonths[now.getMonth()];
+            const currentYear = now.getFullYear();
+            
+            const fullNumber = `${noSurat}/${kodeSurat}/HM/2008/${currentMonth}/${currentYear}`;
+            document.getElementById('preview_nomor_surat_text').textContent = fullNumber;
+            document.getElementById('nomor_surat').value = fullNumber;
+        }
+
+        document.getElementById('no_surat_part').addEventListener('input', updateNomorSuratPreview);
+        document.getElementById('kode_surat_part').addEventListener('input', updateNomorSuratPreview);
+
         function openTolakModal(id, pemohon) {
-            const form = document.getElementById('tolakForm');
-            const tolakTemplate = "{{ route('admin.layanan-surat.request.tolak', ['__ID__']) }}";
-            form.action = tolakTemplate.replace('__ID__', encodeURIComponent(id));
+            isTolakConfirmed = false;
+            const base = "{{ url('/admin/layanan-surat/request') }}";
+            document.getElementById('tolakForm').action = base + '/' + id + '/tolak';
+
             document.getElementById('pemohon').value = pemohon;
             document.getElementById('alasan_tolak').value = '';
             document.getElementById('tolakSubmitBtn').disabled = false;
-            document.getElementById('tolakSubmitBtn').textContent = 'Tolak';
+            document.getElementById('tolakSubmitBtn').textContent = 'Tolak Pengajuan';
+
             document.getElementById('tolakModal').classList.remove('hidden');
             setTimeout(() => document.getElementById('alasan_tolak').focus(), 150);
         }
 
         function closeTolakModal() {
             document.getElementById('tolakModal').classList.add('hidden');
+            isTolakConfirmed = false;
         }
 
         // Close modal ketika klik di luar modal
@@ -468,16 +656,63 @@
             });
         });
 
-        // Loading states
-        document.getElementById('setujuiForm').addEventListener('submit', function() {
-            const btn = document.getElementById('setujuiSubmitBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Memproses...';
+        // Close on ESC
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape') { closeSetujuiModal(); closeTolakModal(); }
         });
-        document.getElementById('tolakForm').addEventListener('submit', function() {
-            const btn = document.getElementById('tolakSubmitBtn');
-            btn.disabled = true;
-            btn.textContent = '⏳ Memproses...';
+
+        // Loading state & confirmation saat submit
+        document.getElementById('setujuiForm').addEventListener('submit', function(e) {
+            if (!isSetujuiConfirmed) {
+                e.preventDefault();
+                updateNomorSuratPreview();
+                const nomorSurat = document.getElementById('nomor_surat').value;
+
+                Swal.fire({
+                    title: 'Konfirmasi Nomor Surat',
+                    html: `Apakah nomor surat <strong>"${nomorSurat}"</strong> sudah benar?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#059669', // Emerald 600
+                    cancelButtonColor: '#dc2626',  // Red 600
+                    confirmButtonText: 'Ya, Sudah Benar!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        isSetujuiConfirmed = true;
+                        const btn = document.getElementById('setujuiSubmitBtn');
+                        btn.disabled = true;
+                        btn.textContent = '⏳ Memproses...';
+                        this.submit();
+                    }
+                });
+            }
+        });
+
+        document.getElementById('tolakForm').addEventListener('submit', function(e) {
+            if (!isTolakConfirmed) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Konfirmasi Tolak',
+                    text: 'Apakah Anda yakin ingin menolak pengajuan ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc2626', // Red 600
+                    cancelButtonColor: '#6b7280', // Gray 500
+                    confirmButtonText: 'Ya, Tolak!',
+                    cancelButtonText: 'Batal',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        isTolakConfirmed = true;
+                        const btn = document.getElementById('tolakSubmitBtn');
+                        btn.disabled = true;
+                        btn.textContent = '⏳ Memproses...';
+                        this.submit();
+                    }
+                });
+            }
         });
     </script>
 </x-layouts.layouts>

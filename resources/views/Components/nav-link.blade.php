@@ -5,18 +5,18 @@
     $baseClasses = 'flex text-sm items-center p-1.5 transition duration-150 rounded-lg group cursor-pointer';
 
     // Classes for inactive (default) state
-    $inactiveClasses = 'dark:text-zinc-950 hover:text-white dark:hover:bg-sky-700';
+    $inactiveClasses = 'text-zinc-950 hover:text-white hover:bg-sky-700';
 
     // Classes for the active state (mimicking the hover state)
-    $activeClasses = 'text-white dark:bg-sky-700';
+    $activeClasses = 'text-white bg-sky-700';
 
     // Combine the base with either the active or inactive classes
     $aClasses = $baseClasses . ' ' . ($active ? $activeClasses : $inactiveClasses);
 
     // SVG classes: base + different color depending on active state
-    $svgBaseClasses = 'w-5 h-5 transition duration-75 dark:group-hover:text-white';
-    $svgInactiveClasses = 'dark:text-zinc-950';
-    $svgActiveClasses = 'dark:text-white';
+    $svgBaseClasses = 'w-5 h-5 transition duration-75 group-hover:text-white';
+    $svgInactiveClasses = 'text-zinc-950';
+    $svgActiveClasses = 'text-white';
     $svgClasses = ($active ? $svgActiveClasses : $svgInactiveClasses) . ' ' . $svgBaseClasses;
 @endphp
 
