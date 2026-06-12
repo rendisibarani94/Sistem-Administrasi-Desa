@@ -103,6 +103,60 @@
                         @enderror
                     </div>
 
+                    <!-- Kabupaten -->
+                    <div>
+                        <label for="kabupaten"
+                            class="block mb-2 text-sm font-semibold text-gray-900">
+                            Kabupaten
+                        </label>
+
+                        <input type="text"
+                            id="kabupaten"
+                            wire:model.live="kabupaten"
+                            placeholder="Masukkan Kabupaten (Contoh: KABUPATEN TOBA)"
+                            class="w-full border rounded p-2.5 text-sm">
+
+                        @error('kabupaten')
+                            <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Kecamatan -->
+                    <div>
+                        <label for="kecamatan"
+                            class="block mb-2 text-sm font-semibold text-gray-900">
+                            Kecamatan
+                        </label>
+
+                        <input type="text"
+                            id="kecamatan"
+                            wire:model.live="kecamatan"
+                            placeholder="Masukkan Kecamatan (Contoh: KECAMATAN BALIGE)"
+                            class="w-full border rounded p-2.5 text-sm">
+
+                        @error('kecamatan')
+                            <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <!-- Alamat Desa -->
+                    <div>
+                        <label for="alamat_desa"
+                            class="block mb-2 text-sm font-semibold text-gray-900">
+                            Alamat & Detail Kontak Desa (Kop Surat)
+                        </label>
+
+                        <input type="text"
+                            id="alamat_desa"
+                            wire:model.live="alamat_desa"
+                            placeholder="Masukkan Alamat, Kode Pos, Website"
+                            class="w-full border rounded p-2.5 text-sm">
+
+                        @error('alamat_desa')
+                            <span class="text-xs text-red-500">{{ $message }}</span>
+                        @enderror
+                    </div>
+
                     <!-- Deskripsi Footer -->
                     <div>
                         <label class="block mb-2 text-sm font-semibold text-gray-900">
@@ -247,7 +301,7 @@ document.addEventListener('livewire:init', function () {
     quill.on('text-change', function () {
         let html = quill.root.innerHTML;
         hiddenInput.value = html;
-        @this.set('deskripsi_footer', html);
+        @this.set('deskripsi_footer', html, false);
     });
 
     // refresh jika component rerender

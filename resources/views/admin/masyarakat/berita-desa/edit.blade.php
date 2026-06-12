@@ -103,7 +103,7 @@
             const hiddenInput = document.querySelector('#deskripsi-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('deskripsi', content);
+                @this.set('deskripsi', content, false);
             }
         });
     });

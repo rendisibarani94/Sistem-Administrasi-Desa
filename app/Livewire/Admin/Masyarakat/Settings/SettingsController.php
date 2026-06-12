@@ -20,6 +20,15 @@ class SettingsController extends Component
     #[Rule('max:255', message: 'Kolom Nama Desa Maksimal 255 karakter!')]
     public $nama_desa;
 
+    #[Rule('nullable|max:255', message: 'Kolom ini maksimal 255 karakter!')]
+    public $kabupaten;
+
+    #[Rule('nullable|max:255', message: 'Kolom ini maksimal 255 karakter!')]
+    public $kecamatan;
+
+    #[Rule('nullable|max:255', message: 'Kolom ini maksimal 255 karakter!')]
+    public $alamat_desa;
+
     #[Rule('required', message: 'Kolom Deskripsi Footer Harus Diisi!')]
     #[Rule('max:255', message: 'Kolom Deskripsi Footer Maksimal 255 karakter!')]
     public $deskripsi_footer;
@@ -72,6 +81,9 @@ class SettingsController extends Component
 
         $this->existingLogo = $settings['logo'] ?? null;
         $this->nama_desa = $settings['nama_desa'] ?? null;
+        $this->kabupaten = $settings['kabupaten'] ?? null;
+        $this->kecamatan = $settings['kecamatan'] ?? null;
+        $this->alamat_desa = $settings['alamat_desa'] ?? null;
         $this->deskripsi_footer = $settings['deskripsi_footer'] ?? null;
         $this->link_fb = $settings['link_fb'] ?? null;
         $this->link_ig = $settings['link_ig'] ?? null;
@@ -113,6 +125,9 @@ class SettingsController extends Component
 
         // Save all text settings
         $this->saveSetting('nama_desa', $this->nama_desa);
+        $this->saveSetting('kabupaten', $this->kabupaten);
+        $this->saveSetting('kecamatan', $this->kecamatan);
+        $this->saveSetting('alamat_desa', $this->alamat_desa);
         $this->saveSetting('deskripsi_footer', $this->deskripsi_footer);
         $this->saveSetting('link_fb', $this->link_fb);
         $this->saveSetting('link_ig', $this->link_ig);

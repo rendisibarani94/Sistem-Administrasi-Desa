@@ -126,13 +126,9 @@
             const hiddenInput = document.querySelector('#deskripsi-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('deskripsi_agenda', content);
+                @this.set('deskripsi_agenda', content, false);
             }
         });
     });
-</script>
-@endpush
-    });
-
 </script>
 @endpush

@@ -66,6 +66,129 @@ class PendudukApiController extends Controller
 
     /**
      * ==========================================
+     * GET /api/penduduk/nik/{nik}
+     * Get Penduduk by NIK (Auto-recognition & check)
+     * ==========================================
+     */
+    public function getByNik($nik)
+    {
+        $data = Penduduk::with('kartuKeluarga')
+            ->where('nik', $nik)
+            ->where('is_deleted', 0)
+            ->first();
+
+        if (!$data) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Data penduduk dengan NIK tersebut tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data'   => [
+                'nik' => $data->nik,
+                'nama_lengkap' => $data->nama_lengkap,
+                'jenis_kelamin' => $data->jenis_kelamin,
+                'alamat' => $data->alamat,
+                'nama_ayah' => $data->nama_ayah,
+                'nama_ibu' => $data->nama_ibu,
+                'tempat_lahir' => $data->tempat_lahir,
+                'tanggal_lahir' => $data->tanggal_lahir ? $data->tanggal_lahir->format('Y-m-d') : null,
+                'kewarganegaraan' => $data->kewarganegaraan,
+                'golongan_darah' => $data->golongan_darah,
+                'agama' => $data->agama,
+                'status_perkawinan' => $data->status_perkawinan,
+                'pendidikan_terakhir' => $data->pendidikan_terakhir,
+                'pekerjaan' => $data->pekerjaan,
+                'suku' => $data->suku,
+                'no_kk' => $data->kartuKeluarga?->nomor_kartu_keluarga ?? '',
+            ]
+        ]);
+    }
+
+    /**
+     * ==========================================
+     * GET /api/penduduk/family
+     * Get Family Members (under same KK as authenticated user)
+     * ==========================================
+     */
+    public function getFamilyMembers(Request $request)
+    {
+        $user = $request->user();
+        if (!$user) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized'
+            ], 401);
+        }
+
+        // Find current user's resident record
+        $penduduk = $user->penduduk;
+        if (!$penduduk && $user->nik) {
+            $penduduk = Penduduk::where('nik', $user->nik)->where('is_deleted', 0)->first();
+        }
+
+        if (!$penduduk || !$penduduk->id_kartu_keluarga) {
+            // Fallback: return their own details or empty
+            $members = [];
+            if ($penduduk) {
+                $members = [$penduduk];
+            } else {
+                return response()->json([
+                    'status' => 'success',
+                    'data' => [
+                        [
+                            'nik' => $user->nik,
+                            'nama_lengkap' => $user->name,
+                            'jenis_kelamin' => 'Laki-laki',
+                            'alamat' => '',
+                            'tempat_lahir' => '',
+                            'tanggal_lahir' => null,
+                            'agama' => 'KRISTEN',
+                            'pekerjaan' => '',
+                            'no_kk' => '',
+                        ]
+                    ]
+                ]);
+            }
+        } else {
+            // Find all family members with same id_kartu_keluarga
+            $members = Penduduk::with('kartuKeluarga')
+                ->where('id_kartu_keluarga', $penduduk->id_kartu_keluarga)
+                ->where('is_deleted', 0)
+                ->get();
+        }
+
+        $formatted = $members->map(function ($data) {
+            return [
+                'nik' => $data->nik,
+                'nama_lengkap' => $data->nama_lengkap,
+                'jenis_kelamin' => $data->jenis_kelamin,
+                'alamat' => $data->alamat,
+                'nama_ayah' => $data->nama_ayah,
+                'nama_ibu' => $data->nama_ibu,
+                'tempat_lahir' => $data->tempat_lahir,
+                'tanggal_lahir' => $data->tanggal_lahir ? ($data->tanggal_lahir instanceof \Carbon\Carbon ? $data->tanggal_lahir->format('Y-m-d') : substr($data->tanggal_lahir, 0, 10)) : null,
+                'kewarganegaraan' => $data->kewarganegaraan,
+                'golongan_darah' => $data->golongan_darah,
+                'agama' => $data->agama,
+                'status_perkawinan' => $data->status_perkawinan,
+                'pendidikan_terakhir' => $data->pendidikan_terakhir,
+                'pekerjaan' => $data->pekerjaan,
+                'suku' => $data->suku,
+                'no_kk' => $data->kartuKeluarga?->nomor_kartu_keluarga ?? '',
+            ];
+        });
+
+        return response()->json([
+            'status' => 'success',
+            'data' => $formatted
+        ]);
+    }
+
+    /**
+     * ==========================================
      * POST /api/penduduk
      * Tambah Penduduk
      * ==========================================

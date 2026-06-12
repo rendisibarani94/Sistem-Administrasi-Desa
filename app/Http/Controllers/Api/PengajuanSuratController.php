@@ -182,10 +182,11 @@ class PengajuanSuratController extends Controller
                     }
                 } else {
                     // Field non-file (text, number, date)
+                    // Gunakan data persis seperti yang dikirim dari aplikasi mobile
                     $value = isset($answers[$syarat->id]) ? $answers[$syarat->id] : null;
 
                     // Validasi requirement wajib
-                    if ($syarat->is_required && is_null($value)) {
+                    if ($syarat->is_required && (is_null($value) || $value === '')) {
                         DB::rollBack();
                         return response()->json([
                             'status' => false,
@@ -247,6 +248,169 @@ class PengajuanSuratController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Gagal memproses pengajuan surat.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Update pengajuan surat yang sudah ada.
+     * Hanya bisa dilakukan jika status masih 'diajukan' (menunggu).
+     */
+    public function updatePengajuan(Request $request, $id): JsonResponse
+    {
+        // 1. Validasi input
+        $validator = Validator::make($request->all(), [
+            'answers' => 'nullable|array'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Validasi gagal.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Unauthenticated. Silakan login terlebih dahulu.'
+            ], 401);
+        }
+
+        // 2. Cari pengajuan
+        $idPenduduk = $user->id_penduduk ?? $user->id;
+        $pengajuan = PengajuanSurat::where('id_pengajuan_surat', $id)
+            ->where('id_penduduk', $idPenduduk)
+            ->first();
+
+        if (!$pengajuan) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Pengajuan tidak ditemukan atau Anda tidak memiliki akses.'
+            ], 404);
+        }
+
+        // 3. Cek status — hanya bisa edit jika masih 'diajukan'
+        if ($pengajuan->status !== 'diajukan') {
+            return response()->json([
+                'status' => false,
+                'message' => 'Pengajuan tidak dapat diedit karena sudah diproses oleh admin.'
+            ], 403);
+        }
+
+        // 4. Ambil persyaratan
+        $daftarPersyaratan = PersyaratanSurat::where('jenis_surat_id', $pengajuan->id_jenis_surat)->get();
+
+        DB::beginTransaction();
+
+        try {
+            // A. Hapus detail lama
+            DetailPengajuanSurat::where('pengajuan_id', $pengajuan->id_pengajuan_surat)->delete();
+
+            // B. Proses jawaban baru
+            $answers = $request->input('answers', []);
+            $files = $request->file('answers', []);
+            $dataForm = [];
+
+            foreach ($daftarPersyaratan as $syarat) {
+                $value = null;
+                $normKey = strtolower(str_replace(' ', '_', trim($syarat->nama_field)));
+
+                if ($syarat->tipe_field === 'file_image') {
+                    $uploadedFile = null;
+                    if ($request->hasFile("answers.{$syarat->id}")) {
+                        $uploadedFile = $request->file("answers.{$syarat->id}");
+                    } elseif (isset($files[$syarat->id])) {
+                        $uploadedFile = $files[$syarat->id];
+                    }
+
+                    if ($uploadedFile) {
+                        $fileValidator = Validator::make(['file' => $uploadedFile], [
+                            'file' => 'image|mimes:jpeg,png,jpg,webp|max:10240'
+                        ]);
+
+                        if ($fileValidator->fails()) {
+                            DB::rollBack();
+                            return response()->json([
+                                'status' => false,
+                                'message' => "Berkas untuk '{$syarat->nama_field}' harus berupa gambar valid (jpg, png, jpeg, webp) dengan ukuran maksimal 10MB.",
+                                'errors' => $fileValidator->errors()
+                            ], 422);
+                        }
+
+                        $path = $uploadedFile->store('pengajuan', 'public');
+                        $value = $path;
+                    } else {
+                        // Cek apakah ada value lama yang dikirim sebagai string (path lama dipertahankan)
+                        $existingValue = isset($answers[$syarat->id]) ? $answers[$syarat->id] : null;
+                        if ($existingValue && is_string($existingValue) && !empty($existingValue)) {
+                            $value = $existingValue;
+                        } elseif ($syarat->is_required) {
+                            DB::rollBack();
+                            return response()->json([
+                                'status' => false,
+                                'message' => "Berkas persyaratan '{$syarat->nama_field}' wajib diunggah."
+                            ], 422);
+                        }
+                    }
+                } else {
+                    // Field non-file (text, number, date)
+                    // Gunakan data persis seperti yang dikirim dari aplikasi mobile
+                    $value = isset($answers[$syarat->id]) ? $answers[$syarat->id] : null;
+
+                    if ($syarat->is_required && (is_null($value) || $value === '')) {
+                        DB::rollBack();
+                        return response()->json([
+                            'status' => false,
+                            'message' => "Persyaratan '{$syarat->nama_field}' wajib diisi."
+                        ], 422);
+                    }
+                }
+
+                // C. Insert detail baru
+                DetailPengajuanSurat::create([
+                    'pengajuan_id' => $pengajuan->id_pengajuan_surat,
+                    'persyaratan_id' => $syarat->id,
+                    'value' => $value
+                ]);
+
+                if (!is_null($value)) {
+                    $dataForm[$normKey] = $value;
+                }
+            }
+
+            // D. Update data_form di tabel pengajuan_surat
+            $pengajuan->update([
+                'data_form' => $dataForm
+            ]);
+
+            DB::commit();
+
+            // E. Kirim notifikasi ke admin
+            $jenisSuratNama = \App\Models\JenisSurat::find($pengajuan->id_jenis_surat)?->nama_surat ?? 'Surat';
+            \App\Models\User::where('role', 'admin')->each(function ($admin) use ($pengajuan, $jenisSuratNama, $user) {
+                \App\Models\Notifikasi::create([
+                    'user_id' => $admin->id,
+                    'judul'   => 'Pengajuan Surat Diperbarui ✏️',
+                    'pesan'   => "{$user->name} memperbarui pengajuan {$jenisSuratNama}. Silakan tinjau kembali.",
+                    'is_read' => false,
+                ]);
+            });
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Pengajuan surat berhasil diperbarui.',
+                'data'    => $pengajuan->load('detailPengajuanSurat.persyaratanSurat')
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal memperbarui pengajuan surat.',
                 'error' => $e->getMessage()
             ], 500);
         }

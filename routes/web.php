@@ -156,6 +156,7 @@ Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->gr
     Route::patch('/{id}/tolak', [RequestSuratController::class, 'tolak'])->name('tolak');
     Route::get('/{id}/download', [RequestSuratController::class, 'download'])->name('download');
     Route::get('/{id}/print', [RequestSuratController::class, 'printSurat'])->name('print');
+    Route::put('/{id}/update-data', [RequestSuratController::class, 'updateData'])->name('update-data');
 });
 Route::get('/layanan-surat/jenis-surat', JenisSuratController::class)->name('admin.jenis-surat.index');
 Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');

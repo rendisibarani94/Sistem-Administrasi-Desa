@@ -192,9 +192,9 @@
                                             }
                                         }
 
-                                        $namaPemohon = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? 'N A';
-                                        $nikPemohon  = $pemohon?->nik ?? $userPemohon?->nik ?? $df['nik'] ?? '';
-                                        $alamatFallback = $pemohon?->alamat ?? $df['alamat'] ?? '-';
+                                        $namaPemohon = $df['nama'] ?? $df['nama_lengkap'] ?? $pemohon?->nama_lengkap ?? $userPemohon?->name ?? 'N A';
+                                        $nikPemohon  = $df['nik'] ?? $df['nik_pemohon'] ?? $pemohon?->nik ?? $userPemohon?->nik ?? '';
+                                        $alamatFallback = $df['alamat'] ?? $df['alamat_lengkap'] ?? $pemohon?->alamat ?? '-';
                                         $nameParts   = explode(' ', $namaPemohon);
                                         $initials    = strtoupper(substr($nameParts[0] ?? 'N', 0, 1)) . strtoupper(substr($nameParts[1] ?? 'A', 0, 1));
                                     @endphp
@@ -330,6 +330,14 @@
 
     </div>
 
+    @php
+        $romanMonthMap = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
+        $currentRomanMonth = $romanMonthMap[date('n')] ?? 'VI';
+        $currentYear = date('Y');
+    @endphp
     {{-- Modal Setujui --}}
     <div id="setujuiModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
@@ -345,17 +353,28 @@
                 </div>
 
                 <div>
-                    <label for="nomor_surat" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
                         Nomor Surat <span class="text-red-500">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="nomor_surat" 
-                        name="nomor_surat" 
-                        placeholder="Contoh: 213/23/421" 
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 text-gray-700" 
-                        required
-                    >
+                    <div class="flex items-center gap-2">
+                        <input 
+                            type="text" 
+                            id="nomor_surat_1" 
+                            placeholder="...." 
+                            class="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 text-gray-700 text-center" 
+                            required
+                        >
+                        <span class="text-gray-500 font-bold">/</span>
+                        <input 
+                            type="text" 
+                            id="nomor_surat_2" 
+                            placeholder="...." 
+                            class="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-1 focus:ring-green-500 text-gray-700 text-center" 
+                            required
+                        >
+                        <span class="text-gray-600 font-medium text-sm">/HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}</span>
+                    </div>
+                    <input type="hidden" id="nomor_surat" name="nomor_surat">
                 </div>
 
                 <div class="flex gap-3 justify-end mt-6">
@@ -431,11 +450,13 @@
             const setujuiTemplate = "{{ route('admin.layanan-surat.request.setujui', ['__ID__']) }}";
             form.action = setujuiTemplate.replace('__ID__', encodeURIComponent(id));
             document.getElementById('pemohon_setuju').value = pemohon;
+            document.getElementById('nomor_surat_1').value = '';
+            document.getElementById('nomor_surat_2').value = '';
             document.getElementById('nomor_surat').value = '';
             document.getElementById('setujuiSubmitBtn').disabled = false;
             document.getElementById('setujuiSubmitBtn').textContent = 'Setujui & Hasilkan Surat';
             document.getElementById('setujuiModal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
+            setTimeout(() => document.getElementById('nomor_surat_1').focus(), 150);
         }
 
         function closeSetujuiModal() {
@@ -470,6 +491,11 @@
 
         // Loading states
         document.getElementById('setujuiForm').addEventListener('submit', function() {
+            const part1 = document.getElementById('nomor_surat_1').value.trim();
+            const part2 = document.getElementById('nomor_surat_2').value.trim();
+            const suffix = "/HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}";
+            document.getElementById('nomor_surat').value = part1 + '/' + part2 + suffix;
+
             const btn = document.getElementById('setujuiSubmitBtn');
             btn.disabled = true;
             btn.textContent = '⏳ Memproses...';

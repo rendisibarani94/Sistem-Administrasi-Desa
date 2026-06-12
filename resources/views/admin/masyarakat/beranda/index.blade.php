@@ -179,7 +179,7 @@
             const hiddenInput = document.querySelector('#deskripsi-singkat-desa-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('deskripsi_singkat_desa', content);
+                @this.set('deskripsi_singkat_desa', content, false);
             }
         });
 
@@ -188,7 +188,7 @@
             const hiddenInput = document.querySelector('#deskripsi-singkat-organisasi-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('deskripsi_singkat_organisasi', content);
+                @this.set('deskripsi_singkat_organisasi', content, false);
             }
         });
 

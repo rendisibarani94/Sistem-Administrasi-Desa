@@ -342,8 +342,17 @@ class SuratController extends Controller
         $pengajuanSurat = $surat;
         $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
 
-        // Jika ada file PDF upload manual (bukan HTML), langsung serve file tersebut
+        // Cek apakah PDF diupload secara manual (menggunakan nama acak hash dari store())
+        $isManualUpload = false;
         if ($surat->file_pdf && !str_ends_with($surat->file_pdf, '.html')) {
+            $filename = basename($surat->file_pdf);
+            if (strlen($filename) >= 30 && !str_contains($filename, '_')) {
+                $isManualUpload = true;
+            }
+        }
+
+        // Jika ada file PDF upload manual, langsung serve file tersebut
+        if ($isManualUpload) {
             $filePath = storage_path('app/' . $surat->file_pdf);
             if (file_exists($filePath)) {
                 $nomorSurat = $surat->nomor_surat ?? $surat->id_pengajuan_surat;

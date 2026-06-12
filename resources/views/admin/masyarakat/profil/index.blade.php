@@ -141,7 +141,7 @@
             const hiddenInput = document.querySelector('#profil-desa-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('profil_desa', content);
+                @this.set('profil_desa', content, false);
             }
         });
 
@@ -177,7 +177,7 @@
             const hiddenInput = document.querySelector('#visi-desa-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('visi_desa', content);
+                @this.set('visi_desa', content, false);
             }
         });
 
@@ -213,7 +213,7 @@
             const hiddenInput = document.querySelector('#misi-desa-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('misi_desa', content);
+                @this.set('misi_desa', content, false);
             }
         });
 
@@ -249,7 +249,7 @@
             const hiddenInput = document.querySelector('#sejarah-desa-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('sejarah_desa', content);
+                @this.set('sejarah_desa', content, false);
             }
         });
 

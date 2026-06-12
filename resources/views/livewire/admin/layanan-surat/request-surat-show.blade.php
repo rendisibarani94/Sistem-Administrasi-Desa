@@ -76,18 +76,20 @@
                 }
             }
 
-            // Fallback: get applicant name/NIK from data_form if relations are null
-            $namaFallback = $pemohon?->nama_lengkap 
-                ?? $userPemohon?->name
-                ?? $dataForm['nama'] 
+            // Fallback: get applicant name/NIK from data_form (prioritizing user edits) or database relations
+            $namaFallback = $dataForm['nama'] 
                 ?? $dataForm['nama_lengkap'] 
+                ?? $pemohon?->nama_lengkap 
+                ?? $userPemohon?->name
                 ?? '-';
-            $nikFallback  = $pemohon?->nik 
+            $nikFallback  = $dataForm['nik'] 
+                ?? $dataForm['nik_pemohon']
+                ?? $pemohon?->nik 
                 ?? $userPemohon?->nik
-                ?? $dataForm['nik'] 
                 ?? '-';
-            $alamatFallback = $pemohon?->alamat 
-                ?? $dataForm['alamat'] 
+            $alamatFallback = $dataForm['alamat'] 
+                ?? $dataForm['alamat_lengkap'] 
+                ?? $pemohon?->alamat 
                 ?? '-';
         @endphp
             {{-- Info Pemohon --}}
@@ -154,85 +156,132 @@
                     $renderedKeys = [];
                 @endphp
                 <div class="pb-6 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-600 mb-4">Data Pengajuan</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{-- Data Form Web --}}
-                        @foreach ($dataForm as $key => $value)
-                            @php
-                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
-                                $renderedKeys[$normalized] = true;
-                                $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
-                                
-                                $label = ucfirst(str_replace('_', ' ', $key));
-                                if (strtolower($label) === 'nik') {
-                                    $label = 'NIK';
-                                }
-                            @endphp
-                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $label }}</p>
-                                @if($isFile && $value)
-                                    <div class="space-y-2">
-                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
-                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
-                                            <img src="{{ asset('storage/' . $value) }}"
-                                                alt="{{ ucfirst(str_replace('_', ' ', $key)) }}"
-                                                class="w-full h-36 object-cover"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
-                                        </a>
-                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
-                                    </div>
-                                @else
-                                    <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
-                                @endif
-                            </div>
-                        @endforeach
-
-                        {{-- Data EAV Mobile --}}
-                        @foreach ($pengajuanSurat->detailPengajuanSurat as $detail)
-                            @php
-                                $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
-                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
-                                if (isset($renderedKeys[$normalized])) {
-                                    continue;
-                                }
-                                $renderedKeys[$normalized] = true;
-
-                                $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
-                                $val       = $detail->value;
-                                $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
-
-                                $labelField = $namaField;
-                                if (strtolower($labelField) === 'nik') {
-                                    $labelField = 'NIK';
-                                }
-                            @endphp
-                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $labelField }}</p>
-                                @if ($isFile && $val)
-                                    <div class="space-y-2">
-                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
-                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
-                                            <img src="{{ asset('storage/' . $val) }}"
-                                                alt="{{ $namaField }}"
-                                                class="w-full h-36 object-cover"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
-                                        </a>
-                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
-                                    </div>
-                                @elseif ($val)
-                                    <p class="text-sm font-medium text-gray-800">{{ $val }}</p>
-                                @else
-                                    <p class="text-sm text-gray-400 italic">— Tidak diisi —</p>
-                                @endif
-                            </div>
-                        @endforeach
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-sm font-semibold text-gray-600">Data Pengajuan (Dapat Diedit Oleh Admin)</h3>
                     </div>
+                    <form action="{{ route('admin.layanan-surat.request.update-data', $pengajuanSurat->id_pengajuan_surat) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {{-- Data Form Web --}}
+                            @foreach ($dataForm as $key => $value)
+                                @php
+                                    $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
+                                    $renderedKeys[$normalized] = true;
+                                    $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
+                                    
+                                    $label = ucfirst(str_replace('_', ' ', $key));
+                                    if (strtolower($label) === 'nik') {
+                                        $label = 'NIK';
+                                    }
+                                @endphp
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                    <label class="block text-xs text-gray-500 font-medium mb-2" for="df_{{ $key }}">{{ $label }}</label>
+                                    @if($isFile && $value)
+                                        <div class="space-y-2">
+                                            <a href="{{ asset('storage/' . $value) }}" target="_blank"
+                                                class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
+                                                <img src="{{ asset('storage/' . $value) }}"
+                                                    alt="{{ ucfirst(str_replace('_', ' ', $key)) }}"
+                                                    class="w-full h-36 object-cover"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
+                                            </a>
+                                            <a href="{{ asset('storage/' . $value) }}" target="_blank"
+                                                class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
+                                            <input type="hidden" name="data_form[{{ $key }}]" value="{{ $value }}">
+                                        </div>
+                                    @else
+                                        <input type="text" id="df_{{ $key }}" name="data_form[{{ $key }}]" value="{{ $value }}" 
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky-500 focus:ring-1 focus:ring-sky-100 text-gray-700 text-sm font-medium">
+                                    @endif
+                                </div>
+                            @endforeach
+
+                            {{-- Data EAV Mobile --}}
+                            @foreach ($pengajuanSurat->detailPengajuanSurat as $detail)
+                                @php
+                                    $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
+                                    $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
+                                    if (isset($renderedKeys[$normalized])) {
+                                        continue;
+                                    }
+                                    $renderedKeys[$normalized] = true;
+
+                                    $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
+                                    $val       = $detail->value;
+                                    $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
+
+                                    $labelField = $namaField;
+                                    if (strtolower($labelField) === 'nik') {
+                                        $labelField = 'NIK';
+                                    }
+                                @endphp
+                                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                    <label class="block text-xs text-gray-500 font-medium mb-2" for="eav_{{ $detail->persyaratan_id }}">{{ $labelField }}</label>
+                                    @if ($isFile && $val)
+                                        <div class="space-y-2">
+                                            <a href="{{ asset('storage/' . $val) }}" target="_blank"
+                                                class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
+                                                <img src="{{ asset('storage/' . $val) }}"
+                                                    alt="{{ $namaField }}"
+                                                    class="w-full h-36 object-cover"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
+                                            </a>
+                                            <a href="{{ asset('storage/' . $val) }}" target="_blank"
+                                                class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
+                                            <input type="hidden" name="eav[{{ $detail->persyaratan_id }}]" value="{{ $val }}">
+                                        </div>
+                                    @else
+                                        <input type="text" id="eav_{{ $detail->persyaratan_id }}" name="eav[{{ $detail->persyaratan_id }}]" value="{{ $val }}" 
+                                            class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky-500 focus:ring-1 focus:ring-sky-100 text-gray-700 text-sm font-medium">
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                        <div class="mt-4 flex justify-end">
+                            <button type="submit" class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-semibold text-white transition-colors shadow-sm">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.75V16.5L12 14.25L7.5 16.5V3.75m9 0H18A2.25 2.25 0 0 1 20.25 6v12A2.25 2.25 0 0 1 18 20.25H6A2.25 2.25 0 0 1 3.75 18V6A2.25 2.25 0 0 1 6 3.75h1.5m9 0h-9" />
+                                </svg>
+                                Simpan Perubahan Data
+                            </button>
+                        </div>
+                    </form>
                 </div>
             @endif
+
+            {{-- Pratinjau Surat / Preview Dokumen --}}
+            <div class="pb-6 border-b border-gray-100">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-sm font-semibold text-gray-600">Pratinjau Surat (Preview Dokumen)</h3>
+                    <span class="text-xs text-gray-400">Pastikan seluruh data di atas sudah benar sebelum disetujui</span>
+                </div>
+                <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                    <div class="mb-3 flex items-center justify-between bg-white px-4 py-2.5 rounded-lg border border-gray-150">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span class="text-xs font-semibold text-gray-600">Live HTML Preview (Layout Surat Resmi)</span>
+                        </div>
+                        <a href="{{ route('admin.layanan-surat.request.print', $pengajuanSurat->id_pengajuan_surat) }}" 
+                           target="_blank" 
+                           class="inline-flex items-center gap-1.5 text-xs text-sky-600 hover:text-sky-700 hover:underline font-semibold">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" />
+                            </svg>
+                            Buka di Tab Baru
+                        </a>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                        <iframe src="{{ route('admin.layanan-surat.request.print', $pengajuanSurat->id_pengajuan_surat) }}" 
+                                class="w-full border-none" 
+                                style="height: 600px; min-height: 500px;"
+                                id="previewIframe">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
 
             {{-- Informasi Respons --}}
             <div class="pb-6 border-b border-gray-100">
@@ -342,6 +391,14 @@
         </div>
     </div>
 
+    @php
+        $romanMonthMap = [
+            1 => 'I', 2 => 'II', 3 => 'III', 4 => 'IV', 5 => 'V', 6 => 'VI',
+            7 => 'VII', 8 => 'VIII', 9 => 'IX', 10 => 'X', 11 => 'XI', 12 => 'XII'
+        ];
+        $currentRomanMonth = $romanMonthMap[date('n')] ?? 'VI';
+        $currentYear = date('Y');
+    @endphp
     {{-- Modal Setujui --}}
     <div id="setujuiModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
         <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
@@ -364,17 +421,31 @@
                 </div>
 
                 <div>
-                    <label for="nomor_surat" class="block text-xs font-semibold text-gray-500 uppercase mb-1">
+                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         Nomor Surat <span class="text-red-500">*</span>
                     </label>
-                    <input 
-                        type="text" 
-                        id="nomor_surat" 
-                        name="nomor_surat" 
-                        placeholder="Contoh: 140/025/SKD/V/2026" 
-                        class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 text-gray-700 text-sm" 
-                        required
-                    >
+                    <div class="flex items-center gap-2">
+                        <input 
+                            type="text" 
+                            id="nomor_surat_1" 
+                            placeholder="...." 
+                            class="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 text-gray-700 text-sm text-center" 
+                            required
+                        >
+                        <span class="text-gray-500 font-bold">/</span>
+                        <input 
+                            type="text" 
+                            id="nomor_surat_2" 
+                            placeholder="...." 
+                            class="w-20 px-2 py-2 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-100 text-gray-700 text-sm text-center" 
+                            required
+                        >
+                        <span class="text-gray-600 font-medium text-xs">/HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}</span>
+                    </div>
+                    <div class="mt-2.5 p-2.5 bg-gray-50 border border-gray-150 rounded-lg text-xs text-gray-600 font-medium">
+                        Pratinjau Nomor: <span id="nomor_surat_preview" class="font-bold text-sky-700">... / ... /HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}</span>
+                    </div>
+                    <input type="hidden" id="nomor_surat" name="nomor_surat">
                 </div>
 
                 <div class="flex gap-3 justify-end pt-2">
@@ -451,16 +522,36 @@
 
             // Reset field satu per satu — JANGAN gunakan form.reset() (akan menghapus CSRF token)
             document.getElementById('pemohon_setuju').value = pemohon;
+            document.getElementById('nomor_surat_1').value = '';
+            document.getElementById('nomor_surat_2').value = '';
             document.getElementById('nomor_surat').value = '';
+            document.getElementById('nomor_surat_preview').textContent = '... / ... /HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}';
 
             document.getElementById('setujuiSubmitBtn').disabled = false;
             document.getElementById('setujuiSubmitBtn').textContent = 'Setujui & Hasilkan Surat';
             document.getElementById('setujuiModal').classList.remove('hidden');
-            setTimeout(() => document.getElementById('nomor_surat').focus(), 150);
+            setTimeout(() => document.getElementById('nomor_surat_1').focus(), 150);
         }
 
         function closeSetujuiModal() {
             document.getElementById('setujuiModal').classList.add('hidden');
+        }
+
+        // Update nomor surat preview secara real-time
+        const ns1 = document.getElementById('nomor_surat_1');
+        const ns2 = document.getElementById('nomor_surat_2');
+        const nsPreview = document.getElementById('nomor_surat_preview');
+        const suffix = "/HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}";
+
+        function updateNomorPreview() {
+            const p1 = ns1.value.trim() || '...';
+            const p2 = ns2.value.trim() || '...';
+            nsPreview.textContent = p1 + '/' + p2 + suffix;
+        }
+
+        if (ns1 && ns2 && nsPreview) {
+            ns1.addEventListener('input', updateNomorPreview);
+            ns2.addEventListener('input', updateNomorPreview);
         }
 
 
@@ -483,6 +574,11 @@
 
         // Loading state saat submit
         document.getElementById('setujuiForm').addEventListener('submit', function() {
+            const part1 = document.getElementById('nomor_surat_1').value.trim();
+            const part2 = document.getElementById('nomor_surat_2').value.trim();
+            const suffix = "/HM/2008/{{ $currentRomanMonth }}/{{ $currentYear }}";
+            document.getElementById('nomor_surat').value = part1 + '/' + part2 + suffix;
+
             const btn = document.getElementById('setujuiSubmitBtn');
             btn.disabled = true;
             btn.textContent = '⏳ Memproses...';

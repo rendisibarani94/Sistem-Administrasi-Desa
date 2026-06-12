@@ -264,12 +264,50 @@ class RequestSuratController extends Controller
     }
 
     /**
+     * Memperbarui data form pengajuan (Admin) sebelum / sesudah disetujui
+     */
+    public function updateData(Request $request, $id)
+    {
+        $this->authorizeAdmin();
+
+        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+
+        // Update data EAV Mobile
+        if ($request->has('eav')) {
+            foreach ($request->input('eav') as $persyaratanId => $value) {
+                \App\Models\DetailPengajuanSurat::where('pengajuan_id', $id)
+                    ->where('persyaratan_id', $persyaratanId)
+                    ->update(['value' => $value]);
+            }
+        }
+
+        // Update data form Web JSON
+        if ($request->has('data_form')) {
+            $pengajuanSurat->update([
+                'data_form' => $request->input('data_form')
+            ]);
+        }
+
+        // Hapus PDF lama agar regenerasi memuat data yang baru diedit
+        if ($pengajuanSurat->file_pdf) {
+            $filePath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            if (file_exists($filePath) && !str_ends_with($pengajuanSurat->file_pdf, '.html')) {
+                @unlink($filePath);
+            }
+        }
+
+        return redirect()
+            ->back()
+            ->with('success', 'Data pengajuan surat berhasil diperbarui.');
+    }
+
+    /**
      * Download surat PDF (jika sudah disetujui)
      */
     public function download($id)
     {
         $user = Auth::user();
-        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+        $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh', 'detailPengajuanSurat.persyaratanSurat'])->findOrFail($id);
 
         if ($user->role !== 'admin' && $pengajuanSurat->id_penduduk !== $user->id_penduduk) {
             abort(403, 'Unauthorized action.');
@@ -279,44 +317,43 @@ class RequestSuratController extends Controller
             return redirect()->back()->with('error', 'Hanya surat yang sudah disetujui dapat diunduh.');
         }
 
-        if (!$pengajuanSurat->file_pdf) {
-            return redirect()->back()->with('error', 'File PDF tidak tersedia.');
+        // Cek apakah PDF diupload secara manual (menggunakan nama acak hash dari store())
+        $isManualUpload = false;
+        if ($pengajuanSurat->file_pdf && !str_ends_with($pengajuanSurat->file_pdf, '.html')) {
+            $filename = basename($pengajuanSurat->file_pdf);
+            if (strlen($filename) >= 30 && !str_contains($filename, '_')) {
+                $isManualUpload = true;
+            }
         }
 
-        $filePath = storage_path('app/' . $pengajuanSurat->file_pdf);
-
-        // Jika filenya adalah HTML (data lama), konversi on-the-fly ke PDF
-        if (str_ends_with($pengajuanSurat->file_pdf, '.html')) {
-            // Generate PDF on-the-fly
-            $isPdf = true;
-            
-            try {
-                $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
-                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
-            } catch (\Throwable $e) {
-                if (file_exists($filePath)) {
-                    $html = file_get_contents($filePath);
-                } else {
-                    return redirect()->back()->with('error', 'File tidak ditemukan di server.');
-                }
+        if ($isManualUpload) {
+            $filePath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            if (!file_exists($filePath)) {
+                return redirect()->back()->with('error', 'File tidak ditemukan di server.');
             }
+            return response()->download($filePath);
+        }
+
+        // Generate PDF on-the-fly dari Blade template yang SAMA
+        try {
+            $isPdf = true;
+            $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+            $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
 
             $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
             $pdf->setPaper('a4', 'portrait');
 
-            $downloadName = basename($pengajuanSurat->file_pdf, '.html') . '.pdf';
+            $nomorSurat = $pengajuanSurat->nomor_surat ?? $pengajuanSurat->id_pengajuan_surat;
+            $downloadName = date('Ymd') . '_' . str_replace('/', '-', $nomorSurat) . '.pdf';
+
             return response()->streamDownload(function () use ($pdf) {
                 echo $pdf->output();
             }, $downloadName, [
                 'Content-Type' => 'application/pdf',
             ]);
+        } catch (\Throwable $e) {
+            return redirect()->back()->with('error', 'Gagal generate PDF: ' . $e->getMessage());
         }
-
-        if (!file_exists($filePath)) {
-            return redirect()->back()->with('error', 'File tidak ditemukan di server.');
-        }
-
-        return response()->download($filePath);
     }
 
     /**

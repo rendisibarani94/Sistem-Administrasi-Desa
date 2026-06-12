@@ -25,6 +25,26 @@ Route::middleware('cors')->group(function () {
     Route::get('/berita', [InformationApiController::class, 'getBerita']);
     Route::get('/pengumuman', [InformationApiController::class, 'getPengumuman']);
 
+    // Settings Publik (Info Desa)
+    Route::get('/settings', function () {
+        $settings = \DB::table('settings')->pluck('value', 'key')->toArray();
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'nama_desa' => $settings['nama_desa'] ?? 'Hutabulu Mejan',
+                'alamat_desa' => $settings['alamat_desa'] ?? 'Desa Hutabulu Mejan',
+                'nomor_hp' => $settings['nomor_hp'] ?? '+62 812 3456 7890',
+                'email' => $settings['email'] ?? 'desa@hutabulumejan.go.id',
+                'jam_kerja' => $settings['jam_kerja'] ?? 'Senin – Jumat, 08.00 – 16.00',
+                'kabupaten' => $settings['kabupaten'] ?? 'KABUPATEN TOBA',
+                'kecamatan' => $settings['kecamatan'] ?? 'KECAMATAN BALIGE',
+            ]
+        ]);
+    });
+
+    // Verifikasi Surat Publik via QR Code
+    Route::get('/surat/verify/{id}', [InformationApiController::class, 'verifySuratPublic']);
+
     // View surat via browser (token dikirim sebagai query param ?token=xxx)
     // Diakses oleh mobile via browser untuk cetak surat resmi
     Route::get('/surat/{id}/view', function ($id) {
@@ -70,6 +90,8 @@ Route::middleware(['auth:sanctum', 'cors'])->group(function () {
 
     // PENDUDUK
     Route::get('/penduduk', [PendudukApiController::class, 'index']);
+    Route::get('/penduduk/family', [PendudukApiController::class, 'getFamilyMembers']);
+    Route::get('/penduduk/nik/{nik}', [PendudukApiController::class, 'getByNik']);
     Route::get('/penduduk/{id}', [PendudukApiController::class, 'show']);
 
     // PENGADUAN — masyarakat kirim & lihat miliknya sendiri
@@ -83,6 +105,7 @@ Route::middleware(['auth:sanctum', 'cors'])->group(function () {
     Route::get('/dynamic/jenis-surat', [PengajuanSuratController::class, 'getJenisSurat']);
     Route::get('/dynamic/persyaratan/{jenis_surat_id}', [PengajuanSuratController::class, 'getPersyaratan']);
     Route::post('/dynamic/pengajuan', [PengajuanSuratController::class, 'storePengajuan']);
+    Route::post('/dynamic/pengajuan/{id}', [PengajuanSuratController::class, 'updatePengajuan']);
 });
 
 

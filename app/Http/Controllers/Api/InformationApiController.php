@@ -221,4 +221,53 @@ class InformationApiController extends Controller
             return response()->json(['status' => 'success', 'data' => [], 'total' => 0]);
         }
     }
+
+    /**
+     * Verifikasi surat publik secara instan via QR Code scan
+     * GET /api/surat/verify/{id}
+     */
+    public function verifySuratPublic($id)
+    {
+        $pengajuanSurat = \App\Models\PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
+            ->find($id);
+
+        if (!$pengajuanSurat || $pengajuanSurat->status !== 'selesai') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Surat tidak ditemukan atau belum mendapat persetujuan resmi.'
+            ], 404);
+        }
+
+        // Lookup Pemohon
+        $pemohon = $pengajuanSurat->penduduk;
+        if (!$pemohon) {
+            $userPemohon = \App\Models\User::where('id_penduduk', $pengajuanSurat->id_penduduk)
+                ->orWhere('id', $pengajuanSurat->id_penduduk)
+                ->first();
+            if ($userPemohon) {
+                $pemohon = $userPemohon->penduduk;
+            }
+        }
+
+        $df = $pengajuanSurat->data_form;
+        if (is_string($df)) { $df = json_decode($df, true) ?? []; }
+        if (!is_array($df)) { $df = []; }
+
+        $nama = $df['nama'] ?? $df['nama_lengkap'] ?? $pemohon?->nama_lengkap ?? '-';
+        $nik = $df['nik'] ?? $pemohon?->nik ?? '-';
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Surat Terverifikasi Asli & Sah',
+            'data' => [
+                'id' => $pengajuanSurat->id_pengajuan_surat,
+                'jenis_surat' => $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan',
+                'nomor_surat' => $pengajuanSurat->nomor_surat,
+                'nama_pemohon' => $nama,
+                'nik_pemohon' => $nik,
+                'tanggal_disetujui' => $pengajuanSurat->tanggal_selesai ? $pengajuanSurat->tanggal_selesai->format('Y-m-d H:i:s') : null,
+                'penandatangan' => $pengajuanSurat->diprosesOleh?->nama ?? (\App\Models\KepalaDesa::where('is_active', true)->first()?->nama ?? 'Kepala Desa'),
+            ]
+        ]);
+    }
 }

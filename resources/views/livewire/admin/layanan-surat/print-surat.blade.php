@@ -354,13 +354,13 @@
         $kk = $pemohon->kartuKeluarga;
     }
 
-    // ===== Helper: ambil nilai dari data_form, fallback ke penduduk =====
-    $nama       = $pemohon?->nama_lengkap ?? $userPemohon?->name ?? $df['nama'] ?? $df['nama_lengkap'] ?? '-';
-    $nik        = $pemohon?->nik           ?? $userPemohon?->nik ?? $df['nik']  ?? '-';
+    // ===== Helper: ambil nilai dari data_form (hasil edit), fallback ke profil penduduk =====
+    $nama       = $df['nama'] ?? $df['nama_lengkap'] ?? $df['nama_pemohon'] ?? $df['nama_lengkap_pemohon'] ?? $pemohon?->nama_lengkap ?? $userPemohon?->name ?? '-';
+    $nik        = $df['nik'] ?? $df['nik_pemohon'] ?? $pemohon?->nik ?? $userPemohon?->nik ?? '-';
     // Ambil No KK dari relasi Kartu Keluarga (bukan kolom penduduk)
-    $noKk       = $kk?->nomor_kartu_keluarga ?? $df['no_kk'] ?? $df['nomor_kk'] ?? '-';
-    $jk         = $pemohon?->jenis_kelamin ?? $df['jk'] ?? $df['jenis_kelamin'] ?? '-';
-    $pekerjaan  = $pemohon?->pekerjaan ?? $df['pekerjaan'] ?? '-';
+    $noKk       = $df['no_kk'] ?? $df['nomor_kk'] ?? $kk?->nomor_kartu_keluarga ?? '-';
+    $jk         = $df['jk'] ?? $df['jenis_kelamin'] ?? $pemohon?->jenis_kelamin ?? '-';
+    $pekerjaan  = $df['pekerjaan'] ?? $pemohon?->pekerjaan ?? '-';
 
     // Cari alamat spesifik yang diinput oleh warga di form pengajuan (EAV atau data_form)
     $inputtedAlamat = null;
@@ -373,7 +373,7 @@
             }
         }
     }
-    $alamat     = $inputtedAlamat ?? $df['alamat'] ?? $df['alamat_lengkap'] ?? $pemohon?->alamat ?? '-';
+    $alamat     = $inputtedAlamat ?? $df['alamat'] ?? $df['alamat_lengkap'] ?? $df['alamat_pemohon'] ?? $pemohon?->alamat ?? '-';
     $keperluan  = $df['keperluan'] ?? '-';
     $penghasilan= $df['penghasilan'] ?? '-';
     $namaAnak   = $df['nama_anak'] ?? '-';
@@ -381,18 +381,37 @@
     $namaUsaha  = $df['nama_usaha'] ?? $df['jenis_usaha'] ?? '-';
 
     // ===== Data Kependudukan Krusial dari profil Penduduk & KK =====
-    $tempatLahir      = $pemohon?->tempat_lahir ?? $df['tempat_lahir'] ?? '-';
-    $tanggalLahirRaw  = $pemohon?->tanggal_lahir ?? null;
-    $namaAyah         = $pemohon?->nama_ayah ?? $df['nama_ayah'] ?? '-';
-    $namaIbu          = $pemohon?->nama_ibu ?? $df['nama_ibu'] ?? '-';
-    $agama            = $pemohon?->agama ?? $df['agama'] ?? '-';
-    $statusPerkawinan = $pemohon?->status_perkawinan ?? $df['status_perkawinan'] ?? '-';
-    $pendidikan       = $pemohon?->pendidikan_terakhir ?? $df['pendidikan'] ?? $df['pendidikan_terakhir'] ?? '-';
-    $kewarganegaraan  = $pemohon?->kewarganegaraan ?? $df['kewarganegaraan'] ?? 'WNI';
-    $golDarah         = $pemohon?->golongan_darah ?? $df['golongan_darah'] ?? '-';
-    $suku             = $pemohon?->suku ?? $df['suku'] ?? '-';
-    $rtKk             = $kk?->rt ?? $df['rt'] ?? '-';
-    $rwKk             = $kk?->rw ?? $df['rw'] ?? '-';
+    $tempatLahir      = $df['tempat_lahir'] ?? $df['tempat'] ?? null;
+    $tanggalLahirRaw  = $df['tanggal_lahir'] ?? $df['tgl_lahir'] ?? null;
+
+    // Coba cari dari field gabungan jika belum terisi
+    if (!$tempatLahir || !$tanggalLahirRaw) {
+        $combinedTtl = $df['tempat,_tanggal_lahir'] ?? $df['tempat_tanggal_lahir'] ?? $df['ttl'] ?? null;
+        if ($combinedTtl) {
+            $parts = explode(',', $combinedTtl);
+            if (count($parts) >= 2) {
+                if (!$tempatLahir) $tempatLahir = trim($parts[0]);
+                if (!$tanggalLahirRaw) $tanggalLahirRaw = trim($parts[1]);
+            } else {
+                if (!$tempatLahir) $tempatLahir = trim($combinedTtl);
+            }
+        }
+    }
+
+    // Fallback ke profil penduduk
+    if (!$tempatLahir) $tempatLahir = $pemohon?->tempat_lahir ?? '-';
+    if (!$tanggalLahirRaw) $tanggalLahirRaw = $pemohon?->tanggal_lahir ?? null;
+
+    $namaAyah         = $df['nama_ayah'] ?? $pemohon?->nama_ayah ?? '-';
+    $namaIbu          = $df['nama_ibu'] ?? $df['ibu'] ?? $pemohon?->nama_ibu ?? '-';
+    $agama            = $df['agama'] ?? $pemohon?->agama ?? '-';
+    $statusPerkawinan = $df['status_perkawinan'] ?? $pemohon?->status_perkawinan ?? '-';
+    $pendidikan       = $df['pendidikan'] ?? $df['pendidikan_terakhir'] ?? $pemohon?->pendidikan_terakhir ?? '-';
+    $kewarganegaraan  = $df['kewarganegaraan'] ?? $pemohon?->kewarganegaraan ?? 'WNI';
+    $golDarah         = $df['golongan_darah'] ?? $df['gol_darah'] ?? $pemohon?->golongan_darah ?? '-';
+    $suku             = $df['suku'] ?? $pemohon?->suku ?? '-';
+    $rtKk             = $df['rt'] ?? $kk?->rt ?? '-';
+    $rwKk             = $df['rw'] ?? $kk?->rw ?? '-';
 
     // ===== Helper: Format Tempat/Tanggal Lahir =====
     $bulanId = [
@@ -430,10 +449,10 @@
         $logoUrl = null;
     }
 
-    // Info kop surat (bisa disesuaikan)
-    $kabupaten   = 'KABUPATEN TOBA';
-    $kecamatan   = 'KECAMATAN BALIGE';
-    $alamatDesa  = 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.desahutabulumejan.id';
+    // Info kop surat (dinamik dengan fallback)
+    $kabupaten   = $settingsArr['kabupaten'] ?? 'KABUPATEN TOBA';
+    $kecamatan   = $settingsArr['kecamatan'] ?? 'KECAMATAN BALIGE';
+    $alamatDesa  = $settingsArr['alamat_desa'] ?? 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.desahutabulumejan.id';
     $websiteDesa = '';
 
     // ===== Tanggal Cetak =====
@@ -806,8 +825,10 @@
     {{-- ===== TANDA TANGAN ===== --}}
     <table style="width: 100%; border-collapse: collapse; margin-top: 16px; border: none;">
         <tr style="border: none;">
-            <td style="width: 60%; border: none;"></td>
-            <td style="width: 40%; border: none; padding: 0; vertical-align: top;">
+            <td style="width: 55%; border: none; vertical-align: bottom; padding-bottom: 10px;">
+                <!-- QR Code dinonaktifkan atas permintaan desa -->
+            </td>
+            <td style="width: 45%; border: none; padding: 0; vertical-align: top;">
                 <div class="ttd-box" style="text-align: left; min-width: 220px; float: right;">
                     <div class="ttd-info" style="text-align: left; margin-bottom: 8px;">
                         <p style="line-height: 1.6; font-size: 12pt;">Dikeluarkan di : Desa {{ $namaDesa }}</p>

@@ -225,7 +225,7 @@
             const hiddenInput = document.querySelector('#visi-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('visi', content);
+                @this.set('visi', content, false);
             }
         });
 
@@ -261,7 +261,7 @@
             const hiddenInput = document.querySelector('#misi-input');
             if (hiddenInput) {
                 hiddenInput.value = content;
-                @this.set('misi', content);
+                @this.set('misi', content, false);
             }
         });
 
