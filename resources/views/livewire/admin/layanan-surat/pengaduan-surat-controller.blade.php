@@ -56,9 +56,9 @@
                 <p class="text-gray-500 font-medium">Total Pengaduan</p>
                 <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalPengaduan }}</p>
             </div>
-            <div class="rounded-lg bg-blue-50 border border-blue-200 p-4 text-sm text-blue-900 shadow-sm">
-                <p class="text-blue-700 font-medium">Terbaca</p>
-                <p class="mt-2 text-2xl font-semibold">{{ $totalTerbaca }}</p>
+            <div class="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900 shadow-sm">
+                <p class="text-amber-700 font-medium">Menunggu</p>
+                <p class="mt-2 text-2xl font-semibold">{{ $totalMenunggu }}</p>
             </div>
             <div class="rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-900 shadow-sm">
                 <p class="text-green-700 font-medium">Disetujui</p>
@@ -87,7 +87,7 @@
                 <div class="w-full sm:w-48">
                     <select name="status" id="status" onchange="this.form.submit()" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
                         <option value="">Semua Status</option>
-                        <option value="terbaca" {{ request('status') === 'terbaca' ? 'selected' : '' }}>Terbaca</option>
+                        <option value="menunggu" {{ request('status') === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                         <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Disetujui</option>
                         <option value="ditolak" {{ request('status') === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
                     </select>
@@ -143,7 +143,7 @@
                     @forelse($pengaduan as $index => $item)
                         <tr wire:click="showDetail({{ $item->id_pengaduan }})" class="hover:bg-sky-50 transition duration-200 cursor-pointer">
                             <td class="px-6 py-4 whitespace-nowrap text-center font-semibold text-gray-700">
-                                {{ $index + 1 }}
+                                {{ $pengaduan->firstItem() + $index }}
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                 <span class="inline-flex items-center rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-800 capitalize">
@@ -183,13 +183,13 @@
                             <td class="px-6 py-4 text-center whitespace-nowrap">
                                 @php
                                     $statusStyle = match($item->status) {
-                                        'baru', 'diproses' => 'bg-blue-100 text-blue-700',
+                                        'baru', 'diproses' => 'bg-amber-100 text-amber-700',
                                         'selesai' => 'bg-green-100 text-green-700',
                                         'ditolak' => 'bg-red-100 text-red-700',
                                         default => 'bg-gray-100 text-gray-700',
                                     };
                                     $statusLabel = match($item->status) {
-                                        'baru', 'diproses' => 'Terbaca',
+                                        'baru', 'diproses' => 'Menunggu',
                                         'selesai' => 'Disetujui',
                                         'ditolak' => 'Ditolak',
                                         default => ucfirst($item->status),
@@ -227,6 +227,19 @@
                 </tbody>
             </table>
         </div>
+
+        {{-- Pagination --}}
+        @if ($pengaduan->total() > 0)
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 px-6 py-4">
+                <p class="text-sm text-gray-400">
+                    Menampilkan <span class="font-medium text-gray-600">{{ $pengaduan->firstItem() }}</span>–<span class="font-medium text-gray-600">{{ $pengaduan->lastItem() }}</span>
+                    dari <span class="font-medium text-gray-600">{{ $pengaduan->total() }}</span> data
+                </p>
+                @if ($pengaduan->hasPages())
+                    {{ $pengaduan->appends(request()->query())->links() }}
+                @endif
+            </div>
+        @endif
     </div>
 
     {{-- ══════════════════════════════════════════════════════════════

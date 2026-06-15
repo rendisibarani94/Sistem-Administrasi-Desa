@@ -337,7 +337,8 @@
                                             type="button"
                                             data-id="{{ $surat->id_pengajuan_surat }}"
                                             data-pemohon="{{ $namaPemohon }}"
-                                            onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
+                                            data-fields="{{ json_encode($rowFormFields) }}"
+                                            onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'), this.getAttribute('data-fields'))"
                                             title="Tolak"
                                             class="inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors">
                                             Tolak
@@ -498,47 +499,53 @@
 
     {{-- Modal Tolak dengan Alasan --}}
     <div id="tolakModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg shadow-lg p-6 max-w-md w-full mx-4">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4">Tolak Pengajuan Surat</h3>
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full mx-4">
+            <div class="flex items-center gap-3 mb-5">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                    </svg>
+                </div>
+                <h3 class="text-lg font-bold text-gray-800">Tolak Pengajuan Surat</h3>
+            </div>
             
             <form id="tolakForm" method="POST" class="space-y-4">
                 @csrf
                 @method('PATCH')
                 
-                <div>
-                    <label for="pemohon" class="block text-sm font-medium text-gray-700 mb-1">Pemohon</label>
-                    <input type="text" id="pemohon" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg text-gray-600">
+                <!-- Data Pengajuan -->
+                <div class="bg-gray-50/70 rounded-xl border border-gray-200/50 p-4 mb-4 text-xs">
+                    <h4 class="font-bold text-gray-500 uppercase tracking-wider mb-3">DATA PENGAJUAN</h4>
+                    <div id="tolak_form_fields_container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2.5">
+                        <!-- Dynamic fields go here -->
+                    </div>
                 </div>
 
                 <div>
-                    <label for="alasan_tolak" class="block text-sm font-medium text-gray-700 mb-1">
+                    <label for="alasan_tolak" class="block text-xs font-semibold text-gray-500 uppercase mb-1">
                         Alasan Penolakan <span class="text-red-500">*</span>
                     </label>
                     <textarea 
                         id="alasan_tolak" 
                         name="alasan_tolak" 
                         rows="4"
-                        placeholder="Jelaskan alasan penolakan pengajuan surat ini..."
-                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-1 focus:ring-red-500 text-gray-700"
+                        placeholder="Jelaskan alasan penolakan dengan jelas..."
+                        class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:border-red-500 focus:ring-2 focus:ring-red-100 text-gray-700 text-sm resize-none"
                         required
                         minlength="5"
                         maxlength="500"
                     ></textarea>
-                    <p class="text-xs text-gray-500 mt-1">Minimal 5 karakter, maksimal 500 karakter</p>
+                    <p class="text-xs text-gray-400 mt-1">Min. 5 karakter</p>
                 </div>
 
-                <div class="flex gap-3 justify-end mt-6">
-                    <button 
-                        type="button"
-                        onclick="closeTolakModal()"
-                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors">
+                <div class="flex gap-3 justify-end pt-2">
+                    <button type="button" onclick="closeTolakModal()"
+                        class="px-4 py-2 border border-red-300 bg-red-50 text-red-700 rounded-lg hover:bg-red-100 transition-colors text-sm font-semibold">
                         Batal
                     </button>
-                    <button 
-                        type="submit"
-                        id="tolakSubmitBtn"
-                        class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors">
-                        Tolak
+                    <button type="submit" id="tolakSubmitBtn"
+                        class="px-5 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm font-semibold">
+                        Tolak Pengajuan
                     </button>
                 </div>
             </form>
@@ -627,12 +634,47 @@
         document.getElementById('no_surat_part').addEventListener('input', updateNomorSuratPreview);
         document.getElementById('kode_surat_part').addEventListener('input', updateNomorSuratPreview);
 
-        function openTolakModal(id, pemohon) {
+        function openTolakModal(id, pemohon, fieldsJson) {
             isTolakConfirmed = false;
             const base = "{{ url('/admin/layanan-surat/request') }}";
             document.getElementById('tolakForm').action = base + '/' + id + '/tolak';
 
-            document.getElementById('pemohon').value = pemohon;
+            const fieldsContainer = document.getElementById('tolak_form_fields_container');
+            fieldsContainer.innerHTML = '';
+            
+            let fields = {};
+            try {
+                fields = JSON.parse(fieldsJson);
+            } catch (e) {
+                console.error(e);
+            }
+
+            const keys = Object.keys(fields);
+            if (keys.length > 0) {
+                keys.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between items-center pb-2 border-b border-gray-200/60';
+                    
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'text-gray-400';
+                    labelSpan.textContent = key;
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'font-bold text-gray-800 text-right truncate pl-2 max-w-[200px]';
+                    valueSpan.textContent = fields[key];
+                    valueSpan.title = fields[key];
+                    
+                    item.appendChild(labelSpan);
+                    item.appendChild(valueSpan);
+                    fieldsContainer.appendChild(item);
+                });
+            } else {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'col-span-2 text-center text-gray-400 italic py-1';
+                emptyMsg.textContent = 'Tidak ada data pengajuan';
+                fieldsContainer.appendChild(emptyMsg);
+            }
+
             document.getElementById('alasan_tolak').value = '';
             document.getElementById('tolakSubmitBtn').disabled = false;
             document.getElementById('tolakSubmitBtn').textContent = 'Tolak Pengajuan';

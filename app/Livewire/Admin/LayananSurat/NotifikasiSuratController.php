@@ -32,11 +32,11 @@ class NotifikasiSuratController extends Component
         $newPengaduan = Pengaduan::with('user')
             ->where('status', 'baru')
             ->latest()
-            ->get();
+            ->paginate(10, ['*'], 'pengaduan_page');
 
         // Get counts
         $countNewRequests = $newRequests->count();
-        $countNewPengaduan = $newPengaduan->count();
+        $countNewPengaduan = $newPengaduan->total();
         $countNotifications = Notifikasi::where('is_read', false)
             ->when($isAdmin, fn($q) => $q->where('user_id', $user->id))
             ->count();

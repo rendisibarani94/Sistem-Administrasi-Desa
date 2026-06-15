@@ -32,7 +32,7 @@ class PengaduanSuratController extends Component
         }
 
         if (request('status')) {
-            if (request('status') === 'terbaca') {
+            if (request('status') === 'terbaca' || request('status') === 'menunggu') {
                 $query->whereIn('status', ['baru', 'diproses']);
             } else {
                 $query->where('status', request('status'));
@@ -41,16 +41,16 @@ class PengaduanSuratController extends Component
 
         // Hitung statistik untuk grid
         $totalPengaduan = Pengaduan::count();
-        $totalTerbaca = Pengaduan::whereIn('status', ['baru', 'diproses'])->count();
+        $totalMenunggu = Pengaduan::whereIn('status', ['baru', 'diproses'])->count();
         $totalDisetujui = Pengaduan::where('status', 'selesai')->count();
         $totalDitolak = Pengaduan::where('status', 'ditolak')->count();
 
-        $pengaduan = $query->get();
+        $pengaduan = $query->paginate(5);
 
         return view('livewire.admin.layanan-surat.pengaduan-surat-controller', compact(
             'pengaduan',
             'totalPengaduan',
-            'totalTerbaca',
+            'totalMenunggu',
             'totalDisetujui',
             'totalDitolak'
         ));
@@ -64,7 +64,7 @@ class PengaduanSuratController extends Component
             $this->catatanAdmin = $pengaduan->catatan_admin ?? '';
             $this->showDetailModal = true;
 
-            // Jika status masih baru/menunggu, tandai sebagai diproses (terbaca)
+            // Jika status masih baru/menunggu, tandai sebagai diproses (menunggu)
             if ($pengaduan->status === 'baru') {
                 $pengaduan->status = 'diproses';
                 $pengaduan->save();

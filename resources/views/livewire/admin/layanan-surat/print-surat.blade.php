@@ -680,7 +680,7 @@
     <table class="kop" style="width: 100%; border-collapse: collapse; margin-bottom: 4px; border: none;">
         <tr style="border: none;">
             <td style="width: 100px; vertical-align: middle; padding: 0; border: none; text-align: left;">
-                <img src="{{ $logoTobaBase64 ?? asset('images/logo_toba.png') }}" alt="Logo Kab Toba" width="90" height="110" style="width: 90px; height: 110px; display: block; border: none;">
+                <img src="{{ $logoTobaBase64 ?? (isset($isPdf) && $isPdf ? public_path('images/logo_toba.png') : asset('images/logo_toba.png')) }}" alt="Logo Kab Toba" width="90" height="110" style="width: 90px; height: 110px; display: block; border: none;">
             </td>
             <td style="text-align: center; vertical-align: middle; padding: 0 10px; border: none; line-height: 1.3;">
                 <div class="instansi-atas" style="font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH {{ $kabupaten }}</div>
@@ -879,7 +879,7 @@
                         <p style="margin-bottom: 4px; font-size: 12pt; line-height: 1.6;">{{ $jabatanTtd }},</p>
                         <div class="ttd-ruang" style="height: 70px; display: block; margin-bottom: 4px; text-align: center;">
                             @if($ttdBase64 || $fileTtdKepalaDesa)
-                                <img src="{{ $ttdBase64 ?? asset('storage/' . $fileTtdKepalaDesa) }}" alt="Tanda Tangan" style="max-height: 65px; max-width: 180px; object-fit: contain; display: inline-block;" />
+                                <img src="{{ $ttdBase64 ?? (isset($isPdf) && $isPdf ? (file_exists(storage_path('app/public/' . $fileTtdKepalaDesa)) ? storage_path('app/public/' . $fileTtdKepalaDesa) : '') : asset('storage/' . $fileTtdKepalaDesa)) }}" alt="Tanda Tangan" style="max-height: 65px; max-width: 180px; object-fit: contain; display: inline-block;" />
                             @endif
                         </div>
                         <div>

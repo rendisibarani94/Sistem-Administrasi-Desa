@@ -350,7 +350,8 @@
                     <button type="button" 
                         data-id="{{ $pengajuanSurat->id_pengajuan_surat }}"
                         data-pemohon="{{ $namaFallback }}"
-                        onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'))"
+                        data-fields="{{ json_encode($formFields) }}"
+                        onclick="openTolakModal(this.getAttribute('data-id'), this.getAttribute('data-pemohon'), this.getAttribute('data-fields'))"
                         class="w-full sm:w-auto inline-flex items-center gap-2 rounded-lg bg-red-600 hover:bg-red-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
@@ -505,7 +506,7 @@
 
     {{-- Modal Tolak --}}
     <div id="tolakModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-2xl w-full mx-4">
             <div class="flex items-center gap-3 mb-5">
                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -519,9 +520,12 @@
                 @csrf
                 @method('PATCH')
                 
-                <div>
-                    <label class="block text-xs font-semibold text-gray-500 uppercase mb-1">Pemohon</label>
-                    <input type="text" id="pemohon" readonly class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-gray-600 text-sm">
+                <!-- Data Pengajuan -->
+                <div class="bg-gray-50/70 rounded-xl border border-gray-200/50 p-4 mb-4 text-xs">
+                    <h4 class="font-bold text-gray-500 uppercase tracking-wider mb-3">DATA PENGAJUAN</h4>
+                    <div id="tolak_form_fields_container" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2.5">
+                        <!-- Dynamic fields go here -->
+                    </div>
                 </div>
 
                 <div>
@@ -637,12 +641,47 @@
         document.getElementById('no_surat_part').addEventListener('input', updateNomorSuratPreview);
         document.getElementById('kode_surat_part').addEventListener('input', updateNomorSuratPreview);
 
-        function openTolakModal(id, pemohon) {
+        function openTolakModal(id, pemohon, fieldsJson) {
             isTolakConfirmed = false;
             const base = "{{ url('/admin/layanan-surat/request') }}";
             document.getElementById('tolakForm').action = base + '/' + id + '/tolak';
 
-            document.getElementById('pemohon').value = pemohon;
+            const fieldsContainer = document.getElementById('tolak_form_fields_container');
+            fieldsContainer.innerHTML = '';
+            
+            let fields = {};
+            try {
+                fields = JSON.parse(fieldsJson);
+            } catch (e) {
+                console.error(e);
+            }
+
+            const keys = Object.keys(fields);
+            if (keys.length > 0) {
+                keys.forEach(key => {
+                    const item = document.createElement('div');
+                    item.className = 'flex justify-between items-center pb-2 border-b border-gray-200/60';
+                    
+                    const labelSpan = document.createElement('span');
+                    labelSpan.className = 'text-gray-400';
+                    labelSpan.textContent = key;
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'font-bold text-gray-800 text-right truncate pl-2 max-w-[200px]';
+                    valueSpan.textContent = fields[key];
+                    valueSpan.title = fields[key];
+                    
+                    item.appendChild(labelSpan);
+                    item.appendChild(valueSpan);
+                    fieldsContainer.appendChild(item);
+                });
+            } else {
+                const emptyMsg = document.createElement('div');
+                emptyMsg.className = 'col-span-2 text-center text-gray-400 italic py-1';
+                emptyMsg.textContent = 'Tidak ada data pengajuan';
+                fieldsContainer.appendChild(emptyMsg);
+            }
+
             document.getElementById('alasan_tolak').value = '';
             document.getElementById('tolakSubmitBtn').disabled = false;
             document.getElementById('tolakSubmitBtn').textContent = 'Tolak Pengajuan';

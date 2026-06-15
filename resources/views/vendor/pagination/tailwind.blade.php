@@ -36,23 +36,7 @@
         </div>
 
         {{-- Desktop --}}
-        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-            <div>
-                <p class="text-sm text-gray-700">
-                    {!! __('Menampilkan Data') !!}
-                    @if ($paginator->firstItem())
-                        <span class="font-semibold">{{ $paginator->firstItem() }}</span>
-                        {!! __('sampai') !!}
-                        <span class="font-semibold">{{ $paginator->lastItem() }}</span>
-                    @else
-                        {{ $paginator->count() }}
-                    @endif
-                    {!! __('Dari Total') !!}
-                    <span class="font-semibold">{{ $paginator->total() }}</span>
-                    {!! __('Data') !!}
-                </p>
-            </div>
-
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-end">
             <div>
                 <span class="relative z-0 inline-flex space-x-2">
                     {{-- Previous Page Link --}}
