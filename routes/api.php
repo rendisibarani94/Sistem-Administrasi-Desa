@@ -21,9 +21,10 @@ Route::middleware('cors')->group(function () {
     Route::post('/register', [UserController::class, 'register']);
     Route::get('/test', fn () => response()->json(['message' => 'API berjalan']));
 
-    // Berita & Pengumuman
+    // Berita & Pengumuman & Settings
     Route::get('/berita', [InformationApiController::class, 'getBerita']);
     Route::get('/pengumuman', [InformationApiController::class, 'getPengumuman']);
+    Route::get('/settings', [InformationApiController::class, 'getSettings']);
 
     // View surat via browser (token dikirim sebagai query param ?token=xxx)
     // Diakses oleh mobile via browser untuk cetak surat resmi

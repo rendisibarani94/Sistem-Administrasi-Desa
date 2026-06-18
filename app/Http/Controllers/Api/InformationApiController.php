@@ -174,6 +174,41 @@ class InformationApiController extends Controller
     }
 
     /**
+     * Ambil pengaturan publik desa (nama desa, logo, dsb)
+     * GET /api/settings
+     */
+    public function getSettings(Request $request)
+    {
+        try {
+            $settings = DB::table('settings')->pluck('value', 'key');
+            
+            $logoUrl = null;
+            if (!empty($settings['logo'])) {
+                $baseUrl = $request->getSchemeAndHttpHost();
+                $logoUrl = $baseUrl . '/storage/' . $settings['logo'];
+            }
+
+            return response()->json([
+                'status' => 'success',
+                'data' => [
+                    'nama_desa' => $settings['nama_desa'] ?? 'Hutabulu Mejan',
+                    'alamat_desa' => $settings['alamat_desa'] ?? 'Desa Hutabulu Mejan',
+                    'nomor_hp' => $settings['nomor_hp'] ?? '+62 812 3456 7890',
+                    'email' => $settings['email'] ?? 'desa@hutabulumejan.go.id',
+                    'jam_kerja' => $settings['jam_kerja'] ?? 'Senin – Jumat, 08.00 – 16.00',
+                    'logo' => $settings['logo'] ?? null,
+                    'logo_url' => $logoUrl,
+                ]
+            ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil pengaturan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Pengumuman publik desa
      * GET /api/pengumuman
      */

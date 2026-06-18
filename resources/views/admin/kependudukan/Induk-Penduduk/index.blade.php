@@ -171,7 +171,7 @@
                                         Ubah Sandi
                                     </a>
                                 </div>
-                            @else
+                            @elseif(strtoupper($item->kedudukan_keluarga) === 'KEPALA KELUARGA')
                                 <a wire:click="openCreateAccountModal({{ $item->id_penduduk }})" class="text-sky-600 hover:text-sky-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer" title="Buatkan akun untuk warga ini">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                       <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6 6 0 0 1 6-6h.75a6 6 0 0 1 6 6v.11m-12 0A1.75 1.75 0 0 0 4.75 21h8.5A1.75 1.75 0 0 0 15 19.235" />
@@ -180,7 +180,9 @@
                                 </a>
                             @endif
 
-                            <div class="h-4 w-px bg-gray-300 mx-1"></div>
+                            @if($userAcc || strtoupper($item->kedudukan_keluarga) === 'KEPALA KELUARGA')
+                                <div class="h-4 w-px bg-gray-300 mx-1"></div>
+                            @endif
 
                             <!-- Edit Button -->
                             <a href="{{ route('indukPenduduk.edit', $item->id_penduduk) }}" class="text-green-600 hover:text-green-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer">

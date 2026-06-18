@@ -97,6 +97,15 @@ class IndukPendudukController extends Component
     {
         $penduduk = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->first();
         if ($penduduk) {
+            // Backend validation to restrict only KEPALA KELUARGA
+            if (strtoupper($penduduk->kedudukan_keluarga) !== 'KEPALA KELUARGA') {
+                $this->dispatch('swal:success', [
+                    'title' => 'Akses Ditolak!',
+                    'text' => 'Pembuatan akun hanya diperbolehkan untuk Kepala Keluarga.',
+                ]);
+                return;
+            }
+
             $this->selectedPendudukId = $id_penduduk;
             $this->selectedPendudukName = $penduduk->nama_lengkap;
             $this->selectedPendudukNik = $penduduk->nik;
@@ -162,6 +171,17 @@ class IndukPendudukController extends Component
             $successTitle = 'Sandi Berhasil Diubah! 🔒';
             $successText = 'Kata sandi untuk ' . $this->selectedPendudukName . ' telah berhasil diubah dan dicatat pada pertinggal spreadsheet.';
         } else {
+            // Backend safeguard validation
+            $pendudukCheck = DB::table('penduduk')->where('id_penduduk', $this->selectedPendudukId)->first();
+            if (!$pendudukCheck || strtoupper($pendudukCheck->kedudukan_keluarga) !== 'KEPALA KELUARGA') {
+                $this->dispatch('swal:success', [
+                    'title' => 'Akses Ditolak!',
+                    'text' => 'Pembuatan akun hanya diperbolehkan untuk Kepala Keluarga.',
+                ]);
+                $this->closeAccountModal();
+                return;
+            }
+
             $this->validate([
                 'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
