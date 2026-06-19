@@ -105,17 +105,85 @@ class PengajuanSuratController extends Controller
 
         $idPenduduk = $user->id_penduduk ?? $user->id;
 
-        // Prevent duplicate pending requests
-        $pengajuanAktif = PengajuanSurat::where('id_penduduk', $idPenduduk)
+        // Ambil input answers
+        $answers = $request->input('answers', []);
+
+        // Cari id persyaratan untuk field Nama atau NIK
+        $namaPersyaratanId = null;
+        $nikPersyaratanId = null;
+
+        foreach ($daftarPersyaratan as $syarat) {
+            if ($this->isNamaField($syarat->nama_field)) {
+                $namaPersyaratanId = $syarat->id;
+            }
+            if ($this->isNikField($syarat->nama_field)) {
+                $nikPersyaratanId = $syarat->id;
+            }
+        }
+
+        $submittedName = isset($namaPersyaratanId) && isset($answers[$namaPersyaratanId]) 
+            ? trim($answers[$namaPersyaratanId]) 
+            : null;
+            
+        $submittedNik = isset($nikPersyaratanId) && isset($answers[$nikPersyaratanId]) 
+            ? trim($answers[$nikPersyaratanId]) 
+            : null;
+
+        // Fallback default ke profil user login jika tidak ada input di form
+        if (!$submittedName) {
+            $submittedName = $user->name;
+        }
+        if (!$submittedNik) {
+            $submittedNik = $user->nik ?? ($user->penduduk?->nik ?? null);
+        }
+
+        // Ambil semua pengajuan aktif oleh user ini untuk jenis surat ini
+        $pengajuanAktifList = PengajuanSurat::where('id_penduduk', $idPenduduk)
             ->where('id_jenis_surat', $jenisSuratId)
             ->whereIn('status', ['diajukan', 'diproses'])
-            ->first();
+            ->get();
 
-        if ($pengajuanAktif) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Anda sudah memiliki pengajuan surat jenis ini yang sedang diproses atau menunggu persetujuan.'
-            ], 422);
+        foreach ($pengajuanAktifList as $pengajuanAktif) {
+            // Ambil semua detail pengajuan aktif tersebut
+            $details = DetailPengajuanSurat::where('pengajuan_id', $pengajuanAktif->id_pengajuan_surat)->get();
+            
+            $existingName = null;
+            $existingNik = null;
+            
+            foreach ($details as $detail) {
+                $syarat = $daftarPersyaratan->firstWhere('id', $detail->persyaratan_id);
+                if ($syarat) {
+                    if ($this->isNamaField($syarat->nama_field)) {
+                        $existingName = trim($detail->value);
+                    }
+                    if ($this->isNikField($syarat->nama_field)) {
+                        $existingNik = trim($detail->value);
+                    }
+                }
+            }
+            
+            if (!$existingName) {
+                $existingName = $user->name;
+            }
+
+            // Cek duplikasi: prioritaskan NIK jika ada, jika tidak gunakan Nama
+            $isDuplicate = false;
+            if ($submittedNik && $existingNik) {
+                if (strtolower($submittedNik) === strtolower($existingNik)) {
+                    $isDuplicate = true;
+                }
+            } else {
+                if (strtolower($submittedName) === strtolower($existingName)) {
+                    $isDuplicate = true;
+                }
+            }
+
+            if ($isDuplicate) {
+                return response()->json([
+                    'status' => false,
+                    'message' => "Pengajuan untuk nama '{$submittedName}' sudah memiliki pengajuan surat jenis ini yang sedang diproses atau menunggu verifikasi."
+                ], 422);
+            }
         }
 
         // 2. Mulai DB Transaction
@@ -250,5 +318,33 @@ class PengajuanSuratController extends Controller
                 'error' => $e->getMessage()
             ], 500);
         }
+    }
+
+    private function isNamaField(string $label): bool
+    {
+        $lower = strtolower(trim($label));
+        return $lower === 'nama' ||
+            $lower === 'nama lengkap' ||
+            $lower === 'nama_lengkap' ||
+            str_contains($lower, 'nama pemohon') ||
+            str_contains($lower, 'nama lengkap pemohon');
+    }
+
+    private function isNikField(string $label): bool
+    {
+        $lower = strtolower(trim($label));
+        return $lower === 'nik' ||
+            str_contains($lower, 'no. nik') ||
+            str_contains($lower, 'no.nik') ||
+            str_contains($lower, 'nomor nik') ||
+            str_contains($lower, 'nomor induk kependudukan') ||
+            $lower === 'n i k' ||
+            $lower === 'no ktp' ||
+            $lower === 'no. ktp' ||
+            $lower === 'nomor ktp' ||
+            $lower === 'ktp' ||
+            str_contains($lower, 'no. ktp') ||
+            str_contains($lower, 'nomor ktp') ||
+            str_contains($lower, 'no ktp');
     }
 }

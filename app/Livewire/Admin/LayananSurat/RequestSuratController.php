@@ -313,7 +313,31 @@ class RequestSuratController extends Controller
         }
 
         if (!file_exists($filePath)) {
-            return redirect()->back()->with('error', 'File tidak ditemukan di server.');
+            // Jika file tidak ditemukan, coba generate ulang secara otomatis
+            try {
+                $activeKades = \App\Models\KepalaDesa::where('is_active', true)->first();
+                $idKades = $activeKades ? $activeKades->id_kepala_desa : null;
+                $pengajuanSurat->id_diproses_oleh = $idKades;
+                if ($activeKades) {
+                    $pengajuanSurat->setRelation('diprosesOleh', $activeKades);
+                }
+                $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
+                $isPdf = true;
+                $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
+
+                // Pastikan direktori folder ada
+                $dir = dirname($filePath);
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0755, true);
+                }
+
+                $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
+                $pdf->setPaper('a4', 'portrait');
+                $pdf->save($filePath);
+            } catch (\Throwable $e) {
+                \Log::error('Gagal generate ulang surat: ' . $e->getMessage());
+                return redirect()->back()->with('error', 'File tidak ditemukan di server dan gagal digenerate ulang.');
+            }
         }
 
         return response()->download($filePath);
@@ -402,6 +426,19 @@ class RequestSuratController extends Controller
                 \Log::warning('FCM push ke admin gagal: ' . $e->getMessage());
             }
         });
+    }
+
+    public function checkNewRequests()
+    {
+        $totalMenunggu = PengajuanSurat::where('status', 'diajukan')->count();
+        $latest = PengajuanSurat::latest()->first();
+        $latestId = $latest ? $latest->id_pengajuan_surat : null;
+
+        return response()->json([
+            'status' => true,
+            'total_menunggu' => $totalMenunggu,
+            'latest_id' => $latestId,
+        ]);
     }
 
     // Tetap untuk backward compatibility

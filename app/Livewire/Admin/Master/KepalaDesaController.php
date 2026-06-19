@@ -124,22 +124,19 @@ class KepalaDesaController extends Component
                 'is_active' => $this->is_active,
                 'file_ttd'  => $ttdPath ?? $kd->file_ttd,
             ]);
-
             session()->flash('success', 'Data kepala desa berhasil diperbarui.');
         } else {
-            // Jika set aktif, nonaktifkan yang lain
-            if ($this->is_active) {
-                KepalaDesa::where('is_active', true)->update(['is_active' => false]);
-            }
+            // Setiap penambahan baru selalu aktif dan menonaktifkan yang lain
+            KepalaDesa::where('is_active', true)->update(['is_active' => false]);
 
             KepalaDesa::create([
                 'nama'      => $this->nama,
                 'nip'       => $this->nip ?: null,
-                'is_active' => $this->is_active,
+                'is_active' => true,
                 'file_ttd'  => $ttdPath,
             ]);
 
-            session()->flash('success', 'Data kepala desa berhasil ditambahkan.');
+            session()->flash('success', 'Data kepala desa baru berhasil ditambahkan dan otomatis diaktifkan.');
         }
 
         $this->closeModal();

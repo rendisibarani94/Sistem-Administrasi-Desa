@@ -756,5 +756,30 @@
                 });
             }
         });
+
+        // Auto refresh jika ada pengajuan surat baru
+        const currentTotalMenunggu = {{ $totalMenunggu }};
+        const currentLatestId = "{{ $pengajuanSurat->first()?->id_pengajuan_surat ?? '' }}";
+
+        function checkNewSubmissions() {
+            // Hanya jalankan auto-check jika modal sedang tertutup untuk menghindari gangguan user
+            const isSetujuiModalOpen = !document.getElementById('setujuiModal').classList.contains('hidden');
+            const isTolakModalOpen = !document.getElementById('tolakModal').classList.contains('hidden');
+            if (isSetujuiModalOpen || isTolakModalOpen) return;
+
+            fetch("{{ route('admin.layanan-surat.request.check-new') }}")
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status) {
+                        if (data.total_menunggu !== currentTotalMenunggu || String(data.latest_id) !== currentLatestId) {
+                            window.location.reload();
+                        }
+                    }
+                })
+                .catch(err => console.error('Error checking new requests:', err));
+        }
+
+        // Jalankan pengecekan setiap 5 detik
+        setInterval(checkNewSubmissions, 5000);
     </script>
 </x-layouts.layouts>

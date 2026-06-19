@@ -21,7 +21,7 @@ class AuthController extends Controller
     ])) {
         return response()->json([
             'status' => 'error',
-            'message' => 'NIK atau password salah'
+            'message' => 'Nomor KK atau password salah'
         ], 401);
     }
 

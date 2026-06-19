@@ -59,7 +59,7 @@
 
         {{-- Toolbar --}}
         <div class="flex justify-between items-center my-6">
-            <p class="text-sm text-gray-500">Data kepala desa yang aktif akan digunakan sebagai penandatangan surat resmi desa.</p>
+            <h2 class="text-xl font-bold text-gray-800">Daftar Kepala Desa</h2>
             <button wire:click="openCreateModal"
                 class="inline-flex items-center gap-2 rounded-lg bg-sky-700 hover:bg-sky-800 px-4 py-2.5 text-sm font-semibold text-white transition-colors shadow-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -67,6 +67,21 @@
                 </svg>
                 Tambah Kepala Desa
             </button>
+        </div>
+
+        {{-- Info Card --}}
+        <div class="my-4 p-4 rounded-xl border border-sky-100 bg-sky-50 flex gap-3.5 items-start shadow-sm">
+            <div class="p-2 rounded-lg bg-sky-100 text-sky-700 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            </div>
+            <div>
+                <h4 class="font-bold text-sky-900 text-sm">Informasi</h4>
+                <p class="text-xs text-sky-800 mt-1 leading-relaxed">
+                    Data kepala desa yang aktif digunakan sebagai penandatangan surat resmi desa. Setiap penambahan data kepala desa baru akan secara otomatis menonaktifkan data kepala desa sebelumnya.
+                </p>
+            </div>
         </div>
 
         {{-- Table --}}
@@ -236,29 +251,31 @@
                 </div>
 
                 {{-- Status Aktif --}}
-                <div class="flex items-center gap-3">
-                    <input wire:model="is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
-                    <label for="is_active" class="text-sm font-medium text-gray-700">Jadikan sebagai kepala desa aktif (penandatangan surat)</label>
-                </div>
-                @error('is_active')
-                    <p class="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                        ⛔ {{ $message }}
-                    </p>
-                @enderror
-                @if ($is_active && !$editingId)
-                    <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
-                        ⚠️ Data kepala desa aktif lainnya akan dinonaktifkan secara otomatis.
-                    </p>
-                @endif
-                @if ($editingId && $is_active)
-                    <p class="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
-                        ℹ️ Data pengajuan surat yang sudah diproses oleh kepala desa sebelumnya <strong>tidak akan berubah</strong> — historis tetap terhubung ke kepala desa yang memproses saat itu.
-                    </p>
-                @endif
-                @if ($editingId && !$is_active)
-                    <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
-                        ⚠️ Jika dinonaktifkan, pastikan ada kepala desa lain yang aktif agar surat desa tetap dapat diproses.
-                    </p>
+                @if ($editingId)
+                    <div class="flex items-center gap-3">
+                        <input wire:model="is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
+                        <label for="is_active" class="text-sm font-medium text-gray-700">Jadikan sebagai kepala desa aktif (penandatangan surat)</label>
+                    </div>
+                    @error('is_active')
+                        <p class="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+                            ⛔ {{ $message }}
+                        </p>
+                    @enderror
+                    @if ($is_active)
+                        <p class="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                            ℹ️ Data pengajuan surat yang sudah diproses oleh kepala desa sebelumnya <strong>tidak akan berubah</strong> — historis tetap terhubung ke kepala desa yang memproses saat itu.
+                        </p>
+                    @else
+                        <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                            ⚠️ Jika dinonaktifkan, pastikan ada kepala desa lain yang aktif agar surat desa tetap dapat diproses.
+                        </p>
+                    @endif
+                @else
+                    <div class="p-3 bg-sky-50 border border-sky-100 rounded-lg">
+                        <p class="text-xs text-sky-850 font-medium">
+                            💡 Data kepala desa baru yang ditambahkan akan otomatis diaktifkan sebagai penandatangan surat aktif. Kepala desa aktif saat ini akan dinonaktifkan secara otomatis.
+                        </p>
+                    </div>
                 @endif
             </div>
 

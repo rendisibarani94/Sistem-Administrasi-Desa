@@ -195,85 +195,120 @@
             @if (count($dataForm) > 0 || ($pengajuanSurat->detailPengajuanSurat && $pengajuanSurat->detailPengajuanSurat->count() > 0))
                 @php
                     $renderedKeys = [];
+                    $imagesList = [];
+                    $textFieldsList = [];
+
+                    // 1. Process dataForm (Web)
+                    foreach ($dataForm as $key => $value) {
+                        $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
+                        $renderedKeys[$normalized] = true;
+                        
+                        $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
+                        $label = ucfirst(str_replace('_', ' ', $key));
+                        if (strtolower($label) === 'nik') {
+                            $label = 'NIK';
+                        }
+
+                        if ($isFile && $value) {
+                            $imagesList[] = [
+                                'label' => $label,
+                                'value' => $value
+                            ];
+                        } else {
+                            $textFieldsList[] = [
+                                'label' => $label,
+                                'value' => $value ?? '-'
+                            ];
+                        }
+                    }
+
+                    // 2. Process detailPengajuanSurat (Mobile EAV)
+                    if ($pengajuanSurat->detailPengajuanSurat) {
+                        foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
+                            $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
+                            $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
+                            if (isset($renderedKeys[$normalized])) {
+                                continue;
+                            }
+                            $renderedKeys[$normalized] = true;
+
+                            $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
+                            $val       = $detail->value;
+                            $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
+
+                            $labelField = $namaField;
+                            if (strtolower($labelField) === 'nik') {
+                                $labelField = 'NIK';
+                            }
+
+                            if ($isFile && $val) {
+                                $imagesList[] = [
+                                    'label' => $labelField,
+                                    'value' => $val
+                                ];
+                            } else {
+                                $textFieldsList[] = [
+                                    'label' => $labelField,
+                                    'value' => $val ?? '-'
+                                ];
+                            }
+                        }
+                    }
                 @endphp
-                <div class="pb-6 border-b border-gray-100">
-                    <h3 class="text-sm font-semibold text-gray-600 mb-4">Data Pengajuan</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {{-- Data Form Web --}}
-                        @foreach ($dataForm as $key => $value)
-                            @php
-                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $key));
-                                $renderedKeys[$normalized] = true;
-                                $isFile = is_string($value) && (str_starts_with($value, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $value));
-                                
-                                $label = ucfirst(str_replace('_', ' ', $key));
-                                if (strtolower($label) === 'nik') {
-                                    $label = 'NIK';
-                                }
-                            @endphp
-                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $label }}</p>
-                                @if($isFile && $value)
-                                    <div class="space-y-2">
-                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
-                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
-                                            <img src="{{ asset('storage/' . $value) }}"
-                                                alt="{{ ucfirst(str_replace('_', ' ', $key)) }}"
-                                                class="w-full h-36 object-cover"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
-                                        </a>
-                                        <a href="{{ asset('storage/' . $value) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
+
+                <div class="pb-6 border-b border-gray-100 space-y-6">
+                    <h3 class="text-sm font-semibold text-gray-600">Data Pengajuan</h3>
+                    
+                    {{-- Lampiran Gambar di bagian atas (diperbesar) --}}
+                    @if (count($imagesList) > 0)
+                        <div class="space-y-4">
+                            <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Berkas Lampiran (KTP / KK)</h4>
+                            <div class="grid grid-cols-1 gap-6">
+                                @foreach ($imagesList as $img)
+                                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                        <p class="text-xs text-gray-500 font-bold mb-3">{{ $img['label'] }}</p>
+                                        <div class="space-y-3">
+                                            <a href="{{ asset('storage/' . $img['value']) }}" target="_blank"
+                                                class="block overflow-hidden rounded-xl border border-gray-300 bg-white shadow-sm hover:border-sky-500 hover:shadow transition-all text-center">
+                                                <img src="{{ asset('storage/' . $img['value']) }}"
+                                                    alt="{{ $img['label'] }}"
+                                                    class="mx-auto w-full max-h-[550px] object-contain p-2"
+                                                    onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                                                <div style="display:none" class="p-4 text-sm text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
+                                            </a>
+                                            <div class="flex justify-between items-center px-1">
+                                                <span class="text-xs text-gray-400 font-mono">{{ basename($img['value']) }}</span>
+                                                <a href="{{ asset('storage/' . $img['value']) }}" target="_blank"
+                                                    class="inline-flex items-center gap-1.5 text-xs text-sky-600 hover:text-sky-800 font-bold hover:underline font-semibold">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                                                    </svg>
+                                                    Buka di Tab Baru
+                                                </a>
+                                            </div>
+                                        </div>
                                     </div>
-                                @else
-                                    <p class="text-sm font-medium text-gray-800">{{ $value ?? '-' }}</p>
-                                @endif
+                                @endforeach
                             </div>
-                        @endforeach
+                        </div>
+                    @endif
 
-                        {{-- Data EAV Mobile --}}
-                        @foreach ($pengajuanSurat->detailPengajuanSurat as $detail)
-                            @php
-                                $namaField = $detail->persyaratanSurat?->nama_field ?? "Field #{$detail->persyaratan_id}";
-                                $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', $namaField));
-                                if (isset($renderedKeys[$normalized])) {
-                                    continue;
-                                }
-                                $renderedKeys[$normalized] = true;
-
-                                $tipeField = $detail->persyaratanSurat?->tipe_field ?? 'text';
-                                $val       = $detail->value;
-                                $isFile    = $tipeField === 'file_image' || (is_string($val) && str_starts_with($val, 'pengajuan/'));
-
-                                $labelField = $namaField;
-                                if (strtolower($labelField) === 'nik') {
-                                    $labelField = 'NIK';
-                                }
-                            @endphp
-                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                                <p class="text-xs text-gray-500 font-medium mb-2">{{ $labelField }}</p>
-                                @if ($isFile && $val)
-                                    <div class="space-y-2">
-                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
-                                            class="block overflow-hidden rounded-lg border border-gray-200 hover:border-sky-400 transition-colors">
-                                            <img src="{{ asset('storage/' . $val) }}"
-                                                alt="{{ $namaField }}"
-                                                class="w-full h-36 object-cover"
-                                                onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
-                                            <div style="display:none" class="p-3 text-xs text-sky-600 font-semibold">Lihat Berkas (klik untuk buka)</div>
-                                        </a>
-                                        <a href="{{ asset('storage/' . $val) }}" target="_blank"
-                                            class="inline-flex items-center gap-1 text-xs text-sky-600 hover:underline font-medium">Buka di tab baru</a>
+                    {{-- Data Isian Teks di bawah --}}
+                    @if (count($textFieldsList) > 0)
+                        <div class="space-y-4">
+                            @if (count($imagesList) > 0)
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider">Formulir Isian</h4>
+                            @endif
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                @foreach ($textFieldsList as $txt)
+                                    <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
+                                        <p class="text-xs text-gray-500 font-medium mb-1">{{ $txt['label'] }}</p>
+                                        <p class="text-sm font-semibold text-gray-800">{{ $txt['value'] }}</p>
                                     </div>
-                                @elseif ($val)
-                                    <p class="text-sm font-medium text-gray-800">{{ $val }}</p>
-                                @else
-                                    <p class="text-sm text-gray-400 italic">— Tidak diisi —</p>
-                                @endif
+                                @endforeach
                             </div>
-                        @endforeach
-                    </div>
+                        </div>
+                    @endif
                 </div>
             @endif
 

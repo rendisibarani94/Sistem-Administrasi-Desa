@@ -146,9 +146,9 @@ Route::get('/kartu-keluarga/{id_kartu_keluarga}/edit', KartuKeluargaEditControll
 Route::get('/penduduk-sementara', PendudukSementaraController::class)->name('pendudukSementara');
 Route::get('/penduduk-sementara/create', PendudukSementaraCreateController::class)->name('pendudukSementara.create');
 Route::get('/penduduk-sementara/{id_penduduk}/edit', PendudukSementaraEditController::class)->name('pendudukSementara.edit');
-// Layanan Surat
 Route::prefix('layanan-surat/request')->name('admin.layanan-surat.request.')->group(function () {
     Route::get('/', [RequestSuratController::class, 'index'])->name('index');
+    Route::get('/check-new', [RequestSuratController::class, 'checkNewRequests'])->name('check-new');
     Route::get('/create', [RequestSuratController::class, 'create'])->name('create');
     Route::post('/', [RequestSuratController::class, 'store'])->name('store');
     Route::get('/{id}', [RequestSuratController::class, 'show'])->name('show');

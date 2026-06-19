@@ -157,7 +157,7 @@
                         <td class="px-6 py-4 font-semibold flex space-x-3 justify-center items-center">
                             <!-- Account Status / Create Account Button -->
                             @php
-                                $userAcc = DB::table('users')->where('nik', $item->nik)->first();
+                                $userAcc = DB::table('users')->where('id_penduduk', $item->id_penduduk)->first();
                             @endphp
                             @if($userAcc)
                                 <div class="flex flex-col items-center space-y-1">
@@ -245,16 +245,11 @@
                         <input type="text" class="shadow-sm border rounded-lg w-full py-2 px-3 text-gray-600 bg-gray-100 leading-tight focus:outline-none" value="{{ $selectedPendudukName }}" disabled />
                     </div>
                     <div class="mb-4">
-                        <label class="block text-gray-700 text-sm font-bold mb-2">NIK</label>
+                        <label class="block text-gray-700 text-sm font-bold mb-2">Nomor KK</label>
                         <input type="text" class="shadow-sm border rounded-lg w-full py-2 px-3 text-gray-600 bg-gray-100 leading-tight focus:outline-none" value="{{ $selectedPendudukNik }}" disabled />
                     </div>
                     
                     <form wire:submit.prevent="saveAccount">
-                        <div class="mb-4">
-                            <label class="block text-gray-700 text-sm font-bold mb-2">Email Warga <span class="text-red-500">*</span></label>
-                            <input type="email" wire:model="email" class="shadow-sm border border-gray-300 rounded-lg w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 @error('email') border-red-500 @enderror @if($isEditMode) bg-gray-100 text-gray-500 cursor-not-allowed @endif" placeholder="warga@domain.com" required @if($isEditMode) disabled @endif />
-                            @error('email') <span class="text-red-500 text-xs font-semibold mt-1 block">{{ $message }}</span> @enderror
-                        </div>
 
                         <!-- Password Field with Show/Hide -->
                         <div class="mb-4" x-data="{ showPw: false }">

@@ -548,7 +548,7 @@
     // ===== Custom Template Parser =====
     $bodyTemplate = $pengajuanSurat->jenisSurat->body_template ?? null;
     $renderedContent = null;
-    if ($bodyTemplate) {
+    if ($bodyTemplate && trim(strip_tags($bodyTemplate)) !== '') {
         // ── A. Placeholder Statis dari Profil Penduduk & KK ──
         $placeholders = [
             // Data Utama Penduduk
@@ -633,7 +633,10 @@
         // ── B. Placeholder dari data_form (legacy/fallback) ──
         foreach ($df as $k => $v) {
             if (is_string($v) || is_numeric($v)) {
-                $placeholders['{' . $k . '}'] = $v;
+                $isFile = is_string($v) && (str_starts_with($v, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $v));
+                if (!$isFile) {
+                    $placeholders['{' . $k . '}'] = $v;
+                }
             }
         }
 
@@ -648,7 +651,8 @@
             if (!$fieldName || is_null($rawValue)) continue;
 
             // Skip file/image fields (tidak bisa ditampilkan sebagai teks di surat)
-            if ($fieldType === 'file_image') continue;
+            $isFile = is_string($rawValue) && (str_starts_with($rawValue, 'pengajuan/') || preg_match('/\.(jpg|jpeg|png|webp|gif|pdf)$/i', $rawValue));
+            if ($fieldType === 'file_image' || $isFile) continue;
 
             // Auto-format tanggal Indonesia jika tipe field = date
             $displayValue = $rawValue;
@@ -669,8 +673,12 @@
         // ── D. Render: ganti semua placeholder di template ──
         $renderedContent = str_replace(array_keys($placeholders), array_values($placeholders), $bodyTemplate);
 
-        // ── E. Bersihkan placeholder yang tidak terisi (jika ada tag yang tidak cocok) ──
-        $renderedContent = preg_replace('/\{[a-zA-Z0-9_\s]+\}/', '-', $renderedContent);
+        // ── E. Hapus baris/paragraf yang mengandung placeholder file/gambar (ktp, kk, upload, file, berkas) ──
+        $renderedContent = preg_replace('/<p>[^<]*\{[^}]*(ktp|kk|upload|file|berkas)[^}]*\}[^<]*<\/p>/i', '', $renderedContent);
+        $renderedContent = preg_replace('/[^<]*\{[^}]*(ktp|kk|upload|file|berkas)[^}]*\}[^<]*/i', '', $renderedContent);
+
+        // ── F. Bersihkan placeholder lain yang tidak terisi (tag yang tidak cocok) dengan string kosong ──
+        $renderedContent = preg_replace('/\{[^}]+\}/', '', $renderedContent);
     }
 @endphp
 

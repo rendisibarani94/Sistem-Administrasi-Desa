@@ -214,7 +214,7 @@
                                         </div>
                                         <p class="text-xs text-gray-500">{{ $user->email }}</p>
                                         @if($user->nik)
-                                            <p class="text-xs text-gray-400">NIK: {{ $user->nik }}</p>
+                                            <p class="text-xs text-gray-400">Nomor KK: {{ $user->nik }}</p>
                                         @endif
                                     </div>
                                 </div>

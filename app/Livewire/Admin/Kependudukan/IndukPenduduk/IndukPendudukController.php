@@ -95,7 +95,12 @@ class IndukPendudukController extends Component
     // ==================================================
     public function openCreateAccountModal($id_penduduk)
     {
-        $penduduk = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->first();
+        $penduduk = DB::table('penduduk')
+            ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
+            ->where('penduduk.id_penduduk', $id_penduduk)
+            ->select('penduduk.*', 'kartu_keluarga.nomor_kartu_keluarga')
+            ->first();
+
         if ($penduduk) {
             // Backend validation to restrict only KEPALA KELUARGA
             if (strtoupper($penduduk->kedudukan_keluarga) !== 'KEPALA KELUARGA') {
@@ -108,7 +113,7 @@ class IndukPendudukController extends Component
 
             $this->selectedPendudukId = $id_penduduk;
             $this->selectedPendudukName = $penduduk->nama_lengkap;
-            $this->selectedPendudukNik = $penduduk->nik;
+            $this->selectedPendudukNik = $penduduk->nomor_kartu_keluarga ?? '-';
             $this->email = '';
             $this->password = 'password123'; // Default password
             $this->isEditMode = false;
@@ -118,12 +123,17 @@ class IndukPendudukController extends Component
 
     public function openResetPasswordModal($id_penduduk)
     {
-        $penduduk = DB::table('penduduk')->where('id_penduduk', $id_penduduk)->first();
+        $penduduk = DB::table('penduduk')
+            ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
+            ->where('penduduk.id_penduduk', $id_penduduk)
+            ->select('penduduk.*', 'kartu_keluarga.nomor_kartu_keluarga')
+            ->first();
+
         $userAcc = DB::table('users')->where('id_penduduk', $id_penduduk)->first();
         if ($penduduk && $userAcc) {
             $this->selectedPendudukId = $id_penduduk;
             $this->selectedPendudukName = $penduduk->nama_lengkap;
-            $this->selectedPendudukNik = $penduduk->nik;
+            $this->selectedPendudukNik = $penduduk->nomor_kartu_keluarga ?? '-';
             $this->email = $userAcc->email;
             $this->password = '';
             $this->confirm_password = '';
@@ -183,13 +193,9 @@ class IndukPendudukController extends Component
             }
 
             $this->validate([
-                'email' => 'required|email|unique:users,email',
                 'password' => 'required|min:6',
                 'confirm_password' => 'required|same:password',
             ], [
-                'email.required' => 'Email wajib diisi.',
-                'email.email' => 'Format email tidak valid.',
-                'email.unique' => 'Email sudah terdaftar.',
                 'password.required' => 'Password wajib diisi.',
                 'password.min' => 'Password minimal 6 karakter.',
                 'confirm_password.required' => 'Konfirmasi password wajib diisi.',
@@ -203,10 +209,19 @@ class IndukPendudukController extends Component
                 });
             }
 
+            // Fetch resident's Nomor KK
+            $nomorKk = DB::table('penduduk')
+                ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
+                ->where('penduduk.id_penduduk', $this->selectedPendudukId)
+                ->value('kartu_keluarga.nomor_kartu_keluarga');
+
+            $username = $nomorKk ?? $this->selectedPendudukNik;
+            $this->email = $username . '@mail.com';
+
             // Insert new user account tied to selected citizen
             DB::table('users')->insert([
                 'name' => $this->selectedPendudukName,
-                'nik' => $this->selectedPendudukNik,
+                'nik' => $username,
                 'email' => $this->email,
                 'password' => bcrypt($this->password),
                 'password_plain' => $this->password, // Simpan password polos ke database
@@ -275,6 +290,72 @@ class IndukPendudukController extends Component
     #[Layout('components.layouts.layouts')]
     public function render()
     {
+        // 1. Self-healing database: Update existing 'masyarakat' accounts to use their actual Nomor KK as NIK/username
+        $usersToFix = DB::table('users')
+            ->where('role', 'masyarakat')
+            ->whereNotNull('id_penduduk')
+            ->get();
+
+        foreach ($usersToFix as $userFix) {
+            $nomorKk = DB::table('penduduk')
+                ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
+                ->where('penduduk.id_penduduk', $userFix->id_penduduk)
+                ->value('kartu_keluarga.nomor_kartu_keluarga');
+
+            if ($nomorKk && $userFix->nik !== $nomorKk) {
+                DB::table('users')
+                    ->where('id', $userFix->id)
+                    ->update([
+                        'nik' => $nomorKk,
+                        'email' => $nomorKk . '@mail.com',
+                        'updated_at' => now(),
+                    ]);
+            }
+        }
+
+        // 2. Rebuild the CSV pertinggal file to keep it in sync with corrected accounts
+        $directory = public_path('excel');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        $filePath = $directory . '/pertinggal_akun_warga.csv';
+
+        $allActiveWarga = DB::table('users')
+            ->leftJoin('penduduk', 'users.id_penduduk', '=', 'penduduk.id_penduduk')
+            ->leftJoin('dusun', 'penduduk.dusun', '=', 'dusun.id_dusun')
+            ->select('users.name', 'users.nik', 'users.email', 'users.password_plain', 'dusun.dusun as nama_dusun', 'users.created_at')
+            ->where('users.role', 'masyarakat')
+            ->get();
+
+        $file = fopen($filePath, 'w');
+        if ($file) {
+            // Write BOM
+            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
+            fputcsv($file, [
+                'Nama Lengkap',
+                'Nomor KK',
+                'Email Warga',
+                'Password',
+                'Confirm Password',
+                'Dusun',
+                'Tanggal Dibuat'
+            ], ';');
+
+            foreach ($allActiveWarga as $warga) {
+                $dusunName = $warga->nama_dusun ?? '-';
+                fputcsv($file, [
+                    $warga->name,
+                    "'" . $warga->nik, // Nomor KK
+                    $warga->email,
+                    $warga->password_plain ?? 'Terenkripsi',
+                    $warga->password_plain ?? 'Terenkripsi',
+                    $dusunName,
+                    $warga->created_at ? date('Y-m-d H:i:s', strtotime($warga->created_at)) : now()->format('Y-m-d H:i:s')
+                ], ';');
+            }
+            fclose($file);
+        }
+
         return view(
             'admin.kependudukan.induk-penduduk.index',
             [
@@ -317,7 +398,7 @@ class IndukPendudukController extends Component
             $writer = SimpleExcelWriter::streamDownload('php://output', 'xlsx');
             $writer->addHeader([
                 'Nama Lengkap',
-                'NIK',
+                'Nomor KK',
                 'Email Warga',
                 'Password',
                 'Confirm Password',
@@ -329,7 +410,7 @@ class IndukPendudukController extends Component
                 $plainPassword = !empty($row->password_plain) ? $row->password_plain : 'Terenkripsi (Akun Lama)';
                 $writer->addRow([
                     $row->name,
-                    "'" . $row->nik, // Prefix single quote agar NIK tidak dibulatkan
+                    "'" . $row->nik, // Prefix single quote agar Nomor KK tidak dibulatkan
                     $row->email,
                     $plainPassword,
                     $plainPassword,
