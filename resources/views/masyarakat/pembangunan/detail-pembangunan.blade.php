@@ -86,7 +86,7 @@
                 <h1 class="text-sky-700 font-bold text-xl sm:text-2xl md:text-3xl flex items-center space-x-2 mb-4 sm:mb-8">
                     Dokumentasi Kegiatan
                 </h1>
-                <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" alt="Pembangunan Desa" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
+                <img src="{{ asset('storage/'.$pembangunan->dokumentasi) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" alt="Pembangunan Desa" class="w-full sm:w-3/4 md:w-2/3 lg:w-1/2 h-auto object-cover shadow" />
             </div>
 
             <div class="keterangan mb-8">
@@ -108,7 +108,7 @@
                 <div class="container">
                     <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
                         <div class="w-full sm:w-1/3">
-                            <img src="{{ asset('storage/' . $pembangunans->dokumentasi) }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
+                            <img src="{{ asset('storage/' . $pembangunans->dokumentasi) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" alt="Upacara HUT" class="w-full h-auto object-cover" />
                         </div>
                         <div class="flex flex-col justify-between flex-1 h-full">
                             <h4 class="text-xs font-semibold mb-2">

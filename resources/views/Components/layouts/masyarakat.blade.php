@@ -27,7 +27,7 @@
                     $logoUrl = $settings['logo_url'] ?? asset('images/masyarakat/beranda.png');
                 @endphp
                 <a href="{{ route('beranda') }}" class="flex items-center">
-                    <img src="{{ $logoUrl }}" class="h-10 rounded-sm" alt="Logo Desa" />
+                    <img src="{{ $logoUrl }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/logo_hutabulumejan.png') }}';" class="h-10 rounded-sm" alt="Logo Desa" />
                     <span class="self-center text-2xl font-semibold whitespace-nowrap text-white ml-2">{{ $settings['nama_desa'] }}</span>
                 </a>
 

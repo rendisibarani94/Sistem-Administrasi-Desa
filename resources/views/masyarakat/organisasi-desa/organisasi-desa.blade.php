@@ -36,7 +36,7 @@
                             <a href="{{ route('organisasi.desa.detail', $item->id_organisasi) }}" class="block h-full">
                                 <div class="card border border-sky-500 bg-white rounded-lg h-full py-8 px-4 sm:py-10 sm:px-6 flex flex-col items-center text-center">
                                     <div class="card-header mb-4">
-                                        <img src="{{ asset('storage/'.$item->logo_organisasi) }}" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->nama_organisasi ?? 'Perangkat Desa' }}">
+                                        <img src="{{ asset('storage/'.$item->logo_organisasi) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/organisasi.png') }}';" class="w-24 h-24 sm:w-30 sm:h-30 rounded-full object-cover" alt="{{ $item->nama_organisasi ?? 'Perangkat Desa' }}">
                                     </div>
                                     <div class="card-text">
                                         <h4 class="text-black font-bold text-center text-lg sm:text-xl">{{ $item->nama_organisasi ?? 'Tidak ada nama' }}</h4>

@@ -13,7 +13,7 @@
 4. Klik **Create**
 
 ### Buat Environment Variable
-1. Klik **Environments** (atas kiri, di sebelah Collections)
+1. Klik **Environments** (atas kiri, di sebelah Collectionas)
 2. Klik **Create New Environment**
 3. Beri nama: **"Local Development"**
 4. Tambahkan variables:

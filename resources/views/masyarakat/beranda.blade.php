@@ -6,7 +6,12 @@
     @if(empty($profil['deskripsi_beranda']) || empty($profil['gambar_landing_page']))
     <x-placeholder title="Konten Gambar Landing Page Belum Tersedia" description="Silakan hubungi admin untuk informasi lebih lanjut." showPlaceholder="true" />
     @else
-    <section class="relative mb-15 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-2 md:px-4 py-6" style="background-image: url('{{ asset('storage/'.$profil['gambar_landing_page']) }}');">
+    @php
+        $landingPageBg = isset($profil['gambar_landing_page']) && Storage::disk('public')->exists($profil['gambar_landing_page'])
+            ? asset('storage/' . $profil['gambar_landing_page'])
+            : asset('images/masyarakat/beranda.png');
+    @endphp
+    <section class="relative mb-15 bg-cover bg-center bg-no-repeat h-[50vh] md:h-[80vh] text-white flex items-center px-2 md:px-4 py-6" style="background-image: url('{{ $landingPageBg }}');">
         <div class="absolute inset-0 z-0"></div>
         <div class="relative z-10 w-full mx-auto max-w-7xl px-4 sm:px-6 lg:px-4">
             <div class="max-w-4xl">
@@ -40,7 +45,7 @@
                                     <div class="flex-shrink-0 px-2 sm:px-3 w-[280px] sm:w-[320px] md:w-[350px]">
                                         <div class="card border border-sky-600 rounded-lg h-full py-4 px-3 sm:py-5 sm:px-4 md:py-6 md:px-5 flex flex-col items-center text-center">
                                             <div class="card-header mb-3 sm:mb-4">
-                                                <img :src="item.foto ? '{{ asset('storage') }}/' + item.foto : '{{ asset('images/masyarakat/beranda.png') }}'" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full object-cover" :alt="item.nama_lengkap">
+                                                <img :src="item.foto ? '{{ asset('storage') }}/' + item.foto : '{{ asset('images/masyarakat/beranda.png') }}'" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full object-cover" :alt="item.nama_lengkap">
                                             </div>
                                             <div class="card-text">
                                                 <h4 class="text-black font-bold text-center text-sm sm:text-base md:text-lg" x-text="item.nama_lengkap"></h4>
@@ -106,7 +111,7 @@
                 <!-- Card 1 -->
                 <div class="card bg-white w-7/8 mx-auto border-1 border-gray-300 rounded-sm overflow-hidden hover:shadow-lg transition-shadow">
                     <div class="card_image mb-3 md:mb-4">
-                        <img src="{{ asset('storage/'.$berita->gambar) }}" class="w-full h-40 md:h-48 object-cover rounded-t-sm" alt="">
+                        <img src="{{ asset('storage/'.$berita->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/berita.png') }}';" class="w-full h-40 md:h-48 object-cover rounded-t-sm" alt="">
                     </div>
                     <div class="p-3 md:p-4">
                         <div class="card_heading mb-3 md:mb-4">

@@ -23,7 +23,7 @@
                     <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3 sm:gap-4 mb-4 border-2 border-gray-300 p-3 sm:p-4 rounded-sm shadow-sm shadow-slate-400">
                         <!-- Image Section -->
                         <div class="image w-full sm:w-1/3 md:w-1/7">
-                            <img src="{{ asset('storage/'. $item->gambar) }}" alt="{{ $item->judul }}" class="w-full h-auto max-h-24 sm:max-h-full object-cover p-2 sm:p-3" />
+                            <img src="{{ asset('storage/'. $item->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" alt="{{ $item->judul }}" class="w-full h-auto max-h-24 sm:max-h-full object-cover p-2 sm:p-3" />
                         </div>
 
                         <!-- Content Section -->
@@ -72,7 +72,7 @@
                     <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
                         <!-- thumbnail -->
                         <div class="w-full sm:w-1/3">
-                            <img src="{{ asset('storage/' . $beritas->gambar) }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
+                            <img src="{{ asset('storage/' . $beritas->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/berita.png') }}';" alt="Upacara HUT" class="w-full h-auto object-cover" />
                         </div>
                         <!-- title + link -->
                         <div class="flex flex-col justify-between flex-1 h-full">

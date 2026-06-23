@@ -18,7 +18,7 @@
                     <!-- Card 1 -->
                     <div class="card bg-white w-7/8 mx-auto border-2 rounded-lg border-gray-300 overflow-hidden hover:shadow-lg transition-shadow">
                         <div class="card_image mb-3 md:mb-4">
-                            <img src="{{ asset('storage/'.$berita->gambar) }}" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
+                            <img src="{{ asset('storage/'.$berita->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/berita.png') }}';" class="w-full h-40 md:h-48 object-cover rounded-t-lg" alt="">
                         </div>
                         <div class="p-3 md:p-4">
                             <div class="card_heading mb-3 md:mb-4">

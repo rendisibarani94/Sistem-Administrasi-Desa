@@ -66,7 +66,7 @@
                     <div class="berita-item flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-4 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
                         <!-- thumbnail -->
                         <div class="w-full sm:w-1/3">
-                            <img src="{{ asset('storage/'.$beritas->gambar) }}" alt="Upacara HUT" class="w-full h-auto object-cover" />
+                            <img src="{{ asset('storage/'.$beritas->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/berita.png') }}';" alt="Upacara HUT" class="w-full h-auto object-cover" />
                         </div>
                         <!-- title + link -->
                         <div class="flex flex-col justify-between flex-1 h-full">
@@ -147,14 +147,11 @@
 
                 <div class="image px-5 pb-5">
                     <div class="flex justify-center">
-                        <img src="{{ asset('storage/' . $selectedAgenda->gambar) }}" alt="{{ $selectedAgenda->judul }}" class="w-full max-w-md sm:max-w-lg h-auto object-cover rounded-lg shadow-sm" />
+                         <img src="{{ asset('storage/' . $selectedAgenda->gambar) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" alt="{{ $selectedAgenda->judul }}" class="w-full max-w-md sm:max-w-lg h-auto object-cover rounded-lg shadow-sm" />
                     </div>
                 </div>
                 @endif
             </div>
         </div>
     </div>
-
-
-
 </div>

@@ -290,70 +290,43 @@ class IndukPendudukController extends Component
     #[Layout('components.layouts.layouts')]
     public function render()
     {
-        // 1. Self-healing database: Update existing 'masyarakat' accounts to use their actual Nomor KK as NIK/username
-        $usersToFix = DB::table('users')
-            ->where('role', 'masyarakat')
-            ->whereNotNull('id_penduduk')
-            ->get();
+        try {
+            // Self-healing database: update masyarakat accounts only when the target email is not already in use.
+            $usersToFix = DB::table('users')
+                ->where('role', 'masyarakat')
+                ->whereNotNull('id_penduduk')
+                ->get();
 
-        foreach ($usersToFix as $userFix) {
-            $nomorKk = DB::table('penduduk')
-                ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
-                ->where('penduduk.id_penduduk', $userFix->id_penduduk)
-                ->value('kartu_keluarga.nomor_kartu_keluarga');
+            foreach ($usersToFix as $userFix) {
+                $nomorKk = DB::table('penduduk')
+                    ->leftJoin('kartu_keluarga', 'penduduk.id_kartu_keluarga', '=', 'kartu_keluarga.id_kartu_keluarga')
+                    ->where('penduduk.id_penduduk', $userFix->id_penduduk)
+                    ->value('kartu_keluarga.nomor_kartu_keluarga');
 
-            if ($nomorKk && $userFix->nik !== $nomorKk) {
-                DB::table('users')
-                    ->where('id', $userFix->id)
-                    ->update([
-                        'nik' => $nomorKk,
-                        'email' => $nomorKk . '@mail.com',
-                        'updated_at' => now(),
-                    ]);
+                if ($nomorKk && $userFix->nik !== $nomorKk) {
+                    $targetEmail = $nomorKk . '@mail.com';
+                    $emailInUse = DB::table('users')
+                        ->where('email', $targetEmail)
+                        ->where('id', '!=', $userFix->id)
+                        ->exists();
+
+                    if ($emailInUse) {
+                        continue;
+                    }
+
+                    DB::table('users')
+                        ->where('id', $userFix->id)
+                        ->update([
+                            'nik' => $nomorKk,
+                            'email' => $targetEmail,
+                            'updated_at' => now(),
+                        ]);
+                }
             }
-        }
 
-        // 2. Rebuild the CSV pertinggal file to keep it in sync with corrected accounts
-        $directory = public_path('excel');
-        if (!file_exists($directory)) {
-            mkdir($directory, 0755, true);
-        }
-        $filePath = $directory . '/pertinggal_akun_warga.csv';
 
-        $allActiveWarga = DB::table('users')
-            ->leftJoin('penduduk', 'users.id_penduduk', '=', 'penduduk.id_penduduk')
-            ->leftJoin('dusun', 'penduduk.dusun', '=', 'dusun.id_dusun')
-            ->select('users.name', 'users.nik', 'users.email', 'users.password_plain', 'dusun.dusun as nama_dusun', 'users.created_at')
-            ->where('users.role', 'masyarakat')
-            ->get();
-
-        $file = fopen($filePath, 'w');
-        if ($file) {
-            // Write BOM
-            fprintf($file, chr(0xEF).chr(0xBB).chr(0xBF));
-            fputcsv($file, [
-                'Nama Lengkap',
-                'Nomor KK',
-                'Email Warga',
-                'Password',
-                'Confirm Password',
-                'Dusun',
-                'Tanggal Dibuat'
-            ], ';');
-
-            foreach ($allActiveWarga as $warga) {
-                $dusunName = $warga->nama_dusun ?? '-';
-                fputcsv($file, [
-                    $warga->name,
-                    "'" . $warga->nik, // Nomor KK
-                    $warga->email,
-                    $warga->password_plain ?? 'Terenkripsi',
-                    $warga->password_plain ?? 'Terenkripsi',
-                    $dusunName,
-                    $warga->created_at ? date('Y-m-d H:i:s', strtotime($warga->created_at)) : now()->format('Y-m-d H:i:s')
-                ], ';');
-            }
-            fclose($file);
+        } catch (\Throwable $e) {
+            report($e);
         }
 
         return view(

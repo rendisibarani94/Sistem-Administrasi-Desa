@@ -13,7 +13,7 @@
         <div class="profil flex flex-col md:flex-row justify-center items-center md:space-x-4 lg:space-x-10 mb-4 gap-4 md:gap-0">
             <!-- Logo Section -->
             <div class="logo w-full md:w-auto px-4 md:px-0">
-                <img src="{{ asset('storage/'.$organisasiDesa->logo_organisasi) }}" class="object-cover border border-black w-full max-w-xs mx-auto md:w-64 lg:w-80 xl:w-96" alt="{{ $organisasiDesa->nama_organisasi ?? 'Perangkat Desa' }}">
+                <img src="{{ asset('storage/'.$organisasiDesa->logo_organisasi) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/organisasi.png') }}';" class="object-cover border border-black w-full max-w-xs mx-auto md:w-64 lg:w-80 xl:w-96" alt="{{ $organisasiDesa->nama_organisasi ?? 'Perangkat Desa' }}">
             </div>
 
             <!-- Details Section -->
@@ -55,7 +55,7 @@
                             <!-- 4/3 = 1.3333 (133.33%) -->
                             <div class="absolute inset-0 bg-gray-300">
                                 <!-- Your image would go here -->
-                                <img src="{{ asset('storage/'.$organisasiDesa->foto_ketua) }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/'.$organisasiDesa->foto_ketua) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                             <!-- 4/3 = 1.3333 (133.33%) -->
                             <div class="absolute inset-0 bg-gray-300">
                                 <!-- Your image would go here -->
-                                <img src="{{ asset('storage/'.$organisasiDesa->foto_sekretaris) }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/'.$organisasiDesa->foto_sekretaris) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>
@@ -95,7 +95,7 @@
                             <!-- 4/3 = 1.3333 (133.33%) -->
                             <div class="absolute inset-0 bg-gray-300">
                                 <!-- Your image would go here -->
-                                <img src="{{ asset('storage/'.$organisasiDesa->foto_bendahara) }}" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/'.$organisasiDesa->foto_bendahara) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" class="w-full h-full object-cover">
                             </div>
                         </div>
                     </div>

@@ -36,7 +36,7 @@
                     $logoUrl = $settings['logo_url'] ?? asset('images/masyarakat/beranda.png');
                 @endphp
                 <a href="{{ route('beranda.admin') }}" class="flex flex-col items-center justify-center mb-4">
-                    <img src="{{ $logoUrl }}" class="h-15 mb-2" alt="Logo Desa" />
+                    <img src="{{ $logoUrl }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/logo_hutabulumejan.png') }}';" class="h-15 mb-2" alt="Logo Desa" />
                     <span class="text-md font-semibold whitespace-nowrap text-black">{{ $settings['nama_desa'] ?? 'Nama Desa' }}</span>
                 </a>
                 <h5 class="text-xs font-semibold text-black pl-3">Administrasi Desa</h5>
@@ -241,6 +241,7 @@
 
     {{-- Script --}}
     @livewireScripts
+    <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     @stack('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -285,7 +286,6 @@
         });
 
     </script>
-    <script src="{{ asset('vendor/sweetalert/sweetalert.all.js') }}"></script>
     {{-- <script src="{{ asset('js/rupiah-input.js') }}"></script> --}}
 </body>
 </html>

@@ -19,7 +19,7 @@
             <div class="pengumuman-item-wrapper mb-4 md:mb-6 border-2 border-gray-300 p-2 rounded-xs shadow-sm shadow-slate-400">
                 <div class="pengumuman-item flex flex-col sm:flex-row items-start gap-3">
                     <div class="image w-full sm:w-1/3 md:w-1/4">
-                        <img src="{{ asset('storage/'.$item->dokumentasi) }}" alt="Pembangunan Desa" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
+                        <img src="{{ asset('storage/'.$item->dokumentasi) }}" onerror="this.onerror=null; this.src='{{ asset('images/masyarakat/beranda.png') }}';" alt="Pembangunan Desa" class="w-full max-h-[200px] object-cover p-2 sm:p-5" />
                     </div>
 
                     <div class="description w-full sm:w-2/3 md:w-3/4 self-start p-2 sm:p-5">
