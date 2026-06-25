@@ -260,7 +260,8 @@ Route::get('B5', [LaporanKtpKkController::class, 'displayB5']);
 // Example pdf download routes
 Route::get('laporan-kader-pemberdayaan', [LaporanPembangunanController::class, 'kaderPemberdayaan']);
 
-Route::get('/kader-pemberdayaan-masyarakat/{id_kader_pemberdayaan}/edit', KaderPemberdayaanEditController::class)->name('KaderPemberdayaanMasyarakat.edit');
+
+
 
 // user masyarakat
 Route::get('/', BerandaController::class)->name('beranda');
