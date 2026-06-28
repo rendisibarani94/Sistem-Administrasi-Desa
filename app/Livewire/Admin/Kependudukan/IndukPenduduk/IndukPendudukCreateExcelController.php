@@ -7,9 +7,14 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use Illuminate\Support\Carbon;
 use PhpOffice\PhpSpreadsheet\Cell\DataValidation;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Font;
 
 class IndukPendudukCreateExcelController extends Component
 {
@@ -196,11 +201,9 @@ class IndukPendudukCreateExcelController extends Component
                     'Tempat Lahir',
                     'Tanggal Lahir',
                     'Kewarganegaraan',
-                    'Nomor Akta Kelahiran',
                     'Golongan Darah',
                     'Agama',
                     'Tanggal Keluar E-KTP',
-                    'Negara Keturunan',
                     'Status Perkawinan',
                     'Pendidikan Terakhir',
                     'Pekerjaan',
@@ -208,9 +211,8 @@ class IndukPendudukCreateExcelController extends Component
                     'Kedudukan Keluarga',
                     'Dusun',
                     'Alamat Asal Penduduk',
-                    'Asal Suku Penduduk',
                     'Tanggal Penambahan Penduduk',
-                    'Keterangan',
+                    // nullable: 'Nomor Akta Kelahiran', 'Negara Keturunan', 'Asal Suku Penduduk', 'Keterangan'
                 ];
 
                 $missingFields = [];
@@ -330,44 +332,125 @@ class IndukPendudukCreateExcelController extends Component
                 $dusunData = $rowData1['Dusun'];
                 $dusunRecord = DB::table('dusun')
                     ->where('dusun', $dusunData)
+                    ->where('is_deleted', 0)
                     ->value('id_dusun');
 
                 if (!$kkRecord) {
-                    $this->importErrors[] = "KK number $kkNumber not found in database (sheet '$sheetName1' row " . ($rowIndex1 + 2) . ")";
+                    $this->importErrors[] = "Nomor KK '$kkNumber' tidak ditemukan di database (sheet '$sheetName1' baris " . ($rowIndex1 + 2) . ")";
                     continue;
                 }
 
                 if (!$dusunRecord) {
-                    $this->importErrors[] = "KK number $dusunData not found in database (sheet '$sheetName1' row " . ($rowIndex1 + 2) . ")";
+                    $this->importErrors[] = "Dusun '$dusunData' tidak ditemukan di database (sheet '$sheetName1' baris " . ($rowIndex1 + 2) . ")";
                     continue;
                 }
 
+                // -------------------------------------------------------
+                // MAPPING: template label → database ENUM value
+                // -------------------------------------------------------
+
+                // Agama: template "Islam" → DB "ISLAM"
+                $agamaMap = [
+                    'Islam'    => 'ISLAM',
+                    'Kristen'  => 'KRISTEN',
+                    'Katolik'  => 'KHATOLIK',
+                    'Hindu'    => 'HINDU',
+                    'Buddha'   => 'BUDHA',
+                    'Konghucu' => 'KHONGHUCU',
+                    'Lainnya'  => 'KEPERCAYAAN KEPADA TUHAN YME LAINNYA',
+                ];
+
+                // Status Perkawinan: template "Kawin" → DB "Kawin Tercatat"
+                $statusPerkawinanMap = [
+                    'Belum Kawin' => 'Belum Kawin',
+                    'Kawin'       => 'Kawin Tercatat',
+                    'Cerai Hidup' => 'Cerai Hidup',
+                    'Cerai Mati'  => 'Cerai Mati',
+                ];
+
+                // Pendidikan: template readable → DB ENUM
+                $pendidikanMap = [
+                    'Tidak/Belum Sekolah' => 'TIDAK PERNAH SEKOLAH',
+                    'Tidak Tamat SD'      => 'TK/KELOMPOK BERMAIN',
+                    'Tamat SD'            => 'SD/SEDERAJAT',
+                    'SLTP'                => 'SLTP/SEDERAJAT',
+                    'SLTA'                => 'SLTA/SEDERAJAT',
+                    'Diploma I/II'        => 'D-1/SEDERAJAT',
+                    'Diploma III'         => 'D-3/SEDERAJAT',
+                    'S1'                  => 'S-1/SEDERAJAT',
+                    'S2'                  => 'S-2/SEDERAJAT',
+                    'S3'                  => 'S-3/SEDERAJAT',
+                ];
+
+                // Baca Huruf: template "Bisa"/"Tidak Bisa" → DB enum D/A/L/I
+                // D=Dapat, A=Tidak Dapat (standard BPS code)
+                $bacaHurufMap = [
+                    'Bisa'       => 'D',
+                    'Tidak Bisa' => 'A',
+                ];
+
+                // Kedudukan Keluarga: template → DB ENUM
+                $kedudukanMap = [
+                    'Kepala Keluarga' => 'KEPALA KELUARGA',
+                    'Istri'           => 'ISTRI',
+                    'Anak'            => 'ANAK',
+                    'Menantu'         => 'FAMILI LAIN',
+                    'Cucu'            => 'FAMILI LAIN',
+                    'Orang Tua'       => 'FAMILI LAIN',
+                    'Mertua'          => 'FAMILI LAIN',
+                    'Famili Lain'     => 'FAMILI LAIN',
+                    'Pembantu'        => 'FAMILI LAIN',
+                    'Lainnya'         => 'FAMILI LAIN',
+                ];
+
+                // Golongan Darah: remove "Tidak Tahu" (not in DB ENUM)
+                $golDarahRaw = $rowData1['Golongan Darah'] ?? '';
+                $validGolDarah = ['A', 'A+', 'A-', 'B', 'B+', 'B-', 'AB', 'AB+', 'AB-', 'O', 'O+', 'O-'];
+                if (!in_array($golDarahRaw, $validGolDarah)) {
+                    // Default to 'O' if unknown (most common / neutral)
+                    $golDarahRaw = 'O';
+                }
+
+                $agamaRaw        = $rowData1['Agama'] ?? '';
+                $statusNikahRaw  = $rowData1['Status Perkawinan'] ?? '';
+                $pendidikanRaw   = $rowData1['Pendidikan Terakhir'] ?? '';
+                $bacaHurufRaw    = $rowData1['Kemampuan Baca Huruf'] ?? '';
+                $kedudukanRaw    = $rowData1['Kedudukan Keluarga'] ?? '';
+
+                $agamaMapped        = $agamaMap[$agamaRaw] ?? strtoupper($agamaRaw);
+                $statusNikahMapped  = $statusPerkawinanMap[$statusNikahRaw] ?? $statusNikahRaw;
+                $pendidikanMapped   = $pendidikanMap[$pendidikanRaw] ?? strtoupper($pendidikanRaw);
+                $bacaHurufMapped    = $bacaHurufMap[$bacaHurufRaw] ?? 'D';
+                $kedudukanMapped    = $kedudukanMap[$kedudukanRaw] ?? 'FAMILI LAIN';
+
                 $insertDataPenduduk[] = [
-                    'nik' => $rowData1['NIK'],
-                    'nama_lengkap' => $rowData1['Nama Lengkap'],
-                    'jenis_kelamin' => $rowData1['Jenis Kelamin'],
-                    'alamat' => $rowData1['Alamat'],
-                    'nama_ayah' => $rowData1['Nama Ayah'],
-                    'nama_ibu' => $rowData1['Nama Ibu'],
-                    'id_kartu_keluarga' => $kkRecord,
-                    'tempat_lahir' => $rowData1['Tempat Lahir'],
-                    'tanggal_lahir' => $formattedDateLahir,
-                    'kewarganegaraan' => $rowData1['Kewarganegaraan'],
-                    'nomor_akta_lahir' => $rowData1['Nomor Akta Kelahiran'],
-                    'golongan_darah' => $rowData1['Golongan Darah'],
-                    'agama' => $rowData1['Agama'],
-                    'tanggal_keluar_ktp' => $formattedDateKTP,
-                    'keturunan' => $rowData1['Negara Keturunan'],
-                    'status_perkawinan' => $rowData1['Status Perkawinan'],
-                    'pendidikan_terakhir' => $rowData1['Pendidikan Terakhir'],
-                    'pekerjaan' => $rowData1['Pekerjaan'],
-                    'baca_huruf' => $rowData1['Kemampuan Baca Huruf'],
-                    'kedudukan_keluarga' => $rowData1['Kedudukan Keluarga'],
-                    'dusun' => $dusunRecord,
-                    'asal_penduduk' => $rowData1['Alamat Asal Penduduk'],
-                    'suku' => $rowData1['Asal Suku Penduduk'],
-                    'tanggal_penambahan' => $formattedDateAdded,
-                    'keterangan' => $rowData1['Keterangan'],
+                    'nik'                 => $rowData1['NIK'],
+                    'nama_lengkap'        => $rowData1['Nama Lengkap'],
+                    'jenis_kelamin'       => $rowData1['Jenis Kelamin'],
+                    'alamat'              => $rowData1['Alamat'],
+                    'nama_ayah'           => $rowData1['Nama Ayah'],
+                    'nama_ibu'            => $rowData1['Nama Ibu'],
+                    'id_kartu_keluarga'   => $kkRecord,
+                    'tempat_lahir'        => $rowData1['Tempat Lahir'],
+                    'tanggal_lahir'       => $formattedDateLahir,
+                    'kewarganegaraan'     => $rowData1['Kewarganegaraan'],
+                    'nomor_akta_lahir'    => $rowData1['Nomor Akta Kelahiran'] ?: null,
+                    'golongan_darah'      => $golDarahRaw,
+                    'agama'               => $agamaMapped,
+                    'tanggal_keluar_ktp'  => $formattedDateKTP,
+                    'keturunan'           => $rowData1['Negara Keturunan'] ?: null,
+                    'status_perkawinan'   => $statusNikahMapped,
+                    'pendidikan_terakhir' => $pendidikanMapped,
+                    'pekerjaan'           => $rowData1['Pekerjaan'],
+                    'baca_huruf'          => $bacaHurufMapped,
+                    'kedudukan_keluarga'  => $kedudukanMapped,
+                    'dusun'               => $dusunRecord,
+                    'asal_penduduk'       => $rowData1['Alamat Asal Penduduk'],
+                    'suku'                => $rowData1['Asal Suku Penduduk'] ?: null,
+                    'tanggal_penambahan'  => $formattedDateAdded,
+                    'keterangan'          => $rowData1['Keterangan'] ?: null,
+                    'is_deleted'          => 0,
+                    'is_mutated'          => 0,
                 ];
 
                 // Batch insert for Penduduk
@@ -407,74 +490,312 @@ class IndukPendudukCreateExcelController extends Component
     }
 
     public function downloadTemplate()
-{
-    // Load the template
-    $templatePath = public_path('storage/excel/Template_Import_Data_Penduduk.xlsx');
-    $spreadsheet = IOFactory::load($templatePath);
+    {
+        // Load the static template from storage
+        $templatePath = storage_path('excel/Template_Import_Data_Penduduk.xlsx');
 
-    // Get current dusun data from database
-    $dusunNames = DB::table('dusun')->where('is_deleted', 0)->pluck('dusun')->toArray();
+        if (!file_exists($templatePath)) {
+            $this->addError('file', 'File template tidak ditemukan. Hubungi administrator.');
+            return;
+        }
 
-    // Process Dropdown Sheet (index 2)
-    $dropdownSheet = $spreadsheet->getSheet(2);
+        $spreadsheet = IOFactory::load($templatePath);
 
-    // Clear existing Dusun data (Column I, starting from row 2)
-    $this->clearColumnData($dropdownSheet, 'I');
+        // Get current dusun data from database
+        $dusunNames = DB::table('dusun')->where('is_deleted', 0)->pluck('dusun')->toArray();
 
-    // Update Dusun dropdown with current data
-    $this->updateDusunDropdown($dropdownSheet, $dusunNames);
+        // Update Dropdown sheet (index 2): column I = Dusun
+        $dropdownSheet = $spreadsheet->getSheet(2);
 
-    // Update data validation in Penduduk sheet
-    $this->updatePendudukValidation($spreadsheet, count($dusunNames));
+        // Clear old Dusun values starting from row 2
+        $row = 2;
+        while ($dropdownSheet->getCell('I' . $row)->getValue() !== null && $row <= 200) {
+            $dropdownSheet->setCellValue('I' . $row, null);
+            $row++;
+        }
 
-    // Save modified template
-    $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
-    $tempFile = tempnam(sys_get_temp_dir(), 'template_') . '.xlsx';
-    $writer->save($tempFile);
+        // Write current dusun
+        foreach ($dusunNames as $i => $name) {
+            $dropdownSheet->setCellValue('I' . ($i + 2), $name);
+        }
 
-    // Download the file
-    return response()->download($tempFile, 'Template_Import_Data_Penduduk.xlsx')->deleteFileAfterSend(true);
-}
+        // Update Dusun data validation range in Penduduk sheet (column U)
+        $dusunEndRow = max(2, count($dusunNames) + 1);
+        $this->addDropdownValidation(
+            $spreadsheet->getSheet(1),
+            'U',
+            "Dropdown!\$I\$2:\$I\${$dusunEndRow}",
+            2,
+            1000
+        );
 
-private function clearColumnData(Worksheet $sheet, string $column)
-{
-    $row = 2;
-    while ($sheet->getCell($column . $row)->getValue() !== null) {
-        $sheet->setCellValue($column . $row, null);
-        $row++;
+        $spreadsheet->setActiveSheetIndex(0);
+
+        // Save to temp and stream as download
+        $writer   = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $tempFile = tempnam(sys_get_temp_dir(), 'template_') . '.xlsx';
+        $writer->save($tempFile);
+
+        return response()->download($tempFile, 'Template_Import_Data_Penduduk.xlsx')->deleteFileAfterSend(true);
     }
-}
 
-private function updateDusunDropdown(Worksheet $sheet, array $dusunNames)
-{
-    // Add new Dusun data starting at row 2 (preserving header at row 1)
-    foreach ($dusunNames as $index => $name) {
-        $sheet->setCellValue('I' . ($index + 2), $name);
+    // ---------------------------------------------------------------
+    // Kept for use by downloadTemplate()
+    // ---------------------------------------------------------------
+    private function addDropdownValidation2($sheet, string $column, string $formula, int $startRow, int $endRow): void
+    {
+        $validation = new DataValidation();
+        $validation->setType(DataValidation::TYPE_LIST);
+        $validation->setErrorStyle(DataValidation::STYLE_STOP);
+        $validation->setAllowBlank(false);
+        $validation->setShowInputMessage(true);
+        $validation->setShowErrorMessage(true);
+        $validation->setShowDropDown(true);
+        $validation->setFormula1($formula);
+
+        for ($row = $startRow; $row <= $endRow; $row++) {
+            $sheet->getCell($column . $row)->setDataValidation(clone $validation);
+        }
     }
-}
 
-private function updatePendudukValidation(\PhpOffice\PhpSpreadsheet\Spreadsheet $spreadsheet, int $dusunCount)
-{
-    $pendudukSheet = $spreadsheet->getSheet(1);
+    // ---------------------------------------------------------------
+    // Programmatic template builder (fallback / unused after template exists)
+    // ---------------------------------------------------------------
+    private function buildTemplateFromScratch(array $dusunNames): \PhpOffice\PhpSpreadsheet\Spreadsheet
+    {
+        $spreadsheet = new Spreadsheet();
 
-    // Create data validation for column I (Dusun)
-    $validation = new DataValidation();
-    $validation->setType(DataValidation::TYPE_LIST);
-    $validation->setErrorStyle(DataValidation::STYLE_STOP);
-    $validation->setAllowBlank(false);
-    $validation->setShowInputMessage(true);
-    $validation->setShowErrorMessage(true);
-    $validation->setShowDropDown(true);
+        // =====================================================================
+        // SHEET 0: KARTU KELUARGA
+        // =====================================================================
+        $kkSheet = $spreadsheet->getActiveSheet();
+        $kkSheet->setTitle('Kartu Keluarga');
 
-    // Calculate range based on dusun count
-    $endRow = $dusunCount > 0 ? (2 + $dusunCount - 1) : 2;
-    $validation->setFormula1("Dropdown!I2:I$endRow");
+        $kkHeaders = [
+            'Nomor Kartu Keluarga',
+            'Tanggal Keluar',
+            'Alamat',
+            'RT',
+            'RW',
+            'Desa_Kelurahan',
+            'Kecamatan',
+            'Kode Pos',
+            'Kabupaten_Kota',
+            'Provinsi',
+        ];
 
-    // Apply to column I (rows 2-1000)
-    for ($row = 2; $row <= 1000; $row++) {
-        $pendudukSheet->getCell('I' . $row)->setDataValidation(clone $validation);
+        foreach ($kkHeaders as $colIndex => $header) {
+            $col = chr(65 + $colIndex);
+            $kkSheet->setCellValue($col . '1', $header);
+        }
+
+        $this->applyHeaderStyle($kkSheet, 'A1:J1');
+        $this->autoSizeColumns($kkSheet, count($kkHeaders));
+
+        // =====================================================================
+        // SHEET 1: PENDUDUK
+        // =====================================================================
+        $pendudukSheet = $spreadsheet->createSheet(1);
+        $pendudukSheet->setTitle('Penduduk');
+
+        $pendudukHeaders = [
+            'NIK',
+            'Nama Lengkap',
+            'Jenis Kelamin',
+            'Alamat',
+            'Nama Ayah',
+            'Nama Ibu',
+            'Nomor Kartu Keluarga',
+            'Tempat Lahir',
+            'Tanggal Lahir',
+            'Kewarganegaraan',
+            'Nomor Akta Kelahiran',
+            'Golongan Darah',
+            'Agama',
+            'Tanggal Keluar E-KTP',
+            'Negara Keturunan',
+            'Status Perkawinan',
+            'Pendidikan Terakhir',
+            'Pekerjaan',
+            'Kemampuan Baca Huruf',
+            'Kedudukan Keluarga',
+            'Dusun',
+            'Alamat Asal Penduduk',
+            'Asal Suku Penduduk',
+            'Tanggal Penambahan Penduduk',
+            'Keterangan',
+        ];
+
+        foreach ($pendudukHeaders as $colIndex => $header) {
+            $col = $this->getColumnLetter($colIndex);
+            $pendudukSheet->setCellValue($col . '1', $header);
+        }
+
+        $lastCol = $this->getColumnLetter(count($pendudukHeaders) - 1);
+        $this->applyHeaderStyle($pendudukSheet, 'A1:' . $lastCol . '1');
+        $this->autoSizeColumns($pendudukSheet, count($pendudukHeaders));
+
+        // =====================================================================
+        // SHEET 2: DROPDOWN (reference data)
+        // =====================================================================
+        $dropdownSheet = $spreadsheet->createSheet(2);
+        $dropdownSheet->setTitle('Dropdown');
+
+        // Dropdown column headers
+        $dropdownHeaders = [
+            'A' => 'Jenis Kelamin',
+            'B' => 'Kewarganegaraan',
+            'C' => 'Golongan Darah',
+            'D' => 'Agama',
+            'E' => 'Status Perkawinan',
+            'F' => 'Pendidikan Terakhir',
+            'G' => 'Kedudukan Keluarga',
+            'H' => 'Kemampuan Baca Huruf',
+            'I' => 'Dusun',
+        ];
+
+        foreach ($dropdownHeaders as $col => $header) {
+            $dropdownSheet->setCellValue($col . '1', $header);
+        }
+        $this->applyHeaderStyle($dropdownSheet, 'A1:I1');
+
+        // Jenis Kelamin
+        $jenisKelamin = ['Laki-laki', 'Perempuan'];
+        foreach ($jenisKelamin as $i => $val) {
+            $dropdownSheet->setCellValue('A' . ($i + 2), $val);
+        }
+
+        // Kewarganegaraan
+        $kewarganegaraan = ['WNI', 'WNA'];
+        foreach ($kewarganegaraan as $i => $val) {
+            $dropdownSheet->setCellValue('B' . ($i + 2), $val);
+        }
+
+        // Golongan Darah
+        $golDarah = ['A', 'B', 'AB', 'O', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-', 'Tidak Tahu'];
+        foreach ($golDarah as $i => $val) {
+            $dropdownSheet->setCellValue('C' . ($i + 2), $val);
+        }
+
+        // Agama
+        $agama = ['Islam', 'Kristen', 'Katolik', 'Hindu', 'Buddha', 'Konghucu', 'Lainnya'];
+        foreach ($agama as $i => $val) {
+            $dropdownSheet->setCellValue('D' . ($i + 2), $val);
+        }
+
+        // Status Perkawinan
+        $statusPerkawinan = ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati'];
+        foreach ($statusPerkawinan as $i => $val) {
+            $dropdownSheet->setCellValue('E' . ($i + 2), $val);
+        }
+
+        // Pendidikan Terakhir
+        $pendidikan = ['Tidak/Belum Sekolah', 'Tidak Tamat SD', 'Tamat SD', 'SLTP', 'SLTA', 'Diploma I/II', 'Diploma III', 'S1', 'S2', 'S3'];
+        foreach ($pendidikan as $i => $val) {
+            $dropdownSheet->setCellValue('F' . ($i + 2), $val);
+        }
+
+        // Kedudukan Keluarga
+        $kedudukanKeluarga = ['Kepala Keluarga', 'Istri', 'Anak', 'Menantu', 'Cucu', 'Orang Tua', 'Mertua', 'Famili Lain', 'Pembantu', 'Lainnya'];
+        foreach ($kedudukanKeluarga as $i => $val) {
+            $dropdownSheet->setCellValue('G' . ($i + 2), $val);
+        }
+
+        // Kemampuan Baca Huruf
+        $bacaHuruf = ['Bisa', 'Tidak Bisa'];
+        foreach ($bacaHuruf as $i => $val) {
+            $dropdownSheet->setCellValue('H' . ($i + 2), $val);
+        }
+
+        // Dusun (from database)
+        foreach ($dusunNames as $i => $name) {
+            $dropdownSheet->setCellValue('I' . ($i + 2), $name);
+        }
+
+        $this->autoSizeColumns($dropdownSheet, 9);
+
+        // =====================================================================
+        // ADD DATA VALIDATIONS to Penduduk Sheet
+        // =====================================================================
+        $this->addDropdownValidation($pendudukSheet, 'C', 'Dropdown!$A$2:$A$3', 2, 1000);    // Jenis Kelamin
+        $this->addDropdownValidation($pendudukSheet, 'J', 'Dropdown!$B$2:$B$3', 2, 1000);    // Kewarganegaraan
+        $this->addDropdownValidation($pendudukSheet, 'L', 'Dropdown!$C$2:$C$14', 2, 1000);   // Golongan Darah
+        $this->addDropdownValidation($pendudukSheet, 'M', 'Dropdown!$D$2:$D$8', 2, 1000);    // Agama
+        $this->addDropdownValidation($pendudukSheet, 'P', 'Dropdown!$E$2:$E$5', 2, 1000);    // Status Perkawinan
+        $this->addDropdownValidation($pendudukSheet, 'Q', 'Dropdown!$F$2:$F$11', 2, 1000);   // Pendidikan Terakhir
+        $this->addDropdownValidation($pendudukSheet, 'T', 'Dropdown!$G$2:$G$11', 2, 1000);   // Kedudukan Keluarga
+        $this->addDropdownValidation($pendudukSheet, 'S', 'Dropdown!$H$2:$H$3', 2, 1000);    // Kemampuan Baca Huruf
+
+        // Dusun validation (column U = index 20)
+        $dusunEndRow = max(2, count($dusunNames) + 1);
+        $this->addDropdownValidation($pendudukSheet, 'U', "Dropdown!\$I\$2:\$I\${$dusunEndRow}", 2, 1000);
+
+        // Activate the first sheet
+        $spreadsheet->setActiveSheetIndex(0);
+
+        return $spreadsheet;
     }
-}
+
+    private function applyHeaderStyle(Worksheet $sheet, string $range): void
+    {
+        $sheet->getStyle($range)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['argb' => 'FFFFFFFF'],
+                'size' => 11,
+            ],
+            'fill' => [
+                'fillType' => Fill::FILL_SOLID,
+                'startColor' => ['argb' => 'FF1D4ED8'],
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical'   => Alignment::VERTICAL_CENTER,
+                'wrapText'   => true,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF93C5FD'],
+                ],
+            ],
+        ]);
+    }
+
+    private function autoSizeColumns(Worksheet $sheet, int $count): void
+    {
+        for ($i = 0; $i < $count; $i++) {
+            $col = $this->getColumnLetter($i);
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+        $sheet->getRowDimension(1)->setRowHeight(25);
+    }
+
+    private function addDropdownValidation(Worksheet $sheet, string $column, string $formula, int $startRow, int $endRow): void
+    {
+        $validation = new DataValidation();
+        $validation->setType(DataValidation::TYPE_LIST);
+        $validation->setErrorStyle(DataValidation::STYLE_STOP);
+        $validation->setAllowBlank(false);
+        $validation->setShowInputMessage(true);
+        $validation->setShowErrorMessage(true);
+        $validation->setShowDropDown(true);
+        $validation->setFormula1($formula);
+
+        for ($row = $startRow; $row <= $endRow; $row++) {
+            $sheet->getCell($column . $row)->setDataValidation(clone $validation);
+        }
+    }
+
+    private function getColumnLetter(int $index): string
+    {
+        $letter = '';
+        while ($index >= 0) {
+            $letter = chr(65 + ($index % 26)) . $letter;
+            $index  = (int)($index / 26) - 1;
+        }
+        return $letter;
+    }
 
     #[Layout('components.layouts.layouts')]
     public function render()

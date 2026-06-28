@@ -286,6 +286,85 @@
         });
 
     </script>
+    <script>
+        // Format NIK & KK (4 chunk) secara global
+        function formatChunk4(input) {
+            let clean = input.value.replace(/\D/g, '');
+            if (clean.length > 16) {
+                clean = clean.substring(0, 16);
+            }
+            
+            let formatted = '';
+            for (let i = 0; i < clean.length; i++) {
+                if (i > 0 && i % 4 === 0) {
+                    formatted += ' ';
+                }
+                formatted += clean[i];
+            }
+            
+            if (input.value !== formatted) {
+                const isFocused = document.activeElement === input;
+                let cursorPosition = input.selectionStart;
+                let originalLen = input.value.length;
+                
+                input.value = formatted;
+                
+                if (isFocused && cursorPosition !== null) {
+                    let newLen = formatted.length;
+                    cursorPosition = cursorPosition + (newLen - originalLen);
+                    input.setSelectionRange(cursorPosition, cursorPosition);
+                }
+            }
+        }
+
+        function isNikOrKkInput(input) {
+            if (input.tagName !== 'INPUT' || (input.type !== 'text' && input.type !== 'number')) {
+                return false;
+            }
+            const label = (input.id || input.name || input.placeholder || '').toLowerCase();
+            return label.includes('nik') || 
+                   label.includes('kk') || 
+                   label.includes('ktp') || 
+                   label.includes('kartu_keluarga') ||
+                   label.includes('kartu keluarga');
+        }
+
+        // 1. Delegasi event input untuk form yang sedang diketik
+        document.addEventListener('input', function(e) {
+            const input = e.target;
+            if (isNikOrKkInput(input)) {
+                if (input.type === 'number') {
+                    input.type = 'text';
+                }
+                input.setAttribute('maxlength', '19');
+                formatChunk4(input);
+            }
+        });
+
+        // 2. Format awal saat load atau setelah Livewire update
+        function formatExistingInputs() {
+            document.querySelectorAll('input').forEach(input => {
+                if (isNikOrKkInput(input)) {
+                    if (input.type === 'number') {
+                        input.type = 'text';
+                    }
+                    input.setAttribute('maxlength', '19');
+                    formatChunk4(input);
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', formatExistingInputs);
+
+        // Dukungan Livewire & Alpine (Morph updates)
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.hook('morph.updated', ({ el }) => {
+                if (el.tagName === 'INPUT' && isNikOrKkInput(el)) {
+                    formatChunk4(el);
+                }
+            });
+        });
+    </script>
     {{-- <script src="{{ asset('js/rupiah-input.js') }}"></script> --}}
 </body>
 </html>

@@ -342,14 +342,21 @@ class SuratController extends Controller
         $pengajuanSurat = $surat;
         $judul = $pengajuanSurat->jenisSurat->nama_surat ?? 'Surat Keterangan';
 
-        // Jika ada file PDF upload manual (bukan HTML), langsung serve file tersebut
+        // Jika ada file manual (bukan HTML), langsung serve file tersebut (PDF / Gambar)
         if ($surat->file_pdf && !str_ends_with($surat->file_pdf, '.html')) {
-            $filePath = storage_path('app/' . $surat->file_pdf);
+            $filePath = \Storage::path($surat->file_pdf);
             if (file_exists($filePath)) {
+                $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+                $mimeType = match (strtolower($ext)) {
+                    'pdf' => 'application/pdf',
+                    'jpg', 'jpeg' => 'image/jpeg',
+                    'png' => 'image/png',
+                    default => 'application/octet-stream',
+                };
                 $nomorSurat = $surat->nomor_surat ?? $surat->id_pengajuan_surat;
-                $downloadName = date('Ymd') . '_' . str_replace('/', '-', $nomorSurat) . '.pdf';
+                $downloadName = date('Ymd') . '_' . str_replace('/', '-', $nomorSurat) . '.' . $ext;
                 return response()->download($filePath, $downloadName, [
-                    'Content-Type' => 'application/pdf',
+                    'Content-Type' => $mimeType,
                 ]);
             }
         }

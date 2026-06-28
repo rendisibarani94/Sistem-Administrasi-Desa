@@ -86,6 +86,12 @@
                 ?? $userPemohon?->nik
                 ?? $dataForm['nik'] 
                 ?? '-';
+            if ($nikFallback !== '-') {
+                $cleanNik = str_replace(' ', '', $nikFallback);
+                if (strlen($cleanNik) === 16) {
+                    $nikFallback = implode(' ', str_split($cleanNik, 4));
+                }
+            }
             $alamatFallback = $pemohon?->alamat 
                 ?? $dataForm['alamat'] 
                 ?? '-';
@@ -208,6 +214,13 @@
                         if (strtolower($label) === 'nik') {
                             $label = 'NIK';
                         }
+                        $displayVal = $value;
+                        if (in_array(strtolower($label), ['nik', 'kk', 'no kk', 'no. kk', 'no.kk', 'nomor kk', 'nomor kartu keluarga'])) {
+                            $cleanVal = str_replace(' ', '', $value);
+                            if (strlen($cleanVal) === 16) {
+                                $displayVal = implode(' ', str_split($cleanVal, 4));
+                            }
+                        }
 
                         if ($isFile && $value) {
                             $imagesList[] = [
@@ -217,7 +230,7 @@
                         } else {
                             $textFieldsList[] = [
                                 'label' => $label,
-                                'value' => $value ?? '-'
+                                'value' => $displayVal ?? '-'
                             ];
                         }
                     }
@@ -240,6 +253,13 @@
                             if (strtolower($labelField) === 'nik') {
                                 $labelField = 'NIK';
                             }
+                            $displayVal = $val;
+                            if (in_array(strtolower($labelField), ['nik', 'kk', 'no kk', 'no. kk', 'no.kk', 'nomor kk', 'nomor kartu keluarga'])) {
+                                $cleanVal = str_replace(' ', '', $val);
+                                if (strlen($cleanVal) === 16) {
+                                    $displayVal = implode(' ', str_split($cleanVal, 4));
+                                }
+                            }
 
                             if ($isFile && $val) {
                                 $imagesList[] = [
@@ -249,7 +269,7 @@
                             } else {
                                 $textFieldsList[] = [
                                     'label' => $labelField,
-                                    'value' => $val ?? '-'
+                                    'value' => $displayVal ?? '-'
                                 ];
                             }
                         }
@@ -283,7 +303,7 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
                                                     </svg>
-                                                    Buka di Tab Baru
+                                                    Lihat Detail Foto
                                                 </a>
                                             </div>
                                         </div>
@@ -399,34 +419,63 @@
                         target="_blank"
                         class="w-full sm:w-auto inline-flex items-center gap-2 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
-                        Cetak Surat
+                        Preview Surat
                     </a>
                 </div>
             @endif
 
             @if ($pengajuanSurat->status === 'selesai')
-                <div class="flex flex-wrap gap-3">
-                    {{-- Cetak Surat Resmi (selalu tersedia bila selesai) --}}
-                    <a href="{{ route('admin.layanan-surat.request.print', $pengajuanSurat->id_pengajuan_surat) }}"
-                        target="_blank"
-                        class="inline-flex items-center gap-2 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
-                        </svg>
-                        Cetak Surat Resmi
-                    </a>
-                    @if ($pengajuanSurat->file_pdf)
-                    {{-- Unduh scan PDF yang diupload admin (jika ada) --}}
-                    <a href="{{ route('admin.layanan-surat.request.download', $pengajuanSurat->id_pengajuan_surat) }}"
-                        class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                        </svg>
-                        Unduh Surat Scan
-                    </a>
-                    @endif
+                <div class="space-y-6">
+                    <div class="flex flex-wrap gap-3">
+                        {{-- Cetak Surat Resmi (selalu tersedia bila selesai) --}}
+                        <a href="{{ route('admin.layanan-surat.request.print', $pengajuanSurat->id_pengajuan_surat) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 rounded-lg bg-purple-600 hover:bg-purple-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.056 48.056 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" />
+                            </svg>
+                            Pratinjau Surat
+                        </a>
+                        @if ($pengajuanSurat->file_pdf)
+                        {{-- Unduh scan PDF/Gambar yang diupload admin (jika ada) --}}
+                        <a href="{{ route('admin.layanan-surat.request.download', $pengajuanSurat->id_pengajuan_surat) }}"
+                            target="_blank"
+                            class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2.5 text-sm font-medium text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                            </svg>
+                            Unduh Surat 
+                        </a>
+                        @endif
+                    </div>
+
+                    {{-- Form Upload Foto/Scan yang sudah TTD Basah --}}
+                    <div class="mt-6 p-4 bg-gray-50 rounded-xl border border-gray-200">
+                        <h4 class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-2">
+                            Upload Scan / Foto Surat TTD Basah Kepala Desa
+                        </h4>
+                        <p class="text-xs text-gray-500 mb-4">
+                            Kirimkan file PDF atau foto (JPG, JPEG, PNG) surat yang sudah ditandatangani basah oleh Kepala Desa agar warga dapat mengunduhnya di aplikasi mereka.
+                        </p>
+                        <form action="{{ route('admin.layanan-surat.request.upload-scan', $pengajuanSurat->id_pengajuan_surat) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
+                            @csrf
+                            @method('PATCH')
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                                <input type="file" name="file_pdf" accept=".pdf,image/png,image/jpeg,image/jpg" required
+                                    class="block w-full text-xs text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-sky-50 file:text-sky-700 hover:file:bg-sky-100 border border-gray-300 rounded-lg p-1 bg-white">
+                                <button type="submit"
+                                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-4 py-2 text-xs font-semibold text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z" />
+                                    </svg>
+                                    Unggah File
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             @endif
         </div>
@@ -627,8 +676,16 @@
                     
                     const valueSpan = document.createElement('span');
                     valueSpan.className = 'font-semibold text-gray-800 text-right truncate pl-2 max-w-[220px]';
-                    valueSpan.textContent = fields[key];
-                    valueSpan.title = fields[key];
+                    let displayVal = fields[key];
+                    const keyLower = key.toLowerCase().trim();
+                    if (keyLower === 'nik' || keyLower === 'kk' || keyLower.includes('kartu keluarga') || keyLower.includes('induk kependudukan')) {
+                        const cleanVal = String(displayVal).replace(/\s+/g, '');
+                        if (cleanVal.length === 16) {
+                            displayVal = cleanVal.replace(/(\d{4})(?=\d)/g, '$1 ');
+                        }
+                    }
+                    valueSpan.textContent = displayVal;
+                    valueSpan.title = displayVal;
                     
                     item.appendChild(labelSpan);
                     item.appendChild(valueSpan);

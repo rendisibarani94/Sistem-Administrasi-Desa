@@ -284,13 +284,26 @@
         }
     </style>
     @endif
+    @if ($pengajuanSurat->status !== 'selesai')
+    <style>
+        @media print {
+            body {
+                display: none !important;
+            }
+        }
+    </style>
+    @endif
 </head>
 <body>
 
 {{-- ===== TOMBOL PRINT (tidak ikut tercetak) ===== --}}
-<div class="no-print">
-    <span>📄 Preview Surat — Siap Cetak</span>
-    <button onclick="window.print()">🖨️ Cetak Sekarang</button>
+<div class="no-print" style="{{ $pengajuanSurat->status !== 'selesai' ? 'background: #dc2626;' : '' }}">
+    @if ($pengajuanSurat->status === 'selesai')
+        <span>📄 Preview Surat — Siap Cetak</span>
+        <button onclick="window.print()">🖨️ Cetak Sekarang</button>
+    @else
+        <span>⚠️ PREVIEW SURAT PENGAJUAN</span>
+    @endif
 </div>
 
 @php

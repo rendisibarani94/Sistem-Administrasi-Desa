@@ -18,8 +18,21 @@ use App\Http\Controllers\Api\FcmController;
 // =======================
 Route::middleware('cors')->group(function () {
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/admin/login', [AuthController::class, 'adminLogin']);
     Route::post('/register', [UserController::class, 'register']);
     Route::get('/test', fn () => response()->json(['message' => 'API berjalan']));
+
+    // Serve storage files with CORS headers
+    Route::get('/storage/{path}', function ($path) {
+        $filePath = storage_path('app/public/' . $path);
+        if (!file_exists($filePath)) {
+            abort(404);
+        }
+        $mimeType = mime_content_type($filePath);
+        return response()->file($filePath, [
+            'Content-Type' => $mimeType,
+        ]);
+    })->where('path', '.*');
 
     // Berita & Pengumuman & Settings
     Route::get('/berita', [InformationApiController::class, 'getBerita']);

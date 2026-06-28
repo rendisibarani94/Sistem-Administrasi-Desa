@@ -33,8 +33,8 @@ class KepalaDesaController extends Component
 
         return [
             'nama'      => 'required|string|max:150',
-            'nip'       => 'required|string|size:18',
-            'file_ttd'  => $hasExistingTtd ? 'nullable|image|max:2048' : 'required|image|max:2048',
+            'nip'       => 'nullable|string|size:18',
+            'file_ttd'  => 'nullable|image|max:2048',
             'is_active' => 'boolean',
         ];
     }

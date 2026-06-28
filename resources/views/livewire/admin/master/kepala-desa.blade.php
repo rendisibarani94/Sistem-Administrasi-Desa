@@ -209,7 +209,7 @@
                 {{-- NIP --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        NIP <span class="text-red-500">*</span>
+                        NIP <span class="text-gray-400 font-normal">(opsional)</span>
                     </label>
                     <input wire:model="nip" type="text" placeholder="Nomor Induk Pegawai"
                         class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nip') border-red-400 bg-red-50 @enderror" />
@@ -221,12 +221,7 @@
                 {{-- Upload TTD --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        Gambar Tanda Tangan 
-                        @if($editingId)
-                            <span class="text-gray-400 font-normal">(opsional, maks. 2MB)</span>
-                        @else
-                            <span class="text-red-500">*</span> <span class="text-gray-400 font-normal">(maks. 2MB)</span>
-                        @endif
+                        Gambar Tanda Tangan <span class="text-gray-400 font-normal">(opsional, maks. 2MB)</span>
                     </label>
                     <div class="flex items-center gap-3">
                         <label for="file_ttd" class="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-sky-50 hover:bg-sky-100 px-4 py-2.5 text-sm font-semibold text-sky-700 transition-colors border border-sky-200">

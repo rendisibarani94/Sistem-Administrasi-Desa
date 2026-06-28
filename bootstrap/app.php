@@ -12,6 +12,11 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up'
     )
     ->withMiddleware(function (Middleware $middleware) {
+        // Daftarkan CORS sebagai global middleware agar semua request (termasuk preflight OPTIONS)
+        // mendapatkan CORS headers — penting untuk Flutter Web yang berjalan di Chrome
+        $middleware->append(\App\Http\Middleware\CorsMiddleware::class);
+        $middleware->append(\App\Http\Middleware\CleanNikKkMiddleware::class);
+
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'cors' => \App\Http\Middleware\CorsMiddleware::class,

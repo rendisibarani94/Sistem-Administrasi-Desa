@@ -10,20 +10,28 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $request->validate([
-            'nik' => 'required',
-            'password' => 'required|min:6'
-    ]);
+        // Mendukung nik, no_kk, atau noKk sebagai key login
+        $loginKey = 'nik';
+        if ($request->has('no_kk')) {
+            $loginKey = 'no_kk';
+        } elseif ($request->has('noKk')) {
+            $loginKey = 'noKk';
+        }
 
-    if (!Auth::attempt([
-        'nik' => $request->nik,
-        'password' => $request->password
-    ])) {
-        return response()->json([
-            'status' => 'error',
-            'message' => 'Nomor KK atau password salah'
-        ], 401);
-    }
+        $request->validate([
+            $loginKey => 'required',
+            'password' => 'required|min:6'
+        ]);
+
+        if (!Auth::attempt([
+            'nik' => $request->input($loginKey),
+            'password' => $request->password
+        ])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Nomor KK atau password salah'
+            ], 401);
+        }
 
     $user = Auth::user();
 
@@ -54,6 +62,51 @@ class AuthController extends Controller
         ]
     ]);
 }
+
+    public function adminLogin(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ]);
+
+        if (!Auth::attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ])) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Email atau password salah'
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        if ($user->role !== 'admin' && $user->role !== 'kepala_desa') {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Akses ditolak. Bukan akun administrator.'
+            ], 403);
+        }
+
+        $user->tokens()->delete();
+
+        $token = $user->createToken('admin-token')->plainTextToken;
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Login admin berhasil',
+            'data' => [
+                'token' => $token,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'role' => $user->role
+                ]
+            ]
+        ]);
+    }
 
     public function me(Request $request)
     {

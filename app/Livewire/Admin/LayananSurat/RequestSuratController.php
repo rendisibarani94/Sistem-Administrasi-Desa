@@ -158,7 +158,7 @@ class RequestSuratController extends Controller
 
         $validated = $request->validate([
             'nomor_surat'     => 'required|string|max:100',
-            'file_pdf'        => 'nullable|file|mimes:pdf|max:10240',  // opsional sekarang
+            'file_pdf'        => 'nullable|file|mimes:pdf,jpg,jpeg,png|max:10240',  // opsional sekarang
         ]);
 
         $pengajuanSurat = PengajuanSurat::with(['jenisSurat', 'penduduk', 'diprosesOleh'])
@@ -188,12 +188,12 @@ class RequestSuratController extends Controller
                 $isPdf = true;
                 $html = view('livewire.admin.layanan-surat.print-surat', compact('pengajuanSurat', 'judul', 'isPdf'))->render();
 
-                // Pastikan folder ada
-                $dir = storage_path('app/surat');
-                if (!is_dir($dir)) { mkdir($dir, 0755, true); }
-
                 $filename = 'surat/' . date('Ymd') . '_' . $id . '_' . str_replace('/', '-', $validated['nomor_surat']) . '.pdf';
-                $pdfPath = storage_path('app/' . $filename);
+                $pdfPath = \Storage::path($filename);
+
+                // Pastikan folder ada
+                $dir = dirname($pdfPath);
+                if (!is_dir($dir)) { mkdir($dir, 0755, true); }
 
                 $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadHTML($html);
                 $pdf->setPaper('a4', 'portrait');
@@ -283,7 +283,7 @@ class RequestSuratController extends Controller
             return redirect()->back()->with('error', 'File PDF tidak tersedia.');
         }
 
-        $filePath = storage_path('app/' . $pengajuanSurat->file_pdf);
+        $filePath = \Storage::path($pengajuanSurat->file_pdf);
 
         // Jika filenya adalah HTML (data lama), konversi on-the-fly ke PDF
         if (str_ends_with($pengajuanSurat->file_pdf, '.html')) {
@@ -445,5 +445,43 @@ class RequestSuratController extends Controller
     private function notifyUserByPendudukId(int $idPenduduk, string $judul, string $pesan): void
     {
         $this->notifyUser($idPenduduk, $judul, $pesan);
+    }
+
+    /**
+     * Mengunggah foto/scan surat resmi yang sudah ditandatangani basah oleh Kades
+     */
+    public function uploadScan(Request $request, $id)
+    {
+        $this->authorizeAdmin();
+
+        $validated = $request->validate([
+            'file_pdf' => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+        ], [
+            'file_pdf.required' => 'Berkas file wajib dipilih.',
+            'file_pdf.file'     => 'Berkas harus berupa file valid.',
+            'file_pdf.mimes'    => 'Berkas harus berformat PDF, JPG, JPEG, atau PNG.',
+            'file_pdf.max'      => 'Ukuran berkas maksimal adalah 10MB.',
+        ]);
+
+        $pengajuanSurat = PengajuanSurat::findOrFail($id);
+
+        if ($request->hasFile('file_pdf')) {
+            $filePath = $request->file('file_pdf')->store('surat');
+            $pengajuanSurat->update([
+                'file_pdf' => $filePath,
+            ]);
+
+            // Kirim notifikasi ke warga
+            $this->notifyUser(
+                $pengajuanSurat->id_penduduk,
+                'Scan Surat Tersedia',
+                'Foto/Scan surat resmi yang sudah ditandatangani basah telah diunggah. Silakan lihat atau unduh.',
+                $pengajuanSurat->id_pengajuan_surat
+            );
+
+            return redirect()->back()->with('success', 'Foto/Scan surat resmi berhasil diunggah.');
+        }
+
+        return redirect()->back()->with('error', 'Gagal mengunggah file.');
     }
 }

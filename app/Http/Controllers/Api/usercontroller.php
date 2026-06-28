@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\KartuKeluarga;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
@@ -12,35 +13,78 @@ class UserController extends Controller
     // =========================
     // REGISTER (PUBLIC)
     // =========================
-public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'nik' => 'required|digits:16|unique:users,nik',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6|confirmed',
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'no_kk'                 => 'required|digits:16',
+            'nama_kepala_keluarga'  => 'required|string|max:255',
+            'password'              => 'required|min:6|confirmed',
+        ]);
 
-    $user = User::create([
-        'name' => $request->name,
-        'nik' => $request->nik,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'masyarakat'
-    ]);
+        // 1. Cari Kartu Keluarga berdasarkan Nomor KK
+        $kk = KartuKeluarga::where('nomor_kartu_keluarga', $request->no_kk)
+            ->active()
+            ->first();
 
-    return response()->json([
-        'status' => 'success',
-        'message' => 'Register berhasil',
-        'data' => [
-            'id' => $user->id,
-            'name' => $user->name,
-            'nik' => $user->nik,
-            'email' => $user->email,
-            'role' => $user->role
-        ]
-    ]);
-}
+        if (!$kk) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Nomor KK tidak ditemukan di data desa.'
+            ], 404);
+        }
+
+        // 2. Cari Kepala Keluarga dari KK tersebut
+        $kepalaKeluarga = $kk->penduduk()
+            ->whereRaw("LOWER(kedudukan_keluarga) LIKE '%kepala keluarga%'")
+            ->where('is_deleted', 0)
+            ->first();
+
+        if (!$kepalaKeluarga) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Data Kepala Keluarga untuk KK ini tidak ditemukan.'
+            ], 404);
+        }
+
+        // 3. Validasi nama Kepala Keluarga yang diinput cocok dengan data desa
+        if (strtolower(trim($kepalaKeluarga->nama_lengkap)) !== strtolower(trim($request->nama_kepala_keluarga))) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Nama Kepala Keluarga tidak sesuai dengan data desa.'
+            ], 422);
+        }
+
+        // 4. Cek apakah NIK Kepala Keluarga sudah memiliki akun
+        $existingUser = User::where('nik', $kepalaKeluarga->nik)->first();
+        if ($existingUser) {
+            return response()->json([
+                'status'  => 'error',
+                'message' => 'Akun untuk Kepala Keluarga ini sudah terdaftar.'
+            ], 422);
+        }
+
+        // 5. Buat akun User menggunakan data dari tabel penduduk
+        $user = User::create([
+            'name'         => $kepalaKeluarga->nama_lengkap,
+            'nik'          => $kepalaKeluarga->nik,
+            'email'        => null,
+            'password'     => Hash::make($request->password),
+            'role'         => 'masyarakat',
+            'id_penduduk'  => $kepalaKeluarga->id_penduduk,
+        ]);
+
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Registrasi berhasil',
+            'data'    => [
+                'id'     => $user->id,
+                'name'   => $user->name,
+                'nik'    => $user->nik,
+                'no_kk'  => $kk->nomor_kartu_keluarga,
+                'role'   => $user->role,
+            ]
+        ]);
+    }
 
     // =========================
     // GET ALL USERS (ADMIN)

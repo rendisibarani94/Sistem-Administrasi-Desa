@@ -112,7 +112,7 @@ class InformationApiController extends Controller
 
         // Jika ada file HTML yang di-generate otomatis
         if ($pengajuanSurat->file_pdf && str_ends_with($pengajuanSurat->file_pdf, '.html')) {
-            $htmlPath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            $htmlPath = \Storage::path($pengajuanSurat->file_pdf);
             if (file_exists($htmlPath)) {
                 return response(file_get_contents($htmlPath), 200)
                     ->header('Content-Type', 'text/html; charset=UTF-8');
@@ -121,7 +121,7 @@ class InformationApiController extends Controller
 
         // Jika ada file PDF upload manual
         if ($pengajuanSurat->file_pdf && !str_ends_with($pengajuanSurat->file_pdf, '.html')) {
-            $pdfPath = storage_path('app/' . $pengajuanSurat->file_pdf);
+            $pdfPath = \Storage::path($pengajuanSurat->file_pdf);
             if (file_exists($pdfPath)) {
                 return response()->download($pdfPath);
             }
@@ -146,30 +146,34 @@ class InformationApiController extends Controller
         try {
             $berita = DB::table('berita')
                 ->orderByDesc('created_at')
-                ->limit(20)
+                ->limit(100) // Ditingkatkan dari 20 agar semua berita bisa ditarik ke mobile
                 ->get()
                 ->map(function ($item) use ($request) {
                     $gambarUrl = null;
                     if (!empty($item->gambar)) {
                         $baseUrl = $request->getSchemeAndHttpHost();
-                        $gambarUrl = $baseUrl . '/storage/' . $item->gambar;
+                        $gambarUrl = $baseUrl . '/api/storage/' . $item->gambar;
                     }
 
                     return [
-                        'id_berita'   => (string) $item->id_berita,
-                        'judul'       => $item->judul,
-                        'deskripsi'   => $item->deskripsi,
-                        'gambar'      => $item->gambar,
-                        'gambar_url'  => $gambarUrl,
+                        'id_berita'      => (string) $item->id_berita,
+                        'judul'          => $item->judul,
+                        'deskripsi'      => $item->deskripsi,
+                        'gambar'         => $item->gambar,
+                        'gambar_url'     => $gambarUrl,
                         'id_dibuat_oleh' => $item->id_dibuat_oleh,
-                        'created_at'  => $item->created_at ?? null,
-                        'updated_at'  => $item->updated_at ?? null,
+                        'created_at'     => $item->created_at ?? null,
+                        'updated_at'     => $item->updated_at ?? null,
                     ];
                 });
 
-            return response()->json(['status' => 'success', 'data' => $berita]);
+            return response()->json([
+                'status' => 'success',
+                'data'   => $berita,
+                'total'  => $berita->count(),
+            ]);
         } catch (\Throwable $e) {
-            return response()->json(['status' => 'success', 'data' => []]);
+            return response()->json(['status' => 'success', 'data' => [], 'total' => 0]);
         }
     }
 
@@ -185,7 +189,7 @@ class InformationApiController extends Controller
             $logoUrl = null;
             if (!empty($settings['logo'])) {
                 $baseUrl = $request->getSchemeAndHttpHost();
-                $logoUrl = $baseUrl . '/storage/' . $settings['logo'];
+                $logoUrl = $baseUrl . '/api/storage/' . $settings['logo'];
             }
 
             return response()->json([
@@ -219,7 +223,7 @@ class InformationApiController extends Controller
                 ->leftJoin('users', 'pengumuman.id_dibuat_oleh', '=', 'users.id')
                 ->where('pengumuman.is_deleted', 0)
                 ->orderByDesc('pengumuman.created_at')
-                ->limit(50)
+                ->limit(100) // Ditingkatkan dari 50 agar semua pengumuman bisa ditarik ke mobile
                 ->get([
                     'pengumuman.id_pengumuman',
                     'pengumuman.judul',
@@ -234,7 +238,7 @@ class InformationApiController extends Controller
                     $gambarUrl = null;
                     if (!empty($item->gambar)) {
                         $baseUrl = $request->getSchemeAndHttpHost();
-                        $gambarUrl = $baseUrl . '/storage/' . $item->gambar;
+                        $gambarUrl = $baseUrl . '/api/storage/' . $item->gambar;
                     }
 
                     return [
