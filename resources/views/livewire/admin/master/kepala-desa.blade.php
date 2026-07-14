@@ -221,7 +221,7 @@
                 {{-- Upload TTD --}}
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        Gambar Tanda Tangan <span class="text-gray-400 font-normal">(opsional, maks. 2MB)</span>
+                        Gambar Tanda Tangan <span class="text-gray-400 font-normal">(opsional, maks. 5MB)</span>
                     </label>
                     <div class="flex items-center gap-3">
                         <label for="file_ttd" class="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-sky-50 hover:bg-sky-100 px-4 py-2.5 text-sm font-semibold text-sky-700 transition-colors border border-sky-200">

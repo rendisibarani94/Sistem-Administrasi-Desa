@@ -458,7 +458,7 @@
                             Upload Scan / Foto Surat TTD Basah Kepala Desa
                         </h4>
                         <p class="text-xs text-gray-500 mb-4">
-                            Kirimkan file PDF atau foto (JPG, JPEG, PNG) surat yang sudah ditandatangani basah oleh Kepala Desa agar warga dapat mengunduhnya di aplikasi mereka.
+                            Kirimkan file PDF atau foto (JPG, JPEG, PNG) surat yang sudah ditandatangani basah oleh Kepala Desa agar masyarakat dapat mengunduhnya di aplikasi mereka.
                         </p>
                         <form action="{{ route('admin.layanan-surat.request.upload-scan', $pengajuanSurat->id_pengajuan_surat) }}" method="POST" enctype="multipart/form-data" class="space-y-3">
                             @csrf

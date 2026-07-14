@@ -25,7 +25,7 @@ class AdminBerandaController extends Component
 
     public $existingGambar;
 
-    #[Rule('nullable|image|max:4096', message: 'File harus berupa gambar dan maksimal 4MB!')]
+    #[Rule('nullable|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $gambar_landing_page;
 
     public function mount()

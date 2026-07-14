@@ -1,6 +1,6 @@
 <div>
     <x-slot:judul>
-        Data Pengaduan Warga
+        Data Pengaduan Masyarakat
     </x-slot:judul>
 
     {{-- Full Page Container --}}
@@ -8,7 +8,7 @@
         {{-- Header & Breadcrumb --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-6 mb-6 gap-4">
             <div>
-                <h1 class="text-3xl font-semibold text-gray-900">Data Pengaduan Warga</h1>
+                <h1 class="text-3xl font-semibold text-gray-900">Data Pengaduan Masyarakat</h1>
                 <nav class="flex mt-2" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2">
                         <li class="inline-flex items-center">
@@ -126,7 +126,7 @@
                             Bukti Foto
                         </th>
                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500">
-                            Catatan Admin
+                            Catatan Perangkat Desa
                         </th>
                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-700 uppercase tracking-wider border-b-3 border-gray-500 w-28">
                             Status
@@ -219,7 +219,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300 mx-auto" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
                                     </svg>
-                                    <p>Belum ada pengaduan warga.</p>
+                                    <p>Belum ada pengaduan masyarakat.</p>
                                 </div>
                             </td>
                         </tr>
@@ -252,7 +252,7 @@
             <div class="flex items-center justify-between border-b border-gray-100 bg-gray-50 px-6 py-4">
                 <div class="flex items-center gap-2">
                     <span class="text-xl">{{ $selectedPengaduan->foto ? '🖼️' : '💬' }}</span>
-                    <h2 class="text-lg font-bold text-gray-800">Detail Laporan Pengaduan Warga</h2>
+                    <h2 class="text-lg font-bold text-gray-800">Detail Laporan Pengaduan Masyarakat</h2>
                 </div>
                 <button wire:click="closeDetailModal" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -269,7 +269,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
                         </svg>
-                        Identitas Warga Pengadu
+                        Identitas Masyarakat Pengadu
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                         <div>
@@ -314,7 +314,7 @@
 
                 {{-- Update Status & Respon --}}
                 <div class="space-y-3 border-t border-gray-100 pt-4">
-                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggapan / Catatan Admin</h3>
+                    <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggapan / Catatan Perangkat Desa</h3>
                     <div class="space-y-4">
                         <div>
                             <textarea

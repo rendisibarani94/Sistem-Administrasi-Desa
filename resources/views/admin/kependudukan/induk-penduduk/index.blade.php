@@ -91,8 +91,8 @@
                 </a>
                 @endif
 
-                <!-- Ekspor Semua Akun Warga Button -->
-                <button wire:click="exportAllAccounts" type="button" class="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-500 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto" title="Unduh spreadsheet seluruh akun warga yang ada di database">
+                <!-- Ekspor Semua Akun Masyarakat Button -->
+                <button wire:click="exportAllAccounts" type="button" class="cursor-pointer bg-teal-600 hover:bg-teal-700 text-white focus:ring-2 focus:outline-none focus:ring-teal-500 font-bold py-2 px-4 rounded flex items-center space-x-2 w-full sm:w-auto" title="Unduh spreadsheet seluruh akun masyarakat yang ada di database">
                     <svg class="w-6 h-6 text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 15v2a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3v-2m-8 1V4m0 12-4-4m4 4 4-4"/>
                     </svg>
@@ -172,7 +172,7 @@
                                     </a>
                                 </div>
                             @elseif(strtoupper($item->kedudukan_keluarga) === 'KEPALA KELUARGA')
-                                <a wire:click="openCreateAccountModal({{ $item->id_penduduk }})" class="text-sky-600 hover:text-sky-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer" title="Buatkan akun untuk warga ini">
+                                <a wire:click="openCreateAccountModal({{ $item->id_penduduk }})" class="text-sky-600 hover:text-sky-900 font-medium transition rounded-sm duration-200 flex items-center space-x-1 cursor-pointer" title="Buatkan akun untuk masyarakat ini">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                       <path stroke-linecap="round" stroke-linejoin="round" d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6 6 0 0 1 6-6h.75a6 6 0 0 1 6 6v.11m-12 0A1.75 1.75 0 0 0 4.75 21h8.5A1.75 1.75 0 0 0 15 19.235" />
                                     </svg>
@@ -219,7 +219,7 @@
         </div>
     </div>
 
-    {{-- Modal Buat Akun Warga --}}
+    {{-- Modal Buat Akun Masyarakat --}}
     @if($showAccountModal)
     <div class="fixed inset-0 z-50 flex items-center justify-center overflow-x-hidden overflow-y-auto outline-none focus:outline-none">
         <!-- Backdrop -->

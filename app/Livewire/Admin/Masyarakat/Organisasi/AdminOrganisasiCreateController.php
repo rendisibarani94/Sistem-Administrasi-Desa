@@ -30,7 +30,7 @@ class AdminOrganisasiCreateController extends Component
     #[Rule('max:100', message: 'Kolom Nama Organisasi maksimal 100 digit karakter!')]
     public $ketua;
 
-    #[Rule('required|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('required|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $foto_ketua;
     public $oldFotoKetua;
     public $existingFotoKetua;
@@ -41,7 +41,7 @@ class AdminOrganisasiCreateController extends Component
     #[Rule('max:100', message: 'Kolom Nama Sekretaris maksimal 100 digit karakter!')]
     public $sekretaris;
 
-    #[Rule('required|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('required|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $foto_sekretaris;
     public $oldFotoSekretaris;
     public $existingFotoSekretaris;
@@ -50,12 +50,12 @@ class AdminOrganisasiCreateController extends Component
     #[Rule('max:100', message: 'Kolom Nama Bendahara maksimal 100 digit karakter!')]
     public $bendahara;
 
-    #[Rule('required|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('required|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $foto_bendahara;
     public $oldFotoBendahara;
     public $existingFotoBendahara;
 
-    #[Rule('required|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('required|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $logo_organisasi;
     public $oldLogoOrganisasi;
     public $existingLogoOrganisasi;

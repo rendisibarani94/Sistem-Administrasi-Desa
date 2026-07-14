@@ -31,7 +31,7 @@
             <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 space-y-4">
                 <!-- Image Upload Section -->
                 <div class="input-component">
-                    <label for="gambar_landing_page" class="block mb-2 text-sm font-semibold text-gray-950">Gambar Landing Page</label>
+                    <label for="gambar_landing_page" class="block mb-2 text-sm font-semibold text-gray-950">Gambar Landing Page <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
 
                     <!-- Show existing image if available -->
                     @if($existingGambar)

@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_ketua" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi</label>
+                        <label for="foto_ketua" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show existing image if available -->
                         @if($existingFotoKetua)
                         <div class="mb-4">
@@ -64,7 +64,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_sekretaris" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi</label>
+                        <label for="foto_sekretaris" class="block text-sm font-medium text-black mb-2 ">Foto Sekretaris Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show existing image if available -->
                         @if($existingFotoSekretaris)
                         <div class="mb-4">
@@ -95,7 +95,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_bendahara" class="block text-sm font-medium text-black mb-2 ">Foto Bendahara Organisasi</label>
+                        <label for="foto_bendahara" class="block text-sm font-medium text-black mb-2 ">Foto Bendahara Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show existing image if available -->
                         @if($existingFotoBendahara)
                         <div class="mb-4">
@@ -125,7 +125,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="logo_organisasi" class="block text-sm font-medium text-black mb-2 ">Logo Organisasi</label>
+                        <label for="logo_organisasi" class="block text-sm font-medium text-black mb-2 ">Logo Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show existing image if available -->
                         @if($existingLogoOrganisasi)
                         <div class="mb-4">

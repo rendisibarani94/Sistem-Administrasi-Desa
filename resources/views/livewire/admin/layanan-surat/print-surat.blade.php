@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $judul }} - {{ $pengajuanSurat->nomor_surat ?? 'Draft' }}</title>
     <style>
-        /* ===== RESET & BASE ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, Helvetica, sans-serif !important; }
         
         body {
-            font-family: "Times New Roman", Times, serif;
+            font-family: Arial, sans-serif;
             font-size: 12pt;
             color: #000;
             background: #fff;
@@ -112,7 +111,7 @@
         }
 
         /* ===== BODY ===== */
-        .pembuka, p.isi-surat, .isi-surat p, .penutup {
+        .pembuka, .penutup {
             text-align: justify;
             text-indent: 40px;
             line-height: 1.6;
@@ -120,6 +119,64 @@
             margin-bottom: 12px;
             font-size: 12pt;
         }
+
+        p.isi-surat, .isi-surat p {
+            text-align: left; /* Changed from justify to left to prevent spacing/colon misalignment */
+            line-height: 1.6;
+            margin-top: 0;
+            margin-bottom: 12px;
+            font-size: 12pt;
+            white-space: pre-wrap;
+        }
+
+        /* Prevent text-indent on aligned paragraphs inside the letter content */
+        .isi-surat p.ql-align-center,
+        .isi-surat p.ql-align-right {
+            text-indent: 0 !important;
+        }
+        .isi-surat p.ql-align-justify {
+            text-indent: 0 !important;
+            text-align: justify !important;
+        }
+
+        /* List and Table formatting for custom content */
+        .isi-surat ul, .isi-surat ol {
+            margin-bottom: 12px;
+            padding-left: 25px;
+        }
+        .isi-surat li p {
+            text-indent: 0 !important;
+            margin-bottom: 4px;
+        }
+        .isi-surat table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+        }
+        .isi-surat table td, .isi-surat table th {
+            padding: 4px 6px;
+            vertical-align: top;
+            font-size: 12pt;
+            white-space: pre-wrap;
+        }
+        .isi-surat table p {
+            text-indent: 0 !important;
+            margin-bottom: 0 !important;
+            white-space: normal !important;
+        }
+
+        /* Quill Editor Formatting Support */
+        .ql-align-center { text-align: center !important; }
+        .ql-align-right { text-align: right !important; }
+        .ql-align-justify { text-align: justify !important; }
+        .ql-indent-1 { padding-left: 30px !important; }
+        .ql-indent-2 { padding-left: 60px !important; }
+        .ql-indent-3 { padding-left: 90px !important; }
+        .ql-indent-4 { padding-left: 120px !important; }
+        .ql-indent-5 { padding-left: 150px !important; }
+        .ql-indent-6 { padding-left: 180px !important; }
+        .ql-indent-7 { padding-left: 210px !important; }
+        .ql-indent-8 { padding-left: 240px !important; }
 
         .data-pemohon {
             margin: 12px 0 12px 40px;
@@ -297,12 +354,12 @@
 <body>
 
 {{-- ===== TOMBOL PRINT (tidak ikut tercetak) ===== --}}
-<div class="no-print" style="{{ $pengajuanSurat->status !== 'selesai' ? 'background: #dc2626;' : '' }}">
+<div class="no-print" style="{{ $pengajuanSurat->status !== 'selesai' ? 'background: #005FA3;' : '' }}">
     @if ($pengajuanSurat->status === 'selesai')
-        <span>📄 Preview Surat — Siap Cetak</span>
-        <button onclick="window.print()">🖨️ Cetak Sekarang</button>
+        <span>Preview Surat — Siap Cetak</span>
+        <button onclick="window.print()">Cetak Sekarang</button>
     @else
-        <span>⚠️ PREVIEW SURAT PENGAJUAN</span>
+        <span>PRATINJAU SURAT PENGAJUAN</span>
     @endif
 </div>
 
@@ -374,7 +431,7 @@
     $jk         = $df['jk'] ?? $df['jenis_kelamin'] ?? $pemohon?->jenis_kelamin ?? '-';
     $pekerjaan  = $df['pekerjaan'] ?? $pemohon?->pekerjaan ?? '-';
 
-    // Cari alamat spesifik yang diinput oleh warga di form pengajuan (EAV atau data_form)
+    // Cari alamat spesifik yang diinput oleh masyarakat di form pengajuan (EAV atau data_form)
     $inputtedAlamat = null;
     if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
         foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
@@ -393,7 +450,7 @@
     $namaUsaha  = $df['nama_usaha'] ?? $df['jenis_usaha'] ?? '-';
 
     // ===== Data Kependudukan Krusial dari profil Penduduk & KK =====
-    // Cari tempat lahir spesifik yang diinput warga (EAV)
+    // Cari tempat lahir spesifik yang diinput masyarakat (EAV)
     $inputtedTempatLahir = null;
     if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
         foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
@@ -453,7 +510,7 @@
         }
     };
 
-    // Cari apakah ada field TTL gabungan yang diinput warga (EAV atau data_form)
+    // Cari apakah ada field TTL gabungan yang diinput masyarakat (EAV atau data_form)
     $inputtedTtl = null;
     if ($pengajuanSurat->relationLoaded('detailPengajuanSurat')) {
         foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
@@ -508,7 +565,8 @@
     // Info kop surat (bisa disesuaikan)
     $kabupaten   = 'KABUPATEN TOBA';
     $kecamatan   = 'KECAMATAN BALIGE';
-    $alamatDesa  = 'Jl. Hutabulu Mejan, Kode Pos : 22312, Website : www.desahutabulumejan.id';
+    $alamatDesa  = 'Jl. Hutabulu Mejan';
+    $emailDesa   = 'hutabulumejan01@gmail.com';
     $websiteDesa = '';
 
     // ===== Tanggal Cetak =====
@@ -577,6 +635,10 @@
             '{Nomor KK}'          => $noKk,
             '{ttl}'               => $ttl,
             '{TTL}'               => $ttl,
+            '{tempat/tgl_lahir}'  => $ttl,
+            '{tempat/tgl lahir}'  => $ttl,
+            '{Tempat/Tgl Lahir}'  => $ttl,
+            '{tempat/tanggal_lahir}' => $ttl,
             '{tempat}'            => ucfirst($tempatLahir),
             '{tempat_lahir}'      => ucfirst($tempatLahir),
             '{tempat lahir}'      => ucfirst($tempatLahir),
@@ -655,7 +717,7 @@
 
         // ── C. DINAMIS: Placeholder dari EAV Detail Pengajuan Surat (Input Mobile) ──
         // Ini adalah bagian KRUSIAL: setiap field kustom yang dibuat admin
-        // dan diisi oleh warga di HP akan otomatis terisi di template PDF.
+        // dan diisi oleh masyarakat di HP akan otomatis terisi di template PDF.
         foreach ($pengajuanSurat->detailPengajuanSurat as $detail) {
             $fieldName = $detail->persyaratanSurat?->nama_field ?? null;
             $fieldType = $detail->persyaratanSurat?->tipe_field ?? 'text';
@@ -692,6 +754,73 @@
 
         // ── F. Bersihkan placeholder lain yang tidak terisi (tag yang tidak cocok) dengan string kosong ──
         $renderedContent = preg_replace('/\{[^}]+\}/', '', $renderedContent);
+
+        // ── G. Auto-align consecutive paragraphs containing ":" into a borderless table ──
+        // Bersihkan whitespace/newline di antara tag agar preg_split tidak terganggu baris kosong
+        $renderedContentClean = preg_replace('/>\s+</s', '><', $renderedContent);
+        $paragraphs = preg_split('/(<p[^>]*>.*?<\/p>)/is', $renderedContentClean, -1, PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY);
+        
+        $newContent = '';
+        $tableRows = [];
+        
+        foreach ($paragraphs as $chunk) {
+            if (preg_match('/^<p[^>]*>([^:]+?)(?:\s|&nbsp;)*:(?:\s|&nbsp;)*(.*?)<\/p>$/is', $chunk, $matches)) {
+                $label = trim(str_replace('&nbsp;', '', strip_tags($matches[1])));
+                $value = trim($matches[2]);
+                
+                if (strlen($label) > 0 && strlen($label) < 30 && $value !== '') {
+                    $tableRows[] = [
+                        'label' => $label,
+                        'value' => $value
+                    ];
+                    continue;
+                }
+            }
+            
+            if (count($tableRows) > 0) {
+                if (count($tableRows) >= 2) {
+                    $newContent .= '<div class="data-pemohon" style="margin: 12px 0 12px 40px;"><table style="width: 100%; border-collapse: collapse; border: none;">';
+                    foreach ($tableRows as $row) {
+                        $newContent .= '<tr style="border: none;">';
+                        $newContent .= '<td style="width: 180px; padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: left;">' . $row['label'] . '</td>';
+                        $newContent .= '<td style="width: 20px; padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: center;">:</td>';
+                        $newContent .= '<td style="padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: left; white-space: pre-wrap;">' . $row['value'] . '</td>';
+                        $newContent .= '</tr>';
+                    }
+                    $newContent .= '</table></div>';
+                } else {
+                    foreach ($tableRows as $row) {
+                        $newContent .= '<p>' . $row['label'] . ' &nbsp;: ' . $row['value'] . '</p>';
+                    }
+                }
+                $tableRows = [];
+            }
+            
+            $newContent .= $chunk;
+        }
+        
+        if (count($tableRows) > 0) {
+            if (count($tableRows) >= 2) {
+                $newContent .= '<div class="data-pemohon" style="margin: 12px 0 12px 40px;"><table style="width: 100%; border-collapse: collapse; border: none;">';
+                foreach ($tableRows as $row) {
+                    $newContent .= '<tr style="border: none;">';
+                    $newContent .= '<td style="width: 180px; padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: left;">' . $row['label'] . '</td>';
+                    $newContent .= '<td style="width: 20px; padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: center;">:</td>';
+                    $newContent .= '<td style="padding: 4px 0; border: none; font-size: 12pt; vertical-align: top; text-align: left; white-space: pre-wrap;">' . $row['value'] . '</td>';
+                    $newContent .= '</tr>';
+                }
+                $newContent .= '</table></div>';
+            } else {
+                foreach ($tableRows as $row) {
+                    $newContent .= '<p>' . $row['label'] . ' &nbsp;: ' . $row['value'] . '</p>';
+                }
+            }
+        }
+        
+        $renderedContent = $newContent;
+
+        // ── H. Ganti &nbsp; dengan spasi biasa agar DomPDF merender lebar spasi Arial secara konsisten dengan editor ──
+        $renderedContent = str_replace('&nbsp;', ' ', $renderedContent);
     }
 @endphp
 
@@ -704,10 +833,11 @@
                 <img src="{{ $logoTobaBase64 ?? (isset($isPdf) && $isPdf ? public_path('images/logo_toba.png') : asset('images/logo_toba.png')) }}" alt="Logo Kab Toba" width="90" height="110" style="width: 90px; height: 110px; display: block; border: none;">
             </td>
             <td style="text-align: center; vertical-align: middle; padding: 0 10px; border: none; line-height: 1.3;">
-                <div class="instansi-atas" style="font-family: Arial, sans-serif; font-size: 14pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">PEMERINTAH {{ $kabupaten }}</div>
-                <div class="instansi-tengah" style="font-family: Arial, sans-serif; font-size: 13pt; font-weight: bold; letter-spacing: 0.5px; text-transform: uppercase;">{{ $kecamatan }}</div>
-                <div class="nama-desa" style="font-family: Arial, sans-serif; font-size: 18pt; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; margin-top: 2px;">DESA {{ strtoupper($namaDesa) }}</div>
-                <div class="alamat-desa" style="font-family: 'Times New Roman', Times, serif; font-size: 10pt; margin-top: 4px; font-style: italic;">{{ $alamatDesa }}</div>
+                <div class="instansi-atas" style="font-family: Arial, sans-serif; font-size: 14pt; font-weight: normal; letter-spacing: 0.3px; text-transform: uppercase;">PEMERINTAH {{ $kabupaten }}</div>
+                <div class="instansi-tengah" style="font-family: Arial, sans-serif; font-size: 18pt; font-weight: normal; letter-spacing: 0.3px; text-transform: uppercase;">{{ $kecamatan }}</div>
+                <div class="nama-desa" style="font-family: Arial, sans-serif; font-size: 20pt; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px;">DESA {{ strtoupper($namaDesa) }}</div>
+                <div class="alamat-desa" style="font-family: Arial, sans-serif; font-size: 11pt; margin-top: 4px; font-style: normal;">{{ $alamatDesa }}</div>
+                <div class="alamat-desa" style="font-family: Arial, sans-serif; font-size: 11pt; font-style: normal;">e-mail : {{ $emailDesa ?? 'hutabulumejan01@gmail.com' }}</div>
             </td>
             <td style="width: 100px; vertical-align: middle; padding: 0; border: none; text-align: right;">
                 <div style="width: 90px; height: 110px;"></div>
@@ -784,7 +914,7 @@
 
             @case('Surat Keterangan Domisili')
                 <p class="isi-surat">
-                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    Nama tersebut diatas adalah benar merupakan masyarakat / penduduk yang berdomisili
                     di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 <p class="isi-surat">
@@ -812,7 +942,7 @@
 
             @case('Surat Keterangan Usaha')
                 <p class="isi-surat">
-                    Nama tersebut diatas adalah benar merupakan warga Desa {{ $namaDesa }} dan
+                    Nama tersebut diatas adalah benar merupakan masyarakat Desa {{ $namaDesa }} dan
                     benar-benar mempunyai usaha dengan jenis usaha
                     <strong>{{ strtoupper($namaUsaha) }}</strong> yang bertempat di
                     Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
@@ -825,19 +955,19 @@
 
             @case('Surat Pengantar')
                 <p class="isi-surat">
-                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    Nama tersebut diatas adalah benar merupakan masyarakat / penduduk yang berdomisili
                     di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 <p class="isi-surat">
                     Sehubungan dengan keperluan untuk <strong>{{ $keperluan }}</strong>,
-                    maka dengan ini kami menerangkan bahwa yang bersangkutan adalah warga kami dan
+                    maka dengan ini kami menerangkan bahwa yang bersangkutan adalah masyarakat kami dan
                     kami merekomendasikan untuk diproses lebih lanjut sesuai ketentuan yang berlaku.
                 </p>
                 @break
 
             @case('Surat Keterangan Kelahiran')
                 <p class="isi-surat">
-                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    Nama tersebut diatas adalah benar merupakan masyarakat / penduduk yang berdomisili
                     di Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                     Menerangkan bahwa telah lahir seorang anak :
                 </p>
@@ -869,7 +999,7 @@
 
             @default
                 <p class="isi-surat">
-                    Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili
+                    Nama tersebut diatas adalah benar merupakan masyarakat / penduduk yang berdomisili
                     di wilayah Desa {{ $namaDesa }}, {{ $kecamatan }}, {{ $kabupaten }}.
                 </p>
                 @if($keperluan !== '-')
@@ -907,7 +1037,7 @@
                             <span class="ttd-nama" style="font-weight: bold; font-size: 12pt; border-top: 1px solid #000; padding-top: 4px; display: block; text-align: center;">{{ strtoupper($penandatangan) }}</span>
                         </div>
                         @if($nipKepalaDesa)
-                        <div style="font-size: 11pt; text-align: center; margin-top: 2px; font-family: 'Times New Roman', Times, serif;">
+                        <div style="font-size: 11pt; text-align: center; margin-top: 2px; font-family: Arial, sans-serif;">
                             NIP. {{ $nipKepalaDesa }}
                         </div>
                         @endif

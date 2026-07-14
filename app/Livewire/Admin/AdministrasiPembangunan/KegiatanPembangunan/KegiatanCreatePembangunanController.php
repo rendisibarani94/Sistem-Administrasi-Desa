@@ -54,7 +54,7 @@ class KegiatanCreatePembangunanController extends Component
     #[Rule('max:255', message: 'Kolom Keterangan Maksimal 255 digit karakter !')]
     public $keterangan;
 
-    #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('nullable|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $dokumentasi;
     public $oldDokumentasi;
 

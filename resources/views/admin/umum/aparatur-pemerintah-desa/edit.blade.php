@@ -150,7 +150,7 @@
                     </div>
                 </div>
                 <div class="input-component">
-                    <label for="foto" class="block text-sm font-medium text-black mb-2 ">Foto Aparat Desa</label>
+                    <label for="foto" class="block text-sm font-medium text-black mb-2 ">Foto Aparat Desa <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                     <!-- Show existing image if available -->
                     @if($existingFoto)
                     <div class="mb-4">

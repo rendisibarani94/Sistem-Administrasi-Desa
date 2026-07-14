@@ -33,7 +33,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_ketua" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi</label>
+                        <label for="foto_ketua" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show preview of new image if selected -->
                         @if($foto_ketua)
                         <div class="mb-4">
@@ -58,7 +58,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_sekretaris" class="block text-sm font-medium text-black mb-2 ">Foto Ketua Organisasi</label>
+                        <label for="foto_sekretaris" class="block text-sm font-medium text-black mb-2 ">Foto Sekretaris Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show preview of new image if selected -->
                         @if($foto_sekretaris)
                         <div class="mb-4">
@@ -83,7 +83,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="foto_bendahara" class="block text-sm font-medium text-black mb-2 ">Foto Bendahara Organisasi</label>
+                        <label for="foto_bendahara" class="block text-sm font-medium text-black mb-2 ">Foto Bendahara Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show preview of new image if selected -->
                         @if($foto_bendahara)
                         <div class="mb-4">
@@ -107,7 +107,7 @@
                         </div>
                     </div>
                     <div class="input-component">
-                        <label for="logo_organisasi" class="block text-sm font-medium text-black mb-2 ">Foto Bendahara Organisasi</label>
+                        <label for="logo_organisasi" class="block text-sm font-medium text-black mb-2 ">Logo Organisasi <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                         <!-- Show preview of new image if selected -->
                         @if($logo_organisasi)
                         <div class="mb-4">

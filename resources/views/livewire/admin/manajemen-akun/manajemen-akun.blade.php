@@ -1,6 +1,6 @@
 <div>
     <x-slot:judul>
-        Manajemen Akun Warga
+        Manajemen Akun Masyarakat
     </x-slot:judul>
 
     <div class="mx-4">
@@ -8,7 +8,7 @@
         {{-- Header & Breadcrumb --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between mt-6 mb-6 gap-4">
             <div>
-                <h1 class="text-3xl font-semibold text-gray-900">Manajemen Akun Warga</h1>
+                <h1 class="text-3xl font-semibold text-gray-900">Manajemen Akun Masyarakat</h1>
                 <nav class="flex mt-2" aria-label="Breadcrumb">
                     <ol class="inline-flex items-center space-x-1 md:space-x-2">
                         <li class="inline-flex items-center">
@@ -32,7 +32,7 @@
                                 <svg class="w-3 h-3 text-gray-400 mx-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 6 10">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="m1 9 4-4-4-4"/>
                                 </svg>
-                                <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Manajemen Akun Warga</span>
+                                <span class="ms-1 text-sm font-semibold text-gray-500 md:ms-2">Manajemen Akun Masyarakat</span>
                             </div>
                         </li>
                     </ol>
@@ -57,7 +57,7 @@
         {{-- Statistics Grid --}}
         <div class="grid gap-3 sm:grid-cols-4 my-6">
             <div class="rounded-lg bg-gray-50 border border-gray-200 p-4 text-sm text-gray-700 shadow-sm">
-                <p class="text-gray-500 font-medium">Total Akun Warga</p>
+                <p class="text-gray-500 font-medium">Total Akun Masyarakat</p>
                 <p class="mt-2 text-2xl font-semibold text-gray-900">{{ $totalWarga }}</p>
             </div>
             <div class="rounded-lg bg-green-50 border border-green-200 p-4 text-sm text-green-900 shadow-sm">
@@ -153,7 +153,7 @@
                 <!-- Status Filter -->
                 <div class="w-full sm:w-64">
                     <select wire:model.live="statusFilter" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
-                        <option value="aktif">Tampilkan Akun Warga Aktif</option>
+                        <option value="aktif">Tampilkan Akun Masyarakat Aktif</option>
                         <option value="nonaktif">Tampilkan Akun Dinonaktifkan</option>
                         <option value="semua">Tampilkan Semua Status Akun</option>
                     </select>
@@ -259,7 +259,7 @@
                                             wire:click="restoreUser({{ $user->id }})"
                                             wire:loading.attr="disabled"
                                             class="inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-2.5 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100 transition-colors"
-                                            title="Aktifkan kembali akun warga ini"
+                                            title="Aktifkan kembali akun masyarakat ini"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.746 3.746 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" />
@@ -285,7 +285,7 @@
                                             wire:click="confirmDelete({{ $user->id }})"
                                             wire:loading.attr="disabled"
                                             class="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors"
-                                            title="Nonaktifkan akun warga (Soft Delete)"
+                                            title="Nonaktifkan akun masyarakat (Soft Delete)"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636" />
@@ -303,7 +303,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-gray-300" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
                                     </svg>
-                                    <p class="text-sm font-medium">Tidak ada akun warga ditemukan</p>
+                                    <p class="text-sm font-medium">Tidak ada akun masyarakat ditemukan</p>
                                 </div>
                             </td>
                         </tr>

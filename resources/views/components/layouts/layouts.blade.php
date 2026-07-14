@@ -7,6 +7,9 @@
 
     <title>{{ $judul ?? 'Page Title' }}</title>
 
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="{{ asset('images/logo_hutabulumejan.png') }}">
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
@@ -112,7 +115,7 @@
                         ],
                         [
                             'route' => 'admin.manajemen-akun',
-                            'text'  => 'Manajemen Akun Warga',
+                            'text'  => 'Manajemen Akun Masyarakat',
                         ],
                     ];
                 @endphp
@@ -321,7 +324,14 @@
             if (input.tagName !== 'INPUT' || (input.type !== 'text' && input.type !== 'number')) {
                 return false;
             }
+            if (input.classList.contains('no-nik-format')) {
+                return false;
+            }
             const label = (input.id || input.name || input.placeholder || '').toLowerCase();
+            // Jangan format field alamat meski mengandung 'kk' (contoh: alamat_kk)
+            if (label.includes('alamat')) {
+                return false;
+            }
             return label.includes('nik') || 
                    label.includes('kk') || 
                    label.includes('ktp') || 
@@ -366,5 +376,6 @@
         });
     </script>
     {{-- <script src="{{ asset('js/rupiah-input.js') }}"></script> --}}
+    @stack('scripts')
 </body>
 </html>

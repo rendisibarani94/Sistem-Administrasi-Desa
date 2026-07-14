@@ -259,7 +259,7 @@ class IndukPendudukController extends Component
                 fputcsv($file, [
                     'Nama Lengkap',
                     'NIK',
-                    'Email Warga',
+                    'Email Masyarakat',
                     'Password',
                     'Confirm Password',
                     'Dusun',
@@ -365,14 +365,14 @@ class IndukPendudukController extends Component
             ->where('users.role', 'masyarakat')
             ->get();
 
-        $fileName = 'pertinggal-semua-akun-warga-' . now()->format('YmdHis') . '.xlsx';
+        $fileName = 'pertinggal-semua-akun-masyarakat-' . now()->format('YmdHis') . '.xlsx';
 
         return response()->streamDownload(function() use ($accounts) {
             $writer = SimpleExcelWriter::streamDownload('php://output', 'xlsx');
             $writer->addHeader([
                 'Nama Lengkap',
                 'Nomor KK',
-                'Email Warga',
+                'Email Masyarakat',
                 'Password',
                 'Confirm Password',
                 'Dusun',

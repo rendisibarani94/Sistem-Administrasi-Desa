@@ -32,7 +32,7 @@
             </div>
         </a>
 
-        <!-- Card Pengaduan Warga -->
+        <!-- Card Pengaduan Masyarakat -->
         <a href="{{ route('admin.layanan-surat.pengaduan') }}">
             <div class="relative bg-white rounded-xl shadow-md overflow-hidden border-3 border-sky-700 transition-all hover:shadow-lg h-full">
                 @if($stats['pengaduan_baru'] > 0)
@@ -49,7 +49,7 @@
                             </svg>
                         </div>
                         <div class="ml-4">
-                            <h3 class="text-lg font-medium text-gray-500">Pengaduan Warga</h3>
+                            <h3 class="text-lg font-medium text-gray-500">Pengaduan Masyarakat</h3>
                             <p class="text-2xl font-bold text-sky-700">{{ $stats['pengaduan'] }}</p>
                         </div>
                     </div>

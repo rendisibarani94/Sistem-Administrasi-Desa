@@ -11,7 +11,7 @@
         <form wire:submit.prevent="update">
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div class="input-component">
-                    <label for="gambar" class="block text-sm font-medium text-black mb-2 ">Gambar Pengumuman</label>
+                    <label for="gambar" class="block text-sm font-medium text-black mb-2 ">Gambar Pengumuman <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
 
                     <!-- Show existing image if available -->
                     @if($existingGambarPengumuman)

@@ -44,6 +44,8 @@ class JenisSuratController extends Component
             'body_template'                   => 'required|string',
             'is_active'                       => 'boolean',
             'persyaratan'                     => 'array',
+            'persyaratan.*.key'               => 'nullable|string',
+            'persyaratan.*.id'                => 'nullable|integer',
             'persyaratan.*.nama_field'        => 'required|string|max:255',
             'persyaratan.*.tipe_field'        => 'required|in:text,number,date,file_image',
             'persyaratan.*.is_required'       => 'boolean',
@@ -81,6 +83,7 @@ class JenisSuratController extends Component
         $this->persyaratan = PersyaratanSurat::where('jenis_surat_id', $id)
             ->get()
             ->map(fn($p) => [
+                'key'         => 'db_' . $p->id,
                 'id'          => $p->id,
                 'nama_field'  => $p->nama_field,
                 'tipe_field'  => $p->tipe_field,
@@ -104,6 +107,7 @@ class JenisSuratController extends Component
     public function tambahField(): void
     {
         $this->persyaratan[] = [
+            'key'         => 'temp_' . uniqid(),
             'id'          => null,
             'nama_field'  => '',
             'tipe_field'  => 'text',
@@ -114,6 +118,27 @@ class JenisSuratController extends Component
     public function hapusField(int $index): void
     {
         array_splice($this->persyaratan, $index, 1);
+        $this->persyaratan = array_values($this->persyaratan);
+    }
+
+    public function reorderFields(array $orderedKeys): void
+    {
+        $indexed = collect($this->persyaratan)->keyBy('key');
+        $this->persyaratan = collect($orderedKeys)
+            ->map(fn($k) => $indexed[$k] ?? null)
+            ->filter()
+            ->values()
+            ->toArray();
+    }
+
+    public function moveField(int $from, int $to): void
+    {
+        if (!isset($this->persyaratan[$from]) || !isset($this->persyaratan[$to])) {
+            return;
+        }
+        $item = $this->persyaratan[$from];
+        array_splice($this->persyaratan, $from, 1);
+        array_splice($this->persyaratan, $to, 0, [$item]);
         $this->persyaratan = array_values($this->persyaratan);
     }
 

@@ -53,7 +53,7 @@
                     <!-- Logo -->
                     <div>
                         <label for="logo" class="block text-sm font-medium text-black mb-2">
-                            Logo Website
+                            Logo Website <span class="text-gray-500 font-normal">(Maksimal 5MB)</span>
                         </label>
 
                         @if($existingLogo)

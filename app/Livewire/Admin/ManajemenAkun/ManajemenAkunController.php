@@ -49,10 +49,10 @@ class ManajemenAkunController extends Component
         $this->dispatch('swal:confirm-user', [
             'title'             => "Nonaktifkan Akun: {$nama}?",
             'html'              => "<div class='text-left text-sm'>
-                                        <p class='mb-2'>Menonaktifkan akun warga ini akan menyebabkan:</p>
+                                        <p class='mb-2'>Menonaktifkan akun masyarakat ini akan menyebabkan:</p>
                                         <ul class='list-disc list-inside space-y-1 text-gray-600'>
-                                            <li>🔑 Token login dicabut (Warga langsung logout otomatis dari HP)</li>
-                                            <li>🚫 Warga tidak bisa login kembali ke aplikasi</li>
+                                            <li>🔑 Token login dicabut (Masyarakat langsung logout otomatis dari HP)</li>
+                                            <li>🚫 Masyarakat tidak bisa login kembali ke aplikasi</li>
                                             <li>📦 Arsip aman: <strong>{$jumlahPengajuan}</strong> pengajuan & <strong>{$jumlahPengaduan}</strong> pengaduan tetap tersimpan di database</li>
                                         </ul>
                                         <p class='mt-3 text-amber-600 font-semibold'>⚠️ Akun ini akan ditandai sebagai Tidak Aktif (Soft Delete).</p>
@@ -119,7 +119,7 @@ class ManajemenAkunController extends Component
 
         // Menggunakan Database Transaction untuk keamanan data
         DB::transaction(function () use ($user) {
-            // 1. Cabut semua token login (Sanctum tokens) untuk force logout dari HP warga
+            // 1. Cabut semua token login (Sanctum tokens) untuk force logout dari HP masyarakat
             $user->tokens()->delete();
 
             // 2. Lakukan Soft Delete pada user (menghapus secara logis dengan mengisi field deleted_at)
@@ -336,7 +336,7 @@ class ManajemenAkunController extends Component
          ->groupBy('id_penduduk')
          ->pluck('total', 'id_penduduk');
 
-        // Hitung statistik akun warga untuk grid
+        // Hitung statistik akun masyarakat untuk grid
         $totalWarga = User::where('role', 'masyarakat')->withTrashed()->count();
         $aktifWarga = User::where('role', 'masyarakat')->count();
         $nonaktifWarga = User::where('role', 'masyarakat')->onlyTrashed()->count();

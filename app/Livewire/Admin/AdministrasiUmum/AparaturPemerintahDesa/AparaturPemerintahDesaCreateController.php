@@ -68,7 +68,7 @@ class AparaturPemerintahDesaCreateController extends Component
     #[Rule('nullable|date', message: 'Format tanggal tidak valid')]
     public $tanggal_pemberhentian;
 
-    #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('nullable|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $foto;
     public $oldFoto;
     public $existingFoto;

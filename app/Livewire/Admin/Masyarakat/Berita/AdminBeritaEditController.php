@@ -17,6 +17,7 @@ class AdminBeritaEditController extends Component
 
     public $existingGambarBerita;
 
+    #[Rule('nullable|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $gambar;
 
     #[Rule('required', message: 'Kolom Judul Harus Diisi!')]

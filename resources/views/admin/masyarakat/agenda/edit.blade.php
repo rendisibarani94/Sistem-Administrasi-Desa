@@ -59,7 +59,7 @@
                 </div>
 
                 <div class="input-component">
-                    <label for="gambar" class="block text-sm font-medium text-black mb-2 ">Gambar Agenda Desa</label>
+                    <label for="gambar" class="block text-sm font-medium text-black mb-2 ">Gambar Agenda Desa <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                     <!-- Show existing image if available -->
                     @if($existingGambarAgenda)
                     <div class="mb-4">

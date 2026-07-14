@@ -23,9 +23,6 @@ class IndukPendudukCreateController extends Component
 
     // #[Rule('regex:/^\d{6}([04][1-9]|[1256][0-9]|[37][01])(0[1-9]|1[0-2])\d{2}\d{4}$/', message: 'Format NIK Tidak Valid (16 digit, wilayah, tanggal, bulan, tahun, urutan)!')]
 
-    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
-    #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
-    #[Rule('unique:penduduk,nik', message: 'NIK sudah terdaftar!')]
     public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
@@ -98,10 +95,36 @@ class IndukPendudukCreateController extends Component
     #[Rule('max:255', message: 'Input Keterangan Maksimal 255 digit karakter!')]
     public $keterangan;
 
+    public function updatedNik($value)
+    {
+        $this->nik = preg_replace('/\D/', '', $value);
+        $this->validateOnly('nik', [
+            'nik' => 'required|size:16|unique:penduduk,nik',
+        ], [
+            'nik.required' => 'Kolom NIK Harus Diisi!',
+            'nik.size' => 'Input NIK Harus 16 Karakter!',
+            'nik.unique' => 'NIK sudah terdaftar!',
+        ]);
+    }
+
     public function store()
     {
-        // Validate the form inputs
+        $this->nik = preg_replace('/\D/', '', $this->nik);
+        
+        // Validate the form inputs (excluding NIK)
         $validated = $this->validate();
+
+        // Validate NIK manually
+        $validatedNik = $this->validate([
+            'nik' => 'required|size:16|unique:penduduk,nik',
+        ], [
+            'nik.required' => 'Kolom NIK Harus Diisi!',
+            'nik.size' => 'Input NIK Harus 16 Karakter!',
+            'nik.unique' => 'NIK sudah terdaftar!',
+        ]);
+
+        $validated = array_merge($validated, $validatedNik);
+
         // Insert the data into the database
         DB::table('penduduk')->insert($validated);
 

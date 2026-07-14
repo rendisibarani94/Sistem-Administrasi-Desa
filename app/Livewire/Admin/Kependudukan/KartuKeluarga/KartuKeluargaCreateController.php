@@ -14,40 +14,38 @@ class KartuKeluargaCreateController extends Component
     // =====================================
     // STEP 1 : DATA KARTU KELUARGA
     // =====================================
-    #[Rule('required|size:16|unique:kartu_keluarga,nomor_kartu_keluarga')]
     public $nomor_kartu_keluarga;
 
     #[Rule('required|date')]
     public $tanggal_keluar;
 
-    #[Rule('required|max:150')]
+    #[Rule('required|string|max:150')]
     public $alamat_kk;
 
-    #[Rule('required|regex:/^[\d\-]+$/')]
+    #[Rule('nullable|regex:/^[\d\-]+$/')]
     public $rt;
 
-    #[Rule('required|regex:/^[\d\-]+$/')]
+    #[Rule('nullable|regex:/^[\d\-]+$/')]
     public $rw;
 
-    #[Rule('required|max:50')]
+    #[Rule('required|string|max:50')]
     public $desa_kelurahan;
 
-    #[Rule('required|max:50')]
+    #[Rule('required|string|max:50')]
     public $kecamatan;
 
     #[Rule('required|digits:5')]
     public $kode_pos;
 
-    #[Rule('required|max:50')]
+    #[Rule('required|string|max:50')]
     public $kabupaten_kota;
 
-    #[Rule('required|max:50')]
+    #[Rule('required|string|max:50')]
     public $provinsi;
 
 // =====================================
 // STEP 2 : DATA KEPALA KELUARGA
 // =====================================
-    #[Rule('required|size:16|unique:penduduk,nik')]
     public $nik;
 
 
@@ -114,17 +112,36 @@ class KartuKeluargaCreateController extends Component
     #[Rule('nullable|max:255')]
     public $keterangan;
 
+    public function updatedNomorKartuKeluarga($value)
+    {
+        $this->nomor_kartu_keluarga = preg_replace('/\D/', '', $value);
+        $this->validateOnly('nomor_kartu_keluarga', [
+            'nomor_kartu_keluarga' => 'required|size:16|unique:kartu_keluarga,nomor_kartu_keluarga',
+        ]);
+    }
+
+    public function updatedNik($value)
+    {
+        $this->nik = preg_replace('/\D/', '', $value);
+        $this->validateOnly('nik', [
+            'nik' => 'required|size:16|unique:penduduk,nik',
+        ]);
+    }
+
     // =====================================
     // NEXT STEP
     // =====================================
     public function nextStep()
     {
         if ($this->currentStep == 1) {
-            $this->validateOnly('nomor_kartu_keluarga');
+            $this->nomor_kartu_keluarga = preg_replace('/\D/', '', $this->nomor_kartu_keluarga);
+            $this->validateOnly('nomor_kartu_keluarga', [
+                'nomor_kartu_keluarga' => 'required|size:16|unique:kartu_keluarga,nomor_kartu_keluarga',
+            ]);
             $this->validateOnly('tanggal_keluar');
             $this->validateOnly('alamat_kk');
-            $this->validateOnly('rt');
-            $this->validateOnly('rw');
+            if ($this->rt) $this->validateOnly('rt');
+            if ($this->rw) $this->validateOnly('rw');
             $this->validateOnly('desa_kelurahan');
             $this->validateOnly('kecamatan');
             $this->validateOnly('kode_pos');
@@ -145,10 +162,20 @@ class KartuKeluargaCreateController extends Component
     // =====================================
     public function store()
     {
+        $this->nomor_kartu_keluarga = preg_replace('/\D/', '', $this->nomor_kartu_keluarga);
+        $this->nik = preg_replace('/\D/', '', $this->nik);
+
         DB::beginTransaction();
 
         try {
-            $this->validate();
+            // Validate properties with #[Rule] attributes
+            $validated = $this->validate();
+
+            // Validate nomor_kartu_keluarga and nik manually
+            $validatedCustom = $this->validate([
+                'nomor_kartu_keluarga' => 'required|size:16|unique:kartu_keluarga,nomor_kartu_keluarga',
+                'nik' => 'required|size:16|unique:penduduk,nik',
+            ]);
 
         $kkId = DB::table('kartu_keluarga')->insertGetId([
             'nomor_kartu_keluarga' => $this->nomor_kartu_keluarga,

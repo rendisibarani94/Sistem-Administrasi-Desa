@@ -15,8 +15,6 @@ class KartuKeluargaEditController extends Component
     // =========================
     // VALIDASI FORM
     // =========================
-    #[Rule('required', message: 'Kolom Nomor Kartu Keluarga Harus Diisi!')]
-    #[Rule('size:16', message: 'Input Nomor Kartu Keluarga Harus 16 Karakter!')]
     public $nomor_kartu_keluarga;
 
     #[Rule('required', message: 'Kolom Tanggal Keluar Kartu Keluarga Harus Diisi!')]
@@ -46,6 +44,17 @@ class KartuKeluargaEditController extends Component
 
     #[Rule('required', message: 'Kolom Provinsi Harus Diisi!')]
     public $provinsi;
+
+    public function updatedNomorKartuKeluarga($value)
+    {
+        $this->nomor_kartu_keluarga = preg_replace('/\D/', '', $value);
+        $this->validateOnly('nomor_kartu_keluarga', [
+            'nomor_kartu_keluarga' => 'required|size:16',
+        ], [
+            'nomor_kartu_keluarga.required' => 'Kolom Nomor Kartu Keluarga Harus Diisi!',
+            'nomor_kartu_keluarga.size' => 'Input Nomor Kartu Keluarga Harus 16 Karakter!',
+        ]);
+    }
 
     // =========================
     // LOAD DATA SAAT HALAMAN DIBUKA
@@ -96,7 +105,18 @@ class KartuKeluargaEditController extends Component
     // =========================
     public function update()
     {
+        $this->nomor_kartu_keluarga = preg_replace('/\D/', '', $this->nomor_kartu_keluarga);
+
+        // Validate properties with #[Rule] attributes
         $this->validate();
+
+        // Validate nomor_kartu_keluarga manually
+        $this->validate([
+            'nomor_kartu_keluarga' => 'required|size:16',
+        ], [
+            'nomor_kartu_keluarga.required' => 'Kolom Nomor Kartu Keluarga Harus Diisi!',
+            'nomor_kartu_keluarga.size' => 'Input Nomor Kartu Keluarga Harus 16 Karakter!',
+        ]);
 
         DB::table('kartu_keluarga')
             ->where('id_kartu_keluarga', $this->id_kartu_keluarga)

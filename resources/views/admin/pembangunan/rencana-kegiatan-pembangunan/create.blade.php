@@ -124,7 +124,7 @@
                     <x-textarea-input label="Keterangan" name="keterangan" id="keterangan" wireModel="keterangan" placeholder="Keterangan Tambahan" />
                 </div>
                 <div class="input-component">
-                    <label for="dokumentasi" class="block text-sm font-medium text-black mb-2 ">Gambar Dokumentasi Kegiatan</label>
+                    <label for="dokumentasi" class="block text-sm font-medium text-black mb-2 ">Gambar Dokumentasi Kegiatan <span class="text-gray-500 font-normal">(Maksimal 5MB)</span></label>
                     <!-- Show preview of new image if selected -->
                     @if($dokumentasi)
                     <div class="mb-4">

@@ -36,13 +36,21 @@ class IndukPendudukKkMutasiController extends Component
     #[Rule('required', message: 'Kolom Kepala Keluarga Baru Harus Diisi!')]
     public $newKepalaKeluarga;
 
-    // first form step
-    #[Rule('required', message: 'Kolom Nomor Kartu Keluarga Baru Harus Diisi!')]
-    #[Rule('size:16', message: 'Input Nomor Kartu Keluarga Baru Harus 16 Karakter!')]
     public $newNomorKK;
 
     public $pendudukPindahId;
     public $pendudukPindahIdKk;
+
+    public function updatedNewNomorKK($value)
+    {
+        $this->newNomorKK = preg_replace('/\D/', '', $value);
+        $this->validateOnly('newNomorKK', [
+            'newNomorKK' => 'required|size:16',
+        ], [
+            'newNomorKK.required' => 'Kolom Nomor Kartu Keluarga Baru Harus Diisi!',
+            'newNomorKK.size' => 'Input Nomor Kartu Keluarga Baru Harus 16 Karakter!',
+        ]);
+    }
 
     public function mount($id)
     {
@@ -52,7 +60,18 @@ class IndukPendudukKkMutasiController extends Component
 
     public function pindah()
     {
+        $this->newNomorKK = preg_replace('/\D/', '', $this->newNomorKK);
+
+        // Validate properties with #[Rule] attributes
         $this->validate();
+
+        // Validate newNomorKK manually
+        $this->validate([
+            'newNomorKK' => 'required|size:16',
+        ], [
+            'newNomorKK.required' => 'Kolom Nomor Kartu Keluarga Baru Harus Diisi!',
+            'newNomorKK.size' => 'Input Nomor Kartu Keluarga Baru Harus 16 Karakter!',
+        ]);
 
         $dataPenduduk['updated_at'] = now();
         $dataPenduduk['tanggal_pengurangan'] = $this->tanggal_pengurangan;

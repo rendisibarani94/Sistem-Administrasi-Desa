@@ -17,7 +17,7 @@ class AdminPengumumanCreateController extends Component
 
     public $existingGambarPengumuman;
 
-    #[Rule('nullable|image|max:2048', message: 'File harus berupa gambar dan maksimal 2MB!')]
+    #[Rule('nullable|image|max:5120', message: 'File harus berupa gambar dan maksimal 5MB!')]
     public $gambar;
 
     #[Rule('required', message: 'Kolom Judul Harus Diisi!')]

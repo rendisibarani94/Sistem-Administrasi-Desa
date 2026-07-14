@@ -22,8 +22,6 @@ class IndukPendudukEditController extends Component
     #[Rule('nullable|date', message: 'Tanggal Keluar KTP harus berupa tanggal')]
     public $tanggal_keluar_ktp;
 
-    #[Rule('required', message: 'Kolom NIK Harus Diisi!')]
-    #[Rule('size:16', message: 'Input NIK Harus 16 Karakter!')]
     public $nik;
 
     #[Rule('required', message: 'Kolom Jenis Kelamin Harus Diisi!')]
@@ -137,10 +135,33 @@ class IndukPendudukEditController extends Component
         $this->keterangan = $penduduk->keterangan;
     }
 
+    public function updatedNik($value)
+    {
+        $this->nik = preg_replace('/\D/', '', $value);
+        $this->validateOnly('nik', [
+            'nik' => 'required|size:16',
+        ], [
+            'nik.required' => 'Kolom NIK Harus Diisi!',
+            'nik.size' => 'Input NIK Harus 16 Karakter!',
+        ]);
+    }
+
     public function update()
     {
-        // Validate the form inputs
+        $this->nik = preg_replace('/\D/', '', $this->nik);
+
+        // Validate the form inputs (excluding NIK)
         $validated = $this->validate();
+
+        // Validate NIK manually
+        $validatedNik = $this->validate([
+            'nik' => 'required|size:16',
+        ], [
+            'nik.required' => 'Kolom NIK Harus Diisi!',
+            'nik.size' => 'Input NIK Harus 16 Karakter!',
+        ]);
+
+        $validated = array_merge($validated, $validatedNik);
         $validated['updated_at'] = now();
 
         // Update the data in the database

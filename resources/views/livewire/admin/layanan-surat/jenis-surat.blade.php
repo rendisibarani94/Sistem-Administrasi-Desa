@@ -468,7 +468,7 @@
                                                 wire:model="persyaratan.{{ $idx }}.nama_field"
                                                 type="text"
                                                 placeholder="Nama field (Contoh: NIK, Nama Lengkap)"
-                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('persyaratan.'.$idx.'.nama_field') border-red-400 @enderror"
+                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 no-nik-format @error('persyaratan.'.$idx.'.nama_field') border-red-400 @enderror"
                                             />
                                             @error('persyaratan.'.$idx.'.nama_field')
                                                 <p class="mt-0.5 text-xs text-red-500">{{ $message }}</p>
@@ -523,46 +523,7 @@
                      x-data="{
                          value: @entangle('body_template'),
                          nama_surat: @entangle('nama_surat'),
-                         deskripsi: @entangle('deskripsi'),
-                         parseTemplate(template) {
-                             if (!template) {
-                                 return `
-                                     <p class='text-justify mb-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan bahwa:</p>
-                                     <div class='pl-4 my-2 text-[8px] leading-normal'>
-                                         <table class='w-full text-left' style='border-collapse: collapse;'>
-                                             <tr><td style='width: 30%; text-align: left; padding: 1px 0;'>Nama</td><td style='width: 5%; text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'><strong>WARGA CONTOH</strong></td></tr>
-                                             <tr><td style='text-align: left; padding: 1px 0;'>NIK</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>1234567890123456</td></tr>
-                                             <tr><td style='text-align: left; padding: 1px 0;'>Alamat</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba</td></tr>
-                                         </table>
-                                     </div>
-                                     <p class='text-justify my-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili di wilayah Desa Hutabulu Mejan.</p>
-                                     <p class='text-justify mt-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikianlah surat keterangan ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
-                                 `;
-                             }
-                             let parsed = template;
-                             const placeholders = {
-                                 '{nama}': '<strong>WARGA CONTOH</strong>',
-                                 '{nik}': '1234567890123456',
-                                 '{no_kk}': '1234567890123456',
-                                 '{ttl}': 'Toba, 01 Januari 2000',
-                                 '{jenis_kelamin}': 'Laki-laki',
-                                 '{pekerjaan}': 'Wiraswasta',
-                                 '{alamat}': 'Desa Hutabulu Mejan, Kec. Balige, Kab. Toba',
-                                 '{keperluan}': 'Keperluan Administratif',
-                                 '{nama_desa}': 'Hutabulu Mejan',
-                                 '{kecamatan}': 'Balige',
-                                 '{kabupaten}': 'Toba',
-                                 '{penghasilan}': 'Rp. 3.000.000,-',
-                                 '{nama_usaha}': 'Toko Klontong',
-                                 '{nama_anak}': 'Anak Contoh',
-                                 '{ttl_anak}': 'Toba, 01 Januari 2010',
-                                 '{jenis_kelamin}': 'Laki-laki',
-                             };
-                             for (const [k, v] of Object.entries(placeholders)) {
-                                 parsed = parsed.replaceAll(k, v);
-                             }
-                             return parsed;
-                         }
+                         deskripsi: @entangle('deskripsi')
                      }"
                 >
                     <div>
@@ -600,7 +561,7 @@
                                 </div>
 
                                 {{-- Body Content (Parsed Template) --}}
-                                <div class="space-y-2 leading-relaxed text-justify" x-html="parseTemplate(value)">
+                                <div class="space-y-2 leading-relaxed text-justify" x-html="window.parseTemplate(value)">
                                 </div>
                             </div>
 
@@ -663,6 +624,123 @@
     ══════════════════════════════════════════════════════════════ --}}
     @push('scripts')
     <script>
+        window.parseTemplate = function(template) {
+            if (!template) {
+                return `
+                    <p class='text-justify mb-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Yang bertanda tangan dibawah ini, Kepala Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba menerangkan bahwa:</p>
+                    <div class='pl-4 my-2 text-[8px] leading-normal'>
+                        <table class='w-full text-left' style='border-collapse: collapse;'>
+                            <tr><td style='width: 30%; text-align: left; padding: 1px 0;'>Nama</td><td style='width: 5%; text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'><strong>WARGA CONTOH</strong></td></tr>
+                            <tr><td style='text-align: left; padding: 1px 0;'>NIK</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>1234567890123456</td></tr>
+                            <tr><td style='text-align: left; padding: 1px 0;'>Alamat</td><td style='text-align: center; padding: 1px 0;'>:</td><td style='text-align: left; padding: 1px 0;'>Desa Hutabulu Mejan, Kecamatan Balige, Kabupaten Toba</td></tr>
+                        </table>
+                    </div>
+                    <p class='text-justify my-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Nama tersebut diatas adalah benar merupakan warga / penduduk yang berdomisili di wilayah Desa Hutabulu Mejan.</p>
+                    <p class='text-justify mt-2 leading-relaxed'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Demikianlah surat keterangan ini dibuat agar dapat dipergunakan sebagaimana mestinya.</p>
+                `;
+            }
+            let parsed = template;
+            const placeholders = {
+                '{nama}': 'Nama',
+                '{nik}': 'NIK',
+                '{no_kk}': 'NO KK',
+                '{ttl}': 'Tempat, Tanggal Lahir',
+                '{tempat/tgl_lahir}': 'Tempat, Tanggal Lahir',
+                '{tempat/tgl lahir}': 'Tempat, Tanggal Lahir',
+                '{tempat/tanggal_lahir}': 'Tempat, Tanggal Lahir',
+                '{tempat/tanggal lahir}': 'Tempat, Tanggal Lahir',
+                '{Tempat/Tgl Lahir}': 'Tempat, Tanggal Lahir',
+                '{jenis_kelamin}': 'Jenis Kelamin',
+                '{pekerjaan}': 'Pekerjaan',
+                '{alamat}': 'Alamat',
+                '{keperluan}': 'Keperluan',
+                '{nama_desa}': 'Nama Desa',
+                '{kecamatan}': 'Kecamatan',
+                '{kabupaten}': 'Kabupaten',
+                '{penghasilan}': 'Penghasilan',
+                '{nama_usaha}': 'Nama Usaha',
+                '{nama_anak}': 'Nama Anak',
+                '{agama}': 'Agama',
+                '{ttl_anak}': 'Tempat, Tanggal Lahir Anak',
+            };
+
+            for (const [k, v] of Object.entries(placeholders)) {
+                parsed = parsed.replaceAll(k, v);
+            }
+            
+            try {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(parsed, 'text/html');
+                const body = doc.body;
+                const children = Array.from(body.children);
+                
+                let tableRows = [];
+                let currentTable = null;
+                
+                const flushTable = () => {
+                    if (tableRows.length >= 2) {
+                        let html = "<div class='pl-4 my-2 text-[8px] leading-normal'><table class='w-full text-left' style='border-collapse: collapse; border: none; font-size: inherit;'><tbody>";
+                        tableRows.forEach(row => {
+                            html += "<tr style='border: none;'>";
+                            html += "<td style='width: 30%; text-align: left; padding: 1px 0; border: none; font-size: inherit; vertical-align: top;'>" + row.label + "</td>";
+                            html += "<td style='width: 5%; text-align: center; padding: 1px 0; border: none; font-size: inherit; vertical-align: top;'>:</td>";
+                            html += "<td style='text-align: left; padding: 1px 0; border: none; font-size: inherit; vertical-align: top; white-space: pre-wrap;'>" + row.value + "</td>";
+                            html += "</tr>";
+                        });
+                        html += "</tbody></table></div>";
+                        
+                        const tempDiv = document.createElement('div');
+                        tempDiv.innerHTML = html;
+                        currentTable.startNode.parentNode.insertBefore(tempDiv.firstElementChild, currentTable.startNode);
+                        
+                        currentTable.nodesToRemove.forEach(node => {
+                            if (node.parentNode) node.parentNode.removeChild(node);
+                        });
+                    }
+                    tableRows = [];
+                    currentTable = null;
+                };
+                
+                children.forEach(child => {
+                    if (child.tagName === 'P') {
+                        const htmlContent = child.innerHTML;
+                        const colonIndex = htmlContent.indexOf(':');
+                        if (colonIndex > 0) {
+                            const labelHtml = htmlContent.substring(0, colonIndex);
+                            const valueHtml = htmlContent.substring(colonIndex + 1);
+                            
+                            const tempLabelSpan = document.createElement('span');
+                            tempLabelSpan.innerHTML = labelHtml;
+                            const cleanLabel = tempLabelSpan.textContent.replace(/&nbsp;/g, '').trim();
+                            const cleanValue = valueHtml.trim();
+                            
+                            if (cleanLabel.length > 0 && cleanLabel.length < 30 && cleanValue !== '') {
+                                tableRows.push({ label: cleanLabel, value: valueHtml });
+                                
+                                if (!currentTable) {
+                                    currentTable = {
+                                        startNode: child,
+                                        nodesToRemove: [child]
+                                    };
+                                } else {
+                                    currentTable.nodesToRemove.push(child);
+                                }
+                                return;
+                            }
+                        }
+                    }
+                    flushTable();
+                });
+                flushTable();
+                
+                parsed = body.innerHTML;
+            } catch (e) {
+                console.error('Gagal menyejajarkan field secara otomatis:', e);
+            }
+            
+            return parsed;
+        };
+
         document.addEventListener('livewire:initialized', () => {
             Livewire.on('swal:confirm', (params) => {
                 const p = Array.isArray(params) ? params[0] : params;

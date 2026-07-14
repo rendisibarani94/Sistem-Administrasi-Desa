@@ -34,7 +34,7 @@ class KepalaDesaController extends Component
         return [
             'nama'      => 'required|string|max:150',
             'nip'       => 'nullable|string|size:18',
-            'file_ttd'  => 'nullable|image|max:2048',
+            'file_ttd'  => 'nullable|image|max:5120',
             'is_active' => 'boolean',
         ];
     }
@@ -45,7 +45,7 @@ class KepalaDesaController extends Component
         'nip.size'          => 'NIP harus 18 digit.',
         'file_ttd.required' => 'Gambar tanda tangan wajib diisi.',
         'file_ttd.image'    => 'File tanda tangan harus berupa gambar.',
-        'file_ttd.max'      => 'Ukuran gambar maksimal 2MB.',
+        'file_ttd.max'      => 'Ukuran gambar maksimal 5MB.',
     ];
 
     #[Layout('components.layouts.layouts')]

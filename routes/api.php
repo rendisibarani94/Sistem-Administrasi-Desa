@@ -56,7 +56,7 @@ Route::middleware('cors')->group(function () {
         }
 
         $user = $tokenRecord->tokenable;
-        \Auth::login($user);
+        Auth::login($user);
 
         return app(\App\Http\Controllers\Api\InformationApiController::class)
             ->viewSurat(request(), $id);

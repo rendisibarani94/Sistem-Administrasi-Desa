@@ -162,7 +162,7 @@ Route::get('/layanan-surat/jenis-surat', JenisSuratController::class)->name('adm
 Route::get('/layanan-surat/pengaduan', PengaduanSuratController::class)->name('admin.layanan-surat.pengaduan');
 Route::get('/layanan-surat/notifikasi', NotifikasiSuratController::class)->name('admin.layanan-surat.notifikasi');
 
-// Manajemen Akun Warga Mobile
+// Manajemen Akun Masyarakat Mobile
 Route::get('/manajemen-akun', ManajemenAkunController::class)->name('admin.manajemen-akun');
 // Administrasi Umum
 Route::get('/keputusan-kepala-desa', KeputusanKepalaDesaController::class)->name('keputusanKepalaDesa');
