@@ -1,0 +1,9 @@
+$kind: http-request
+name: pengumuman
+url: https://desahutabulumejan.id/api/pengumuman
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: https://desahutabulumejan.id/api/berita
+order: 4000

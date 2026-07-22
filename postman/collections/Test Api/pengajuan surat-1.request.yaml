@@ -1,0 +1,38 @@
+$kind: http-request
+name: pengajuan surat
+url: https://desahutabulumejan.id/api/dynamic/pengajuan
+method: POST
+headers:
+  Accept: Application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"jenis_surat_id\": 1,\r
+
+    \    \"answers\": {\r
+
+    \        \"558\": \"FABER HILMAN HUTAGAOL\",\r
+
+    \        \"559\": \"1212013110780002\",\r
+
+    \        \"560\": \"Balige\",\r
+
+    \        \"561\": \"1978-10-31\",\r
+
+    \        \"562\": \"Laki-Laki\",\r
+
+    \        \"563\": \"Kristen\",\r
+
+    \        \"564\": \"Desa Hutabulu Mejan\",\r
+
+    \        \"565\": \"Pindah Dusun\"\r
+
+    \    }\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: 166|W8ExVMMEzxUucTniLhtodgLvZK5wKO9SRK1TaJLD6e1e11b5
+order: 8000

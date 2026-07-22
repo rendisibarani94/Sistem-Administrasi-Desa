@@ -1,0 +1,14 @@
+$kind: http-request
+name: Login
+url: https://desahutabulumejan.id/api/login
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \     \"no_kk\" : \"1212012308230003\",\r
+
+    \    \"password\" : \"faber01\"\r
+
+    }"
+order: 1000

@@ -1,0 +1,22 @@
+$kind: http-request
+name: pengaduan
+url: https://desahutabulumejan.id/api/pengaduan
+method: POST
+headers:
+  Accept: Application/json
+body:
+  type: json
+  content: "{\r
+
+    \    \"judul\": \"Jalan Rusak di Dusun 2\",\r
+
+    \    \"isi\": \"Jalan menuju Dusun 2 mengalami kerusakan parah sehingga menyulitkan kendaraan melintas.\",\r
+
+    \    \"jenis\": \"Infrastruktur\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: 167|HUXZMkvOJQSBLQPEy6ynqbGLs9SYJKtwEerw4sXy91df32dd
+order: 12000

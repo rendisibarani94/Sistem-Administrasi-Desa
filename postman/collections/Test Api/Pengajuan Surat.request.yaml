@@ -1,0 +1,10 @@
+$kind: http-request
+url: https://desahutabulumejan.id/api/notifikasi
+method: GET
+headers:
+  Accept: Application/json
+auth:
+  type: bearer
+  credentials:
+    token: 162|dgF2tPe0jUpDh8Uh8DhB2Wj0cbrHGGiyF4IAdESvac21228b
+order: 5000

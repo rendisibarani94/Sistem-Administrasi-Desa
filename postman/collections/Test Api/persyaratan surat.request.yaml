@@ -1,0 +1,11 @@
+$kind: http-request
+name: persyaratan surat
+url: https://desahutabulumejan.id/api/dynamic/persyaratan
+method: GET
+headers:
+  Accept: Application/json
+auth:
+  type: bearer
+  credentials:
+    token: 164|uyx7lFD0CwAyEH3bG4bVNpAST3VVH0Xl56YgXOK1c620ef9a
+order: 7000
