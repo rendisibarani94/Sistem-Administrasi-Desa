@@ -60,12 +60,10 @@
                 <span class="relative z-0 inline-flex space-x-2">
                     {{-- Previous Page --}}
                     @if ($paginator->onFirstPage())
-                        <span aria-disabled="true" aria-label="{{ __('pagination.previous') }}">
-                            <span class="inline-flex items-center px-3 py-2 border border-gray-200 bg-gray-50 text-gray-400 rounded-lg cursor-not-allowed" aria-hidden="true">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-                                </svg>
-                            </span>
+                        <span aria-disabled="true" role="button" aria-label="{{ __('pagination.previous') }}" class="inline-flex items-center px-3 py-2 border border-gray-200 bg-gray-50 text-gray-400 rounded-lg cursor-not-allowed shadow-sm">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                            </svg>
                         </span>
                     @else
                         <button wire:click="previousPage" wire:loading.attr="disabled" class="cursor-pointer inline-flex items-center px-3 py-2 border border-gray-200 bg-white text-blue-600 rounded-lg hover:bg-blue-50 hover:border-blue-300 transition duration-200 ease-in-out shadow-sm" aria-label="{{ __('pagination.previous') }}">
@@ -108,12 +106,10 @@
                             </svg>
                         </button>
                     @else
-                        <span aria-disabled="true" aria-label="{{ __('pagination.next') }}">
-                            <span class="inline-flex items-center px-3 py-2 border border-gray-200 bg-gray-50 text-gray-400 rounded-lg cursor-not-allowed shadow-sm">
-                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-                                </svg>
-                            </span>
+                        <span aria-disabled="true" role="button" aria-label="{{ __('pagination.next') }}" class="inline-flex items-center px-3 py-2 border border-gray-200 bg-gray-50 text-gray-400 rounded-lg cursor-not-allowed shadow-sm">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
                         </span>
                     @endif
                 </span>

@@ -7,8 +7,8 @@
                 text: parameters[0].text,
                 icon: parameters[0].icon,
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#dc2626',
+                confirmButtonColor: '#0369a1',
+                cancelButtonColor: '#b91c1c',
                 confirmButtonText: parameters[0].confirmButtonText,
                 cancelButtonText: parameters[0].cancelButtonText,
                 reverseButtons: true

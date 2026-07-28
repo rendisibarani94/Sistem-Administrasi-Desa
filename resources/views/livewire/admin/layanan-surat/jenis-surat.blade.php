@@ -68,12 +68,13 @@
         <div class="flex flex-wrap justify-between items-center border-2 border-gray-300 rounded-sm my-6 p-4 gap-4 sm:justify-end">
             <!-- Search Input -->
             <div class="relative w-full sm:w-72">
+                <label for="search" class="sr-only">Cari Jenis Surat</label>
                 <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                     <svg class="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                     </svg>
                 </div>
-                <input type="search" wire:model.live.debounce.300ms="search" autocomplete="off" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari Jenis Surat..." required />
+                <input id="search" type="search" wire:model.live.debounce.300ms="search" autocomplete="off" aria-label="Cari Jenis Surat" title="Cari Jenis Surat" class="block w-full sm:w-72 p-3 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-gray-50 focus:ring-sky-500 focus:border-sky-500" placeholder="Cari Jenis Surat..." />
             </div>
         </div>
 
@@ -106,23 +107,23 @@
                     @forelse ($jenisSuratList as $index => $item)
                         <tr class="hover:bg-gray-50 transition-colors">
                             {{-- No --}}
-                            <td class="px-5 py-4 text-gray-500 font-medium">
+                            <td class="px-5 py-4 text-gray-700 font-semibold text-center">
                                 {{ $jenisSuratList->firstItem() + $index }}
                             </td>
 
                             {{-- Nama Surat --}}
                             <td class="px-5 py-4">
-                                <span class="font-semibold text-gray-800">{{ $item->nama_surat }}</span>
+                                <span class="font-semibold text-gray-900">{{ $item->nama_surat }}</span>
                             </td>
 
                             {{-- Deskripsi --}}
-                            <td class="px-5 py-4 text-gray-500 max-w-xs">
+                            <td class="px-5 py-4 text-gray-700 font-medium max-w-xs text-xs">
                                 <span class="line-clamp-2">{{ $item->deskripsi ?? '-' }}</span>
                             </td>
 
                             {{-- Jumlah Field --}}
                             <td class="px-5 py-4 text-center">
-                                <span class="inline-flex items-center justify-center rounded-full bg-sky-100 text-sky-700 text-xs font-semibold px-2.5 py-0.5 min-w-[2rem]">
+                                <span class="inline-flex items-center justify-center rounded-full bg-sky-100 text-sky-800 text-xs font-semibold px-2.5 py-0.5 min-w-[2rem]">
                                     {{ $item->persyaratan_surat_count }} field
                                 </span>
                             </td>
@@ -135,10 +136,10 @@
                                     title="{{ $item->is_active ? 'Klik untuk nonaktifkan' : 'Klik untuk aktifkan' }}"
                                     class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold transition-all
                                         {{ $item->is_active
-                                            ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
-                                            : 'bg-gray-100 text-gray-500 hover:bg-gray-200' }}"
+                                            ? 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-300 hover:bg-emerald-100'
+                                            : 'bg-gray-50 text-gray-800 ring-1 ring-inset ring-gray-300 hover:bg-gray-100' }}"
                                 >
-                                    <span class="h-1.5 w-1.5 rounded-full {{ $item->is_active ? 'bg-emerald-500' : 'bg-gray-400' }}"></span>
+                                    <span class="h-1.5 w-1.5 rounded-full {{ $item->is_active ? 'bg-emerald-600' : 'bg-gray-500' }}"></span>
                                     {{ $item->is_active ? 'Aktif' : 'Nonaktif' }}
                                 </button>
                             </td>
@@ -149,8 +150,9 @@
                                     {{-- Edit --}}
                                     <button
                                         wire:click="openEditModal({{ $item->id_jenis_surat }})"
-                                        class="inline-flex items-center gap-1 rounded-md border border-sky-200 bg-sky-50 px-2.5 py-1.5 text-xs font-medium text-sky-700 hover:bg-sky-100 transition-colors"
+                                        class="inline-flex items-center gap-1 rounded-md border border-sky-300 bg-sky-50 px-2.5 py-1.5 text-xs font-bold text-sky-800 hover:bg-sky-100 transition-colors"
                                         title="Edit"
+                                        aria-label="Edit Jenis Surat"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
@@ -161,8 +163,9 @@
                                     {{-- Hapus --}}
                                     <button
                                         wire:click="confirmDelete({{ $item->id_jenis_surat }})"
-                                        class="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-medium text-red-600 hover:bg-red-100 transition-colors"
+                                        class="inline-flex items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-800 hover:bg-red-100 transition-colors"
                                         title="Hapus"
+                                        aria-label="Hapus Jenis Surat"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
@@ -251,7 +254,7 @@
                 <h2 class="text-lg font-bold text-gray-800">
                     {{ $editingId ? 'Edit Jenis Surat' : 'Tambah Jenis Surat Baru' }}
                 </h2>
-                <button type="button" @click="confirmClose()" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <button type="button" @click="confirmClose()" title="Tutup Modal" aria-label="Tutup Modal" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
@@ -266,14 +269,17 @@
 
                 {{-- Nama Surat --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label for="nama_surat" class="block text-sm font-semibold text-gray-700 mb-1.5">
                         Nama Surat <span class="text-red-500">*</span>
                     </label>
                     <input
+                        id="nama_surat"
                         wire:model="nama_surat"
                         type="text"
+                        aria-label="Nama Surat"
+                        title="Nama Surat"
                         placeholder="Contoh: Surat Keterangan Domisili"
-                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nama_surat') border-red-400 bg-red-50 @enderror"
+                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nama_surat') border-red-400 bg-red-50 @enderror"
                         @input="trackChange()"
                     />
                     @error('nama_surat')
@@ -283,14 +289,17 @@
 
                 {{-- Deskripsi --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+                    <label for="deskripsi" class="block text-sm font-semibold text-gray-700 mb-1.5">
                         Deskripsi <span class="text-red-500">*</span>
                     </label>
                     <textarea
+                        id="deskripsi"
                         wire:model="deskripsi"
                         rows="2"
+                        aria-label="Deskripsi Jenis Surat"
+                        title="Deskripsi Jenis Surat"
                         placeholder="Jelaskan kegunaan surat ini..."
-                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none @error('deskripsi') border-red-400 bg-red-50 @enderror"
+                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none @error('deskripsi') border-red-400 bg-red-50 @enderror"
                     ></textarea>
                     @error('deskripsi')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -332,25 +341,25 @@
                             <span>Tips: Klik tag di bawah ini untuk memasukkan data warga secara otomatis ke dalam surat.</span>
                         </p>
                         <div class="flex flex-wrap gap-2">
-                            <button type="button" @click="insertTag('{nama}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                            <button type="button" @click="insertTag('{nama}')" title="Sisipkan tag Nama Pemohon" aria-label="Sisipkan tag Nama Pemohon" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-bold text-blue-800 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
                                 <span>{nama}</span>
-                                <span class="text-[10px] text-blue-400 font-normal">(Nama Pemohon)</span>
+                                <span class="text-[10px] text-blue-700 font-medium">(Nama Pemohon)</span>
                             </button>
-                            <button type="button" @click="insertTag('{nik}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                            <button type="button" @click="insertTag('{nik}')" title="Sisipkan tag NIK" aria-label="Sisipkan tag NIK" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-bold text-blue-800 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
                                 <span>{nik}</span>
-                                <span class="text-[10px] text-blue-400 font-normal">(NIK)</span>
+                                <span class="text-[10px] text-blue-700 font-medium">(NIK)</span>
                             </button>
-                            <button type="button" @click="insertTag('{alamat}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                            <button type="button" @click="insertTag('{alamat}')" title="Sisipkan tag Alamat Warga" aria-label="Sisipkan tag Alamat Warga" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-bold text-blue-800 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
                                 <span>{alamat}</span>
-                                <span class="text-[10px] text-blue-400 font-normal">(Alamat Warga)</span>
+                                <span class="text-[10px] text-blue-700 font-medium">(Alamat Warga)</span>
                             </button>
-                            <button type="button" @click="insertTag('{keperluan}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                            <button type="button" @click="insertTag('{keperluan}')" title="Sisipkan tag Keperluan Surat" aria-label="Sisipkan tag Keperluan Surat" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-bold text-blue-800 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
                                 <span>{keperluan}</span>
-                                <span class="text-[10px] text-blue-400 font-normal">(Keperluan Surat)</span>
+                                <span class="text-[10px] text-blue-700 font-medium">(Keperluan Surat)</span>
                             </button>
-                            <button type="button" @click="insertTag('{nomor_surat}')" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-semibold text-blue-700 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
+                            <button type="button" @click="insertTag('{nomor_surat}')" title="Sisipkan tag Nomor Surat" aria-label="Sisipkan tag Nomor Surat" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-blue-200 text-xs font-bold text-blue-800 hover:bg-blue-50 active:bg-blue-100 transition duration-150 shadow-sm cursor-pointer hover:border-blue-300">
                                 <span>{nomor_surat}</span>
-                                <span class="text-[10px] text-blue-400 font-normal">(Nomor Surat)</span>
+                                <span class="text-[10px] text-blue-700 font-medium">(Nomor Surat)</span>
                             </button>
                         </div>
                     </div>
@@ -369,6 +378,36 @@
                                          [{ list: 'ordered' }, { list: 'bullet' }],
                                          ['clean']
                                      ]
+                                 }
+                             });
+                             
+                             // Add accessibility labels to Quill toolbar elements
+                             $nextTick(() => {
+                                 const toolbar = $el.querySelector('.ql-toolbar');
+                                 if (toolbar) {
+                                     const pickerLabel = toolbar.querySelector('.ql-header .ql-picker-label');
+                                     if (pickerLabel) {
+                                         pickerLabel.setAttribute('aria-label', 'Pilih Ukuran Judul (Header)');
+                                         pickerLabel.setAttribute('title', 'Pilih Ukuran Judul (Header)');
+                                     }
+                                     
+                                     const boldBtn = toolbar.querySelector('.ql-bold');
+                                     if (boldBtn) { boldBtn.setAttribute('aria-label', 'Cetak Tebal (Bold)'); boldBtn.setAttribute('title', 'Cetak Tebal (Bold)'); }
+
+                                     const italicBtn = toolbar.querySelector('.ql-italic');
+                                     if (italicBtn) { italicBtn.setAttribute('aria-label', 'Cetak Miring (Italic)'); italicBtn.setAttribute('title', 'Cetak Miring (Italic)'); }
+
+                                     const underlineBtn = toolbar.querySelector('.ql-underline');
+                                     if (underlineBtn) { underlineBtn.setAttribute('aria-label', 'Garis Bawah (Underline)'); underlineBtn.setAttribute('title', 'Garis Bawah (Underline)'); }
+
+                                     const listOrderedBtn = toolbar.querySelector('.ql-list[value=\'ordered\']');
+                                     if (listOrderedBtn) { listOrderedBtn.setAttribute('aria-label', 'Daftar Bernomor (Ordered List)'); listOrderedBtn.setAttribute('title', 'Daftar Bernomor'); }
+
+                                     const listBulletBtn = toolbar.querySelector('.ql-list[value=\'bullet\']');
+                                     if (listBulletBtn) { listBulletBtn.setAttribute('aria-label', 'Daftar Poin (Bullet List)'); listBulletBtn.setAttribute('title', 'Daftar Poin'); }
+
+                                     const cleanBtn = toolbar.querySelector('.ql-clean');
+                                     if (cleanBtn) { cleanBtn.setAttribute('aria-label', 'Hapus Format (Clean)'); cleanBtn.setAttribute('title', 'Hapus Format'); }
                                  }
                              });
                              
@@ -402,22 +441,27 @@
                 <div class="flex items-center gap-3">
                     <button
                         type="button"
+                        id="status_switch"
                         wire:click="$set('is_active', !{{ $is_active ? 'true' : 'false' }})"
                         @click="isDirty = true"
+                        title="Tampilkan di aplikasi mobile"
+                        aria-label="Tampilkan di aplikasi mobile"
+                        aria-checked="{{ $is_active ? 'true' : 'false' }}"
                         class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none
-                            {{ $is_active ? 'bg-sky-600' : 'bg-gray-200' }}"
+                            {{ $is_active ? 'bg-sky-700' : 'bg-gray-300' }}"
                         role="switch"
                     >
+                        <span class="sr-only">Tampilkan di aplikasi mobile</span>
                         <span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out
                             {{ $is_active ? 'translate-x-5' : 'translate-x-0' }}">
                         </span>
                     </button>
-                    <span class="text-sm font-medium text-gray-700">
+                    <label for="status_switch" class="text-sm font-medium text-gray-700 cursor-pointer">
                         Tampilkan di aplikasi mobile
-                        <span class="font-semibold {{ $is_active ? 'text-emerald-600' : 'text-gray-400' }}">
+                        <span class="font-bold {{ $is_active ? 'text-emerald-800' : 'text-gray-600' }}">
                             ({{ $is_active ? 'Aktif' : 'Nonaktif' }})
                         </span>
-                    </span>
+                    </label>
                 </div>
 
                 {{-- Divider --}}
@@ -465,10 +509,13 @@
                                         {{-- Nama Field --}}
                                         <div class="sm:col-span-2">
                                             <input
+                                                id="persyaratan_nama_{{ $idx }}"
                                                 wire:model="persyaratan.{{ $idx }}.nama_field"
                                                 type="text"
+                                                aria-label="Nama Field Persyaratan {{ $idx + 1 }}"
+                                                title="Nama Field Persyaratan {{ $idx + 1 }}"
                                                 placeholder="Nama field (Contoh: NIK, Nama Lengkap)"
-                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 no-nik-format @error('persyaratan.'.$idx.'.nama_field') border-red-400 @enderror"
+                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-900 placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 no-nik-format @error('persyaratan.'.$idx.'.nama_field') border-red-400 @enderror"
                                             />
                                             @error('persyaratan.'.$idx.'.nama_field')
                                                 <p class="mt-0.5 text-xs text-red-500">{{ $message }}</p>
@@ -478,8 +525,11 @@
                                         {{-- Tipe Field --}}
                                         <div>
                                             <select
+                                                id="persyaratan_tipe_{{ $idx }}"
                                                 wire:model="persyaratan.{{ $idx }}.tipe_field"
-                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                                                aria-label="Tipe Field Persyaratan {{ $idx + 1 }}"
+                                                title="Tipe Field Persyaratan {{ $idx + 1 }}"
+                                                class="w-full rounded-lg border border-gray-300 px-3 py-2 text-xs text-gray-900 focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                                             >
                                                 @foreach ($tipeOptions as $val => $label)
                                                     <option value="{{ $val }}">{{ $label }}</option>
@@ -493,9 +543,10 @@
                                         <input
                                             type="checkbox"
                                             wire:model="persyaratan.{{ $idx }}.is_required"
+                                            aria-label="Wajib diisi untuk Field {{ $idx + 1 }}"
                                             class="h-3.5 w-3.5 rounded border-gray-300 text-sky-600 focus:ring-sky-500"
                                         />
-                                        <span class="text-xs text-gray-600 whitespace-nowrap">Wajib</span>
+                                        <span class="text-xs text-gray-700 font-medium whitespace-nowrap">Wajib</span>
                                     </label>
 
                                     {{-- Hapus --}}
@@ -503,7 +554,8 @@
                                         type="button"
                                         wire:click="hapusField({{ $idx }})"
                                         @click="isDirty = true"
-                                        class="shrink-0 rounded-lg p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 transition-colors mt-0.5"
+                                        aria-label="Hapus field persyaratan {{ $idx + 1 }}"
+                                        class="shrink-0 rounded-lg p-1.5 text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors mt-0.5"
                                         title="Hapus field ini"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -589,7 +641,9 @@
                 <button
                     type="button"
                     @click="confirmClose()"
-                    class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+                    title="Batal dan Tutup"
+                    aria-label="Batal dan Tutup"
+                    class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-800 hover:bg-red-100 transition-colors"
                 >
                     Batal
                 </button>
@@ -598,7 +652,9 @@
                     @click="confirmSimpan()"
                     wire:loading.attr="disabled"
                     wire:loading.class="opacity-70 cursor-not-allowed"
-                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm"
+                    title="{{ $editingId ? 'Simpan Perubahan' : 'Tambah Jenis Surat' }}"
+                    aria-label="{{ $editingId ? 'Simpan Perubahan' : 'Tambah Jenis Surat' }}"
+                    class="inline-flex items-center gap-2 rounded-lg bg-sky-700 hover:bg-sky-800 px-5 py-2 text-sm font-bold text-white transition-colors shadow-sm"
                 >
                     <span wire:loading.remove wire:target="simpan">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">

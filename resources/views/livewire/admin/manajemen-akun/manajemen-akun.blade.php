@@ -136,15 +136,19 @@
             <div class="flex flex-wrap items-center gap-3 w-full">
                 <!-- Search Input -->
                 <div class="relative w-full sm:w-72">
+                    <label for="search" class="sr-only">Cari nama, email, NIK</label>
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500" fill="none" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 text-gray-700" fill="none" viewBox="0 0 20 20">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
                         </svg>
                     </div>
                     <input
+                        id="search"
                         type="search"
                         wire:model.live.debounce.300ms="search"
                         autocomplete="off"
+                        aria-label="Cari nama, email, NIK"
+                        title="Cari nama, email, NIK"
                         class="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500"
                         placeholder="Cari nama, email, NIK..."
                     />
@@ -152,7 +156,8 @@
 
                 <!-- Status Filter -->
                 <div class="w-full sm:w-64">
-                    <select wire:model.live="statusFilter" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
+                    <label for="statusFilter" class="sr-only">Filter Status Akun</label>
+                    <select id="statusFilter" wire:model.live="statusFilter" aria-label="Filter Status Akun" title="Filter Status Akun" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
                         <option value="aktif">Tampilkan Akun Masyarakat Aktif</option>
                         <option value="nonaktif">Tampilkan Akun Dinonaktifkan</option>
                         <option value="semua">Tampilkan Semua Status Akun</option>
@@ -189,7 +194,7 @@
                     @forelse ($users as $index => $user)
                         <tr class="hover:bg-gray-50 transition-colors">
                             {{-- No --}}
-                            <td class="px-4 py-4 text-center text-gray-500 text-sm">
+                            <td class="px-4 py-4 text-center text-gray-700 font-semibold text-sm">
                                 {{ $users->firstItem() + $index }}
                             </td>
 
@@ -203,18 +208,18 @@
                                         <div class="flex items-center gap-2">
                                             <p class="text-sm font-semibold text-gray-900">{{ $user->name }}</p>
                                             @if($user->trashed())
-                                                <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-800">
+                                                <span class="inline-flex items-center rounded-full bg-red-50 ring-1 ring-inset ring-red-300 px-2 py-0.5 text-xs font-semibold text-red-800">
                                                     Tidak Aktif
                                                 </span>
                                             @else
-                                                <span class="inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-semibold text-green-800">
+                                                <span class="inline-flex items-center rounded-full bg-green-50 ring-1 ring-inset ring-green-300 px-2 py-0.5 text-xs font-semibold text-green-800">
                                                     Aktif
                                                 </span>
                                             @endif
                                         </div>
-                                        <p class="text-xs text-gray-500">{{ $user->email }}</p>
+                                        <p class="text-xs text-gray-600 font-medium">{{ $user->email }}</p>
                                         @if($user->nik)
-                                            <p class="text-xs text-gray-400">Nomor KK: {{ $user->nik }}</p>
+                                            <p class="text-xs text-gray-600 font-medium">Nomor KK: {{ $user->nik }}</p>
                                         @endif
                                     </div>
                                 </div>
@@ -224,7 +229,7 @@
                             <td class="px-4 py-4 text-center">
                                 @php $jmlPengajuan = $pengajuanCounts[$user->id_penduduk] ?? 0; @endphp
                                 <span class="inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-semibold
-                                    {{ $jmlPengajuan > 0 ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-400' }}">
+                                    {{ $jmlPengajuan > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-600' }}">
                                     {{ $jmlPengajuan }}
                                 </span>
                             </td>
@@ -232,7 +237,7 @@
                             {{-- Jumlah Pengaduan --}}
                             <td class="px-4 py-4 text-center">
                                 <span class="inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-semibold
-                                    {{ $user->pengaduan_count > 0 ? 'bg-orange-100 text-orange-700' : 'bg-gray-100 text-gray-400' }}">
+                                    {{ $user->pengaduan_count > 0 ? 'bg-orange-100 text-orange-800' : 'bg-gray-100 text-gray-600' }}">
                                     {{ $user->pengaduan_count }}
                                 </span>
                             </td>
@@ -240,13 +245,13 @@
                             {{-- Jumlah Notifikasi --}}
                             <td class="px-4 py-4 text-center">
                                 <span class="inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-semibold
-                                    {{ $user->notifikasi_count > 0 ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-400' }}">
+                                    {{ $user->notifikasi_count > 0 ? 'bg-purple-100 text-purple-800' : 'bg-gray-100 text-gray-600' }}">
                                     {{ $user->notifikasi_count }}
                                 </span>
                             </td>
 
                             {{-- Tanggal Daftar --}}
-                            <td class="px-4 py-4 text-center text-xs text-gray-500">
+                            <td class="px-4 py-4 text-center text-xs text-gray-700 font-medium">
                                 {{ $user->created_at?->format('d M Y') ?? '-' }}
                             </td>
 
@@ -258,7 +263,7 @@
                                         <button
                                             wire:click="restoreUser({{ $user->id }})"
                                             wire:loading.attr="disabled"
-                                            class="inline-flex items-center gap-1.5 rounded-md border border-green-200 bg-green-50 px-2.5 py-1.5 text-xs font-semibold text-green-700 hover:bg-green-100 transition-colors"
+                                            class="inline-flex items-center gap-1.5 rounded-md border border-green-300 bg-green-50 px-2.5 py-1.5 text-xs font-bold text-green-800 hover:bg-green-100 transition-colors"
                                             title="Aktifkan kembali akun masyarakat ini"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
@@ -271,7 +276,7 @@
                                         <button
                                             wire:click="confirmClearData({{ $user->id }})"
                                             wire:loading.attr="disabled"
-                                            class="inline-flex items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100 transition-colors"
+                                            class="inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-2.5 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100 transition-colors"
                                             title="Bersihkan semua histori, akun tetap ada"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -284,7 +289,7 @@
                                         <button
                                             wire:click="confirmDelete({{ $user->id }})"
                                             wire:loading.attr="disabled"
-                                            class="inline-flex items-center gap-1 rounded-md border border-red-200 bg-red-50 px-2.5 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-100 transition-colors"
+                                            class="inline-flex items-center gap-1 rounded-md border border-red-300 bg-red-50 px-2.5 py-1.5 text-xs font-bold text-red-800 hover:bg-red-100 transition-colors"
                                             title="Nonaktifkan akun masyarakat (Soft Delete)"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
@@ -331,8 +336,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#dc2626',
+                    confirmButtonColor: '#0369a1',
+                    cancelButtonColor: '#b91c1c',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -349,8 +354,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#dc2626',
+                    confirmButtonColor: '#0369a1',
+                    cancelButtonColor: '#b91c1c',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -367,8 +372,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#dc2626',
+                    confirmButtonColor: '#0369a1',
+                    cancelButtonColor: '#b91c1c',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {
@@ -385,8 +390,8 @@
                     html: p.html,
                     icon: p.icon,
                     showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#dc2626',
+                    confirmButtonColor: '#0369a1',
+                    cancelButtonColor: '#b91c1c',
                     confirmButtonText: p.confirmButtonText,
                     cancelButtonText: p.cancelButtonText,
                 }).then((result) => {

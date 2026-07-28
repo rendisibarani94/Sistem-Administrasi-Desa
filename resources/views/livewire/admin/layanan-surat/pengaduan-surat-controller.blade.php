@@ -75,17 +75,19 @@
             <form method="GET" action="{{ route('admin.layanan-surat.pengaduan') }}" class="flex flex-wrap items-center gap-3 w-full">
                 <!-- Search Input -->
                 <div class="relative w-full sm:w-72">
+                    <label for="search" class="sr-only">Cari judul, isi, atau pengirim</label>
                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                        <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 text-gray-700" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                         </svg>
                     </div>
-                    <input id="search" name="search" type="search" value="{{ request('search') }}" class="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500" placeholder="Cari judul, isi, atau pengirim..." />
+                    <input id="search" name="search" type="search" value="{{ request('search') }}" aria-label="Cari judul, isi, atau pengirim" title="Cari judul, isi, atau pengirim" class="block w-full p-2.5 ps-10 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500" placeholder="Cari judul, isi, atau pengirim..." />
                 </div>
 
                 <!-- Status Filter select -->
                 <div class="w-full sm:w-48">
-                    <select name="status" id="status" onchange="this.form.submit()" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
+                    <label for="status" class="sr-only">Filter Status</label>
+                    <select name="status" id="status" onchange="this.form.submit()" aria-label="Filter Berdasarkan Status" title="Filter Berdasarkan Status" class="block w-full p-2.5 text-sm text-gray-900 border border-gray-400 rounded-lg bg-white focus:ring-sky-500 focus:border-sky-500">
                         <option value="">Semua Status</option>
                         <option value="menunggu" {{ request('status') === 'menunggu' ? 'selected' : '' }}>Menunggu</option>
                         <option value="selesai" {{ request('status') === 'selesai' ? 'selected' : '' }}>Disetujui</option>
@@ -159,7 +161,7 @@
                                 @endphp
                                 <div class="space-y-0.5">
                                     <p class="font-bold text-gray-900 text-sm">{{ $namaLengkap }}</p>
-                                    <p class="text-xs text-gray-500"><strong class="text-gray-700">NIK:</strong> {{ $nik }}</p>
+                                    <p class="text-xs text-gray-600 font-medium"><strong class="text-gray-800">NIK:</strong> {{ $nik }}</p>
                                 </div>
                             </td>
                             <td class="px-6 py-4 text-left">
@@ -170,23 +172,23 @@
                             </td>
                             <td class="px-6 py-4 text-center whitespace-nowrap" wire:click.stop>
                                 @if($item->foto)
-                                    <a href="{{ asset($item->foto) }}" target="_blank" class="inline-block hover:opacity-90 transition-opacity">
+                                    <a href="{{ asset($item->foto) }}" target="_blank" class="inline-block hover:opacity-90 transition-opacity" title="Lihat Foto Bukti">
                                         <img src="{{ asset($item->foto) }}" alt="Foto Bukti" class="w-10 h-10 object-cover rounded-lg border border-gray-200 shadow-sm inline-block">
                                     </a>
                                 @else
-                                    <span class="text-gray-400 text-xs italic">Tidak ada</span>
+                                    <span class="text-gray-600 font-medium text-xs italic">Tidak ada</span>
                                 @endif
                             </td>
-                            <td class="px-6 py-4 text-left text-gray-600 whitespace-normal max-w-[200px] text-xs">
+                            <td class="px-6 py-4 text-left text-gray-700 font-medium whitespace-normal max-w-[200px] text-xs">
                                 {{ $item->catatan_admin ?? '-' }}
                             </td>
                             <td class="px-6 py-4 text-center whitespace-nowrap">
                                 @php
                                     $statusStyle = match($item->status) {
-                                        'baru', 'diproses' => 'bg-amber-100 text-amber-700',
-                                        'selesai' => 'bg-green-100 text-green-700',
-                                        'ditolak' => 'bg-red-100 text-red-700',
-                                        default => 'bg-gray-100 text-gray-700',
+                                        'baru', 'diproses' => 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-300',
+                                        'selesai' => 'bg-green-50 text-green-800 ring-1 ring-inset ring-green-300',
+                                        'ditolak' => 'bg-red-50 text-red-800 ring-1 ring-inset ring-red-300',
+                                        default => 'bg-gray-50 text-gray-800 ring-1 ring-inset ring-gray-300',
                                     };
                                     $statusLabel = match($item->status) {
                                         'baru', 'diproses' => 'Menunggu',
@@ -199,11 +201,11 @@
                                     {{ $statusLabel }}
                                 </span>
                             </td>
-                            <td class="px-6 py-4 text-center whitespace-nowrap text-gray-500 text-xs">
+                            <td class="px-6 py-4 text-center whitespace-nowrap text-gray-700 font-medium text-xs">
                                 {{ $item->created_at->format('d M Y') }}
                             </td>
                             <td class="px-6 py-4 text-center whitespace-nowrap" wire:click.stop>
-                                <button wire:click="showDetail({{ $item->id_pengaduan }})" class="cursor-pointer inline-flex items-center gap-1 rounded bg-sky-700 hover:bg-sky-800 px-3 py-1.5 text-xs font-bold text-white shadow transition duration-200">
+                                <button wire:click="showDetail({{ $item->id_pengaduan }})" title="Lihat Detail Pengaduan" aria-label="Lihat Detail Pengaduan" class="cursor-pointer inline-flex items-center gap-1 rounded bg-sky-700 hover:bg-sky-800 px-3 py-1.5 text-xs font-bold text-white shadow transition duration-200">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -231,9 +233,9 @@
         {{-- Pagination --}}
         @if ($pengaduan->total() > 0)
             <div class="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-100 px-6 py-4">
-                <p class="text-sm text-gray-400">
-                    Menampilkan <span class="font-medium text-gray-600">{{ $pengaduan->firstItem() }}</span>–<span class="font-medium text-gray-600">{{ $pengaduan->lastItem() }}</span>
-                    dari <span class="font-medium text-gray-600">{{ $pengaduan->total() }}</span> data
+                <p class="text-sm text-gray-700 font-medium">
+                    Menampilkan <span class="font-semibold text-gray-900">{{ $pengaduan->firstItem() }}</span>–<span class="font-semibold text-gray-900">{{ $pengaduan->lastItem() }}</span>
+                    dari <span class="font-semibold text-gray-900">{{ $pengaduan->total() }}</span> data
                 </p>
                 @if ($pengaduan->hasPages())
                     {{ $pengaduan->appends(request()->query())->links() }}
@@ -254,7 +256,7 @@
                     <span class="text-xl">{{ $selectedPengaduan->foto ? '🖼️' : '💬' }}</span>
                     <h2 class="text-lg font-bold text-gray-800">Detail Laporan Pengaduan Masyarakat</h2>
                 </div>
-                <button wire:click="closeDetailModal" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-200 hover:text-gray-600 transition-colors">
+                <button wire:click="closeDetailModal" title="Tutup Modal" aria-label="Tutup Modal" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-200 hover:text-gray-700 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
@@ -317,12 +319,15 @@
                     <h3 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Tanggapan / Catatan Perangkat Desa</h3>
                     <div class="space-y-4">
                         <div>
+                            <label for="catatanAdmin" class="sr-only">Tanggapan atau Catatan Perangkat Desa</label>
                             <textarea
                                 id="catatanAdmin"
                                 wire:model="catatanAdmin"
                                 rows="3"
+                                aria-label="Tanggapan atau Catatan Perangkat Desa"
+                                title="Tanggapan atau Catatan Perangkat Desa"
                                 placeholder="Tuliskan respon resmi, solusi, atau instruksi dari desa..."
-                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none text-gray-700 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed"
+                                class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 resize-none text-gray-900 disabled:bg-gray-100 disabled:text-gray-600 disabled:cursor-not-allowed"
                                 {{ in_array($selectedPengaduan->status, ['ditolak', 'selesai']) ? 'disabled' : '' }}
                             ></textarea>
                         </div>
@@ -362,7 +367,9 @@
                     <button
                         type="button"
                         onclick="confirmTolak()"
-                        class="cursor-pointer rounded-lg bg-red-600 hover:bg-red-700 active:bg-red-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                        class="cursor-pointer rounded-lg bg-red-700 hover:bg-red-800 active:bg-red-900 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                        title="Tolak Pengaduan Ini"
+                        aria-label="Tolak Pengaduan Ini"
                     >
                         Tolak
                     </button>
@@ -371,7 +378,9 @@
                     <button
                         type="button"
                         onclick="confirmSetujui()"
-                        class="cursor-pointer rounded-lg bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                        class="cursor-pointer rounded-lg bg-emerald-800 hover:bg-emerald-900 active:bg-emerald-950 px-4 py-2 text-sm font-bold text-white transition-colors shadow-sm"
+                        title="Setujui Pengaduan Ini"
+                        aria-label="Setujui Pengaduan Ini"
                     >
                         Setujui
                     </button>
@@ -389,8 +398,8 @@
                 text: 'Apakah Anda yakin ingin menyetujui pengaduan ini?',
                 icon: 'question',
                 showCancelButton: true,
-                confirmButtonColor: '#059669', // Emerald 600
-                cancelButtonColor: '#dc2626',
+                confirmButtonColor: '#065f46', // Emerald 800
+                cancelButtonColor: '#b91c1c', // Red 700
                 confirmButtonText: 'Ya, Setujui!',
                 cancelButtonText: 'Batal'
             }).then((result) => {
@@ -406,8 +415,8 @@
                 text: 'Apakah Anda yakin ingin menolak pengaduan ini?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6', // Red 600
-                cancelButtonColor: '#dc2626',
+                confirmButtonColor: '#b91c1c', // Red 700
+                cancelButtonColor: '#6b7280',
                 confirmButtonText: 'Ya, Tolak!',
                 cancelButtonText: 'Batal'
             }).then((result) => {

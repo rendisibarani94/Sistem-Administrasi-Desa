@@ -66,6 +66,7 @@
                     :active="request()->routeIs($link['route'])"
                     :path="$link['icon']"
                     customClass="ml-5"
+                    :tabindex="!$isAnyChildActive ? '-1' : '0'"
                 >
                     {{ $link['text'] }}
                 </x-nav-link>
@@ -74,6 +75,7 @@
                     href="{{ route($link['route']) }}"
                     :active="request()->routeIs($link['route'])"
                     customClass="ml-5"
+                    :tabindex="!$isAnyChildActive ? '-1' : '0'"
                 >
                     {{ $link['text'] }}
                 </x-nav-link>

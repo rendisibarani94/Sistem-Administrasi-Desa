@@ -49,13 +49,13 @@ class ManajemenAkunController extends Component
         $this->dispatch('swal:confirm-user', [
             'title'             => "Nonaktifkan Akun: {$nama}?",
             'html'              => "<div class='text-left text-sm'>
-                                        <p class='mb-2'>Menonaktifkan akun masyarakat ini akan menyebabkan:</p>
-                                        <ul class='list-disc list-inside space-y-1 text-gray-600'>
+                                        <p class='mb-2 font-medium text-gray-800'>Menonaktifkan akun masyarakat ini akan menyebabkan:</p>
+                                        <ul class='list-disc list-inside space-y-1 text-gray-700 font-medium'>
                                             <li>🔑 Token login dicabut (Masyarakat langsung logout otomatis dari HP)</li>
                                             <li>🚫 Masyarakat tidak bisa login kembali ke aplikasi</li>
                                             <li>📦 Arsip aman: <strong>{$jumlahPengajuan}</strong> pengajuan & <strong>{$jumlahPengaduan}</strong> pengaduan tetap tersimpan di database</li>
                                         </ul>
-                                        <p class='mt-3 text-amber-600 font-semibold'>⚠️ Akun ini akan ditandai sebagai Tidak Aktif (Soft Delete).</p>
+                                        <p class='mt-3 text-amber-800 font-bold'>⚠️ Akun ini akan ditandai sebagai Tidak Aktif (Soft Delete).</p>
                                     </div>",
             'icon'              => 'warning',
             'confirmButtonText' => 'Ya, Nonaktifkan!',

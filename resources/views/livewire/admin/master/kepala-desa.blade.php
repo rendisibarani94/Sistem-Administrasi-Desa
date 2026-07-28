@@ -108,29 +108,29 @@
                             <td class="px-6 py-4 text-center">
                                 @if ($kd->file_ttd)
                                     <a href="{{ asset('storage/' . $kd->file_ttd) }}" target="_blank"
-                                        class="inline-block">
+                                        class="inline-block" title="Lihat Tanda Tangan">
                                         <img src="{{ asset('storage/' . $kd->file_ttd) }}"
-                                            alt="TTD"
+                                            alt="TTD Kepala Desa"
                                             class="h-12 w-auto object-contain border rounded shadow-sm mx-auto"
                                             onerror="this.style.display='none'">
                                     </a>
                                 @else
-                                    <span class="text-gray-400 text-xs italic">Belum diupload</span>
+                                    <span class="text-gray-600 font-medium text-xs italic">Belum diupload</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 text-center">
                                 @if ($kd->is_active)
                                     <button wire:click="confirmNonAktif({{ $kd->id_kepala_desa }})"
-                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-green-100 border border-green-200 px-2.5 py-1 text-xs font-semibold text-green-700 hover:bg-green-200 hover:text-green-800 transition-colors"
+                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-green-50 border border-green-300 px-2.5 py-1 text-xs font-semibold text-green-800 hover:bg-green-100 transition-colors"
                                         title="Klik untuk menonaktifkan">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500 inline-block"></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-600 inline-block"></span>
                                         Aktif
                                     </button>
                                 @else
                                     <button wire:click="confirmSetAktif({{ $kd->id_kepala_desa }})"
-                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-red-50 border border-red-200 px-2.5 py-1 text-xs font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors"
+                                        class="cursor-pointer inline-flex items-center gap-1 rounded-full bg-red-50 border border-red-300 px-2.5 py-1 text-xs font-semibold text-red-800 hover:bg-red-100 transition-colors"
                                         title="Klik untuk mengaktifkan">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-red-500 inline-block"></span>
+                                        <span class="w-1.5 h-1.5 rounded-full bg-red-600 inline-block"></span>
                                         Non Aktif
                                     </button>
                                 @endif
@@ -139,14 +139,16 @@
                                 <div class="flex items-center justify-center gap-2">
                                     <button wire:click="openEditModal({{ $kd->id_kepala_desa }})"
                                         class="cursor-pointer rounded-lg bg-amber-500 hover:bg-amber-600 p-1.5 text-white transition-colors"
-                                        title="Edit">
+                                        title="Edit Data Kepala Desa"
+                                        aria-label="Edit Data Kepala Desa">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125" />
                                         </svg>
                                     </button>
                                     <button wire:click="confirmDelete({{ $kd->id_kepala_desa }})"
                                         class="cursor-pointer rounded-lg bg-red-500 hover:bg-red-600 p-1.5 text-white transition-colors"
-                                        title="Hapus">
+                                        title="Hapus Data Kepala Desa"
+                                        aria-label="Hapus Data Kepala Desa">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                         </svg>
@@ -184,7 +186,7 @@
                 <h2 class="text-lg font-bold text-gray-800">
                     {{ $editingId ? 'Edit Kepala Desa' : 'Tambah Kepala Desa' }}
                 </h2>
-                <button wire:click="closeModal" class="rounded-lg p-1.5 text-gray-400 hover:bg-gray-100 hover:text-gray-600 transition-colors">
+                <button wire:click="closeModal" title="Tutup Modal" aria-label="Tutup Modal" class="rounded-lg p-1.5 text-gray-500 hover:bg-gray-100 hover:text-gray-700 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
                     </svg>
@@ -196,11 +198,11 @@
 
                 {{-- Nama --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
+                    <label for="nama_lengkap" class="block text-sm font-semibold text-gray-700 mb-1">
                         Nama Lengkap <span class="text-red-500">*</span>
                     </label>
-                    <input wire:model="nama" type="text" placeholder="Nama kepala desa"
-                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nama') border-red-400 bg-red-50 @enderror" />
+                    <input id="nama_lengkap" wire:model="nama" type="text" placeholder="Nama kepala desa" aria-label="Nama Lengkap Kepala Desa" title="Nama Lengkap Kepala Desa"
+                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nama') border-red-400 bg-red-50 @enderror" />
                     @error('nama')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
@@ -208,11 +210,11 @@
 
                 {{-- NIP --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        NIP <span class="text-gray-400 font-normal">(opsional)</span>
+                    <label for="nip" class="block text-sm font-semibold text-gray-700 mb-1">
+                        NIP <span class="text-gray-600 font-medium">(opsional)</span>
                     </label>
-                    <input wire:model="nip" type="text" placeholder="Nomor Induk Pegawai"
-                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm placeholder-gray-400 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nip') border-red-400 bg-red-50 @enderror" />
+                    <input id="nip" wire:model="nip" type="text" placeholder="Nomor Induk Pegawai" aria-label="Nomor Induk Pegawai (NIP)" title="Nomor Induk Pegawai (NIP)"
+                        class="w-full rounded-lg border border-gray-300 px-3.5 py-2.5 text-sm text-gray-900 placeholder-gray-500 focus:border-sky-500 focus:ring-1 focus:ring-sky-500 @error('nip') border-red-400 bg-red-50 @enderror" />
                     @error('nip')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
                     @enderror
@@ -220,20 +222,20 @@
 
                 {{-- Upload TTD --}}
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-1">
-                        Gambar Tanda Tangan <span class="text-gray-400 font-normal">(opsional, maks. 5MB)</span>
+                    <label for="file_ttd" class="block text-sm font-semibold text-gray-700 mb-1">
+                        Gambar Tanda Tangan <span class="text-gray-600 font-medium">(opsional, maks. 5MB)</span>
                     </label>
                     <div class="flex items-center gap-3">
-                        <label for="file_ttd" class="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-sky-50 hover:bg-sky-100 px-4 py-2.5 text-sm font-semibold text-sky-700 transition-colors border border-sky-200">
+                        <label for="file_ttd" class="cursor-pointer inline-flex items-center gap-2 rounded-lg bg-sky-100 hover:bg-sky-200 px-4 py-2.5 text-sm font-bold text-sky-800 transition-colors border border-sky-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5m-13.5-9L12 3m0 0 4.5 4.5M12 3v13.5" />
                             </svg>
                             Pilih Tanda Tangan
                         </label>
-                        <span class="text-sm text-gray-500 pointer-events-none select-none">
+                        <span class="text-sm text-gray-600 font-medium pointer-events-none select-none">
                             @if($file_ttd) {{ $file_ttd->getClientOriginalName() }} @else Belum ada file dipilih @endif
                         </span>
-                        <input id="file_ttd" wire:model="file_ttd" accept="image/*" style="display: none;" type="file">
+                        <input id="file_ttd" wire:model="file_ttd" accept="image/*" style="display: none;" type="file" aria-label="Upload Gambar Tanda Tangan" title="Upload Gambar Tanda Tangan">
                     </div>
                     @error('file_ttd')
                         <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
@@ -248,8 +250,8 @@
                 {{-- Status Aktif --}}
                 @if ($editingId)
                     <div class="flex items-center gap-3">
-                        <input wire:model="is_active" type="checkbox" id="is_active" class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
-                        <label for="is_active" class="text-sm font-medium text-gray-700">Jadikan sebagai kepala desa aktif (penandatangan surat)</label>
+                        <input wire:model="is_active" type="checkbox" id="is_active" aria-label="Jadikan sebagai kepala desa aktif" class="rounded border-gray-300 text-sky-600 focus:ring-sky-500">
+                        <label for="is_active" class="text-sm font-medium text-gray-700 cursor-pointer">Jadikan sebagai kepala desa aktif (penandatangan surat)</label>
                     </div>
                     @error('is_active')
                         <p class="text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
@@ -257,17 +259,17 @@
                         </p>
                     @enderror
                     @if ($is_active)
-                        <p class="text-xs text-blue-600 bg-blue-50 border border-blue-100 rounded-lg px-3 py-2">
+                        <p class="text-xs text-blue-800 bg-blue-50 border border-blue-200 rounded-lg px-3 py-2 font-medium">
                             ℹ️ Data pengajuan surat yang sudah diproses oleh kepala desa sebelumnya <strong>tidak akan berubah</strong> — historis tetap terhubung ke kepala desa yang memproses saat itu.
                         </p>
                     @else
-                        <p class="text-xs text-amber-600 bg-amber-50 border border-amber-100 rounded-lg px-3 py-2">
+                        <p class="text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 font-medium">
                             ⚠️ Jika dinonaktifkan, pastikan ada kepala desa lain yang aktif agar surat desa tetap dapat diproses.
                         </p>
                     @endif
                 @else
                     <div class="p-3 bg-sky-50 border border-sky-100 rounded-lg">
-                        <p class="text-xs text-sky-850 font-medium">
+                        <p class="text-xs text-sky-900 font-medium">
                             💡 Data kepala desa baru yang ditambahkan akan otomatis diaktifkan sebagai penandatangan surat aktif. Kepala desa aktif saat ini akan dinonaktifkan secara otomatis.
                         </p>
                     </div>
@@ -276,13 +278,13 @@
 
             {{-- Footer --}}
             <div class="flex items-center justify-end gap-3 border-t border-gray-100 px-6 py-4">
-                <button type="button" wire:click="closeModal"
-                    class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100 hover:text-red-800 transition-colors">
+                <button type="button" wire:click="closeModal" title="Batal dan Tutup" aria-label="Batal dan Tutup"
+                    class="rounded-lg border border-red-300 bg-red-50 px-4 py-2 text-sm font-bold text-red-800 hover:bg-red-100 transition-colors">
                     Batal
                 </button>
-                <button type="button" wire:click="simpan"
+                <button type="button" wire:click="simpan" title="{{ $editingId ? 'Simpan Perubahan' : 'Tambah' }}" aria-label="{{ $editingId ? 'Simpan Perubahan' : 'Tambah' }}"
                     wire:loading.attr="disabled" wire:loading.class="opacity-70 cursor-not-allowed"
-                    class="inline-flex items-center gap-2 rounded-lg bg-sky-600 hover:bg-sky-700 px-5 py-2 text-sm font-semibold text-white transition-colors shadow-sm">
+                    class="inline-flex items-center gap-2 rounded-lg bg-sky-700 hover:bg-sky-800 px-5 py-2 text-sm font-bold text-white transition-colors shadow-sm">
                     <span wire:loading.remove wire:target="simpan">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
