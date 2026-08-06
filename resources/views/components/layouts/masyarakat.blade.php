@@ -22,7 +22,7 @@
     @stack('styles')
 </head>
 <body class="min-h-screen flex flex-col">
-    <nav class="bg-sky-700 border-gray-200">
+    <nav class="bg-sky-700 border-gray-200" x-data="{ mobileNav: false, infoOpen: false }">
         <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto px-4 py-3">
             <div class="flex items-center space-x-2 rtl:space-x-reverse w-full md:w-auto">
                 <!-- Logo and Brand Name -->
@@ -35,7 +35,7 @@
                 </a>
 
                 <!-- Mobile Menu Button -->
-                <button data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center p-2 ml-auto w-10 h-10 justify-center text-sm text-gray-300 rounded-lg md:hidden hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-gray-200">
+                <button @click="mobileNav = !mobileNav" data-collapse-toggle="navbar-dropdown" type="button" class="inline-flex items-center p-2 ml-auto w-10 h-10 justify-center text-sm text-gray-300 rounded-lg md:hidden hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-gray-200">
                     <span class="sr-only">Open main menu</span>
                     <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
                         <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15" />
@@ -44,7 +44,7 @@
             </div>
 
             <!-- Navigation Items -->
-            <div class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
+            <div :class="mobileNav ? 'block w-full md:w-auto' : 'hidden w-full md:block md:w-auto'" class="hidden w-full md:block md:w-auto" id="navbar-dropdown">
                 <ul class="flex flex-col md:flex-row md:space-x-4 lg:space-x-6 xl:space-x-8 mt-4 md:mt-0 text-sm md:text-base">
                     <!-- Home -->
                     <li>
@@ -61,14 +61,14 @@
                     </li>
 
                     <!-- Information Dropdown -->
-                    <li class="relative">
-                        <button id="infoDropdownButton" data-dropdown-toggle="infoDropdown" class="flex font-semibold items-center justify-between w-full py-2 px-3 text-white hover:bg-sky-600 md:hover:bg-transparent md:p-0 cursor-pointer transition-colors">
+                    <li class="relative" @click.outside="infoOpen = false">
+                        <button @click="infoOpen = !infoOpen" id="infoDropdownButton" data-dropdown-toggle="infoDropdown" class="flex font-semibold items-center justify-between w-full py-2 px-3 text-white hover:bg-sky-600 md:hover:bg-transparent md:p-0 cursor-pointer transition-colors">
                             Informasi Publik
-                            <svg class="w-2.5 h-2.5 ml-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <svg class="w-2.5 h-2.5 ml-1.5 transition-transform duration-200" :class="infoOpen ? 'rotate-180' : ''" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4" />
                             </svg>
                         </button>
-                        <div id="infoDropdown" class="absolute z-10 hidden w-48 bg-white shadow-lg rounded-lg md:mt-2 overflow-hidden">
+                        <div id="infoDropdown" :class="infoOpen ? 'block absolute z-10 w-48 bg-white shadow-lg rounded-lg md:mt-2 overflow-hidden' : 'hidden absolute z-10 w-48 bg-white shadow-lg rounded-lg md:mt-2 overflow-hidden'" class="absolute z-10 hidden w-48 bg-white shadow-lg rounded-lg md:mt-2 overflow-hidden">
                             <ul class="py-2">
                                 <li><a href="{{ route('berita') }}" class="block px-4 py-2 text-gray-800 hover:bg-sky-600 hover:text-white transition-colors">Berita desa</a></li>
                                 <li><a href="{{ route('pengumuman') }}" class="block px-4 py-2 text-gray-800 hover:bg-sky-600 hover:text-white transition-colors">Pengumuman</a></li>

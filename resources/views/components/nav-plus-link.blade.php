@@ -39,13 +39,14 @@
         : 'py-2 space-y-2 transition-all duration-300 ease-in-out overflow-hidden';
 @endphp
 
-<li>
+<li x-data="{ open: {{ $isAnyChildActive ? 'true' : 'false' }} }">
     <button
         type="button"
+        @click="open = !open"
         class="{{ $buttonClasses }}"
         aria-controls="{{ $dropdownId }}"
         data-collapse-toggle="{{ $dropdownId }}"
-        aria-expanded="{{ $isAnyChildActive ? 'true' : 'false' }}"
+        :aria-expanded="open ? 'true' : 'false'"
         {{ $attributes }}
     >
         <svg class="{{ $svgClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 22">
@@ -53,12 +54,12 @@
         </svg>
         <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">{{ $title }}</span>
 
-        <svg class="{{ $arrowClasses }}" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+        <svg class="{{ $arrowClasses }}" :class="open ? 'rotate-90' : ''" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10 16 4-4-4-4"/>
         </svg>
     </button>
 
-    <ul id="{{ $dropdownId }}" class="{{ $dropdownClasses }}">
+    <ul id="{{ $dropdownId }}" :class="open ? 'py-2 space-y-2 transition-all duration-300 ease-in-out overflow-hidden' : 'hidden py-2 space-y-2 transition-all duration-300 ease-in-out overflow-hidden'">
         @foreach ($childLinks as $link)
             @if (isset($link['icon']))
                 <x-nav-link

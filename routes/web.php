@@ -278,3 +278,8 @@ Route::get('/pembangunan', PembangunanController::class)->name('pembangunan');
 Route::get('/pembangunan/{id_pembangunan}/detail', DetailPembangunanController::class)->name('pembangunan.detail');
 Route::get('/apbdes', ApbdesController::class)->name('apbdes');
 Route::get('/apbdes/{id_apbdes}/detail', ApbdesDetailController::class)->name('apbdes.detail');
+
+// Rute Publik Kebijakan Privasi (Privacy Policy Syarat Google Play & Apple App Store)
+Route::get('/privacy-policy', function () {
+    return view('privacy-policy');
+})->name('privacy-policy');
